@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.11
+// @version     1.20
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
