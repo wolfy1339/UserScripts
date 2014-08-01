@@ -17,3 +17,5 @@ $(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":
 $("#ThirdPage .Pageheader").removeClass("Pageheader").addClass("breadcrumb").css({"margin":"0"});
 $("#Page .Pageheader").removeClass("Pageheader").addClass("breadcrumb").css({"margin":"0"});
 $("#ThirdPage").css({"border-top":"none"})
+//Upgrade bootstrap version because why not?
+$("head").prepend('<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css">')
