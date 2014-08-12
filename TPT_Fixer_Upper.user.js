@@ -6,14 +6,14 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.28
+// @version     1.281
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
 //Fix GitHub watch button
 $(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
 //Fixes for the rebuilt search feature
-$(".search-avatar").css({"margin-left":"10px"})
+$(".search-avatar").css({"margin-right":"10px"})
 $(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"})
 //Fix, if number is big it won't overflow as much
 $(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"})
