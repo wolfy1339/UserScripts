@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.281
+// @version     1.29
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -18,8 +18,9 @@ $(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"
 //Fix, if number is big it won't overflow as much
 $(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"})
 //Make Groups system better
-$(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "background":"-webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)"});
-$("#ThirdPage .Pageheader").removeClass("Pageheader").addClass("breadcrumb").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"});
-$("#Page .Pageheader").removeClass("Pageheader").addClass("breadcrumb").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"});
+if (window.location.toString().indexOf("/Groups/")!=-1){
+  $(".Pageheader").addClass("breadcrumb").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).removeClass("Pageheader");
+  $(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "background":"-webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)"});
+}
 //Upgrade bootstrap version because why not?
 $("head").prepend('<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css">')
