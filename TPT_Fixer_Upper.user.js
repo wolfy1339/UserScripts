@@ -6,11 +6,10 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.33
+// @version     1.34
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
-var $ = jQuery.noConflict();
 
 //Fix GitHub watch button
 $(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
