@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.32
+// @version     1.33
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -28,7 +28,9 @@ if (window.location.toString().indexOf("/Groups/")!=-1){
   $(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "background":"-webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)", "background":"-ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%)"});
 }
 if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
-	$(".breadcrumb").addClass("Pageheader").removeClass("breadcrumb");
+	$(".breadcrumb").removeClass("breadcrumb").removeClass("Submenu").addClass("Pageheader").addClass("Submenu");
+	$(".Page").css({"border":"none"});
+	$(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
 }
 //Upgrade bootstrap version because why not?
 $("head").prepend('<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css">');
