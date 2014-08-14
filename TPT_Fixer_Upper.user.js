@@ -32,5 +32,3 @@ if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
 	$(".Page").css({"border":"none"});
 	$(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
 }
-//Upgrade bootstrap version because why not?
-$("head").prepend('<link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css">');
