@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.34
+// @version     1.35
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -30,4 +30,5 @@ if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
 	$(".breadcrumb").removeClass("breadcrumb").removeClass("Submenu").addClass("Pageheader").addClass("Submenu");
 	$(".Page").css({"border":"none"});
 	$(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
+	$(".GroupItem:last-child").css({"border-bottom":"none"});
 }
