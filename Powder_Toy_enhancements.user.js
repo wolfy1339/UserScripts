@@ -5,6 +5,7 @@
 // @version	2.30
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
+// @require     http://powdertoy.co.uk/Themes/Next/Javascript/jQuery.min.js
 // ==/UserScript==
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
 
