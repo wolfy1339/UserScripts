@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	Powder Toy enhancements (wolfy1339)
+// @name	Powder Toy enhancements
 // @description Fork of Powder Toy Enhancements, Fix and improve some things on powdertoy.co.uk
 // @include     http*://powdertoy.co.uk/*
 // @version	2.30
