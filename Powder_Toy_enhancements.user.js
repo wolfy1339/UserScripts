@@ -2,7 +2,7 @@
 // @name	Powder Toy enhancements
 // @description Fork of Powder Toy Enhancements, Fix and improve some things on powdertoy.co.uk
 // @include     http*://powdertoy.co.uk/*
-// @version	2.30
+// @version	2.31
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
 // @require     http://powdertoy.co.uk/Themes/Next/Javascript/jQuery.min.js
@@ -35,8 +35,6 @@ function contentEval(source) {
 // Fix silly way of checking whether facebook stuff is loaded (Browse.View.js:3, "if(FB)")
 // If facebook is blocked, then the javascript on powdertoy.co.uk errors and does not execute important stuff like callbacks for showing tag info popups
 contentEval('if (typeof window.FB == "undefined") window.FB = false;');
-
-delete $;
 
 contentEval(function () {
     if (typeof $ != "undefined") // check jQuery has loaded
