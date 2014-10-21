@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name	Powder Toy enhancements (wolfy1339)
-
 // @description Fork of Powder Toy Enhancements, Fix and improve some things on powdertoy.co.uk
 // @include     http*://powdertoy.co.uk/*
-// @version	    2.30
+// @version	2.30
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
 // ==/UserScript==
