@@ -1222,8 +1222,9 @@ contentEval(function () {
                     var txt = $(this).text();
                     if (txt == "New Topic") $(this).addClass('btn-primary');
                     if (txt == "Resign") $(this).addClass('btn-danger');
+                    if (txt == "Edit") $(this).addClass("btn-info");
                 });
-                $('.GroupInfo').append($('.GroupOptions'));
+                $('.GroupOptions').appendTo(".GroupInfo");
                 $('.SubmitF input[type="submit"]').addClass('btn btn-primary');
                 if (window.location.toString().indexOf("/Groups/Page/Register.html") != -1) {
                     $('form input[type="submit"]').addClass('btn btn-primary').css('margin', '10px 0');
