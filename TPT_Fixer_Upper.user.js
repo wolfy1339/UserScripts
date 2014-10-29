@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.42
+// @version     1.43
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -23,13 +23,12 @@ jQuery(".threads .search-thumbnail").css({"width":"63px"});
 jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
 //Make Groups system better
 if (window.location.toString().indexOf("/Groups/")!=-1){
-	jQuery(".Pageheader").addClass("breadcrumb").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).removeClass("Pageheader");
 	jQuery("head").append("<style>.Meta .Author img{background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);}")
 	jQuery(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)"});
 	jQuery('.Message span[style="color: white;"]').removeAttr("style");
+	jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
 }
 if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
-	jQuery(".breadcrumb").removeClass("breadcrumb").removeClass("Submenu").addClass("Pageheader").addClass("Submenu");
 	jQuery(".Page").css({"border":"none"});
 	jQuery(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
 	jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
