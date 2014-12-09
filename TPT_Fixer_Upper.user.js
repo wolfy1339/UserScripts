@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.44
+// @version     1.45
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -14,11 +14,13 @@
 //Fix GitHub watch button
 jQuery(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
 //Fixes for the rebuilt search feature
-jQuery(".search-avatar").css({"margin-right":"10px"});
-jQuery(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"});
-jQuery(".search-result .details").css({"margin-left":"70px", "margin-right":"20px"});
-jQuery(".posts .search-thumbnail").css({"width":"63px"});
-jQuery(".threads .search-thumbnail").css({"width":"63px"});
+if (window.location.toString().indexOf("/Search.html")!=-1){
+	jQuery(".search-avatar").css({"margin-right":"10px"});
+	jQuery(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"});
+	jQuery(".search-result .details").css({"margin-left":"70px", "margin-right":"20px"});
+	jQuery(".posts .search-thumbnail").css({"width":"63px"});
+	jQuery(".threads .search-thumbnail").css({"width":"63px"});
+}
 //Fix, if number is big it won't overflow as much
 jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
 //Make Groups system better
