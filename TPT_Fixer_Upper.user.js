@@ -24,14 +24,17 @@ if (window.location.toString().indexOf("/Search.html")!=-1){
 //Fix, if number is big it won't overflow as much
 jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
 //Make Groups system better
+var url = "http://powdertoy.co.uk/Groups/Index.html";
 if (window.location.toString().indexOf("/Groups/")!=-1){
 	jQuery("head").append("<style>.Meta .Author img{background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);}");
 	jQuery(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)"});
 	jQuery('.Message span[style="color: white;"]').removeAttr("style");
-	jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
+	if (window.location.toString() == url){
+		jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
+	}
 }
 if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
-	jQuery(".breadcrumb").css({"background":"#fff"});
+	jQuery(".Pageheader").css({"background":"#fff","border-bottom":"0px","font-weight":"normal","padding":"0"});
 	jQuery(".Page").css({"border":"none"});
 	jQuery(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
 	jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
