@@ -35,7 +35,7 @@ if (window.location.toString().indexOf("/Groups/Thread/")!=-1){
     author.closest(".Post").removeClass("Moderator").addClass("Developer");
     jQuery(".Developer .Comment .Meta .Author").css({"background-image":"url(/Themes/Next/Design/Images/Developer.png)"});
 }
-if (window.location.toString().indexOf("/Groups/Page/View.html")!=-1 || window.location.toString().indexOf("/Groups/Page/Register.html")!=-1){
+if (window.location.toString().indexOf("/Groups/Admin/")!=-1 || window.location.toString().indexOf("/Groups/Page/View.html")!=-1 || window.location.toString().indexOf("/Groups/Page/Register.html")!=-1){
     jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
 }
 if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
