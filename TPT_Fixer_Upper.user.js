@@ -6,7 +6,7 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.45
+// @version     1.46
 // @grant       none
 // @include     http*://powdertoy.co.uk/*
 // ==/UserScript==
@@ -34,9 +34,14 @@ if (window.location.toString().indexOf("/Groups/Thread/")!=-1){
     jQuery(".Mine.Manager").addClass("Moderator");
     author.closest(".Post").removeClass("Moderator").addClass("Developer");
     jQuery(".Developer .Comment .Meta .Author").css({"background-image":"url(/Themes/Next/Design/Images/Developer.png)"});
+    jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
 }
-if (window.location.toString().indexOf("/Groups/Admin/")!=-1 || window.location.toString().indexOf("/Groups/Page/View.html")!=-1 || window.location.toString().indexOf("/Groups/Page/Register.html")!=-1){
+if (window.location.toString().indexOf("/Groups/Page/View.html")!=-1 || window.location.toString().indexOf("/Groups/Page/Register.html")!=-1 || window.location.toString().indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
+}
+if (window.location.toString().indexOf("/Groups/Admin/")!=-1){
+    jQuery(".Pagination").remove();
+    jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
 }
 if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
     jQuery(".Pageheader").css({"background":"#fff","border-bottom":"0px","font-weight":"normal","padding":"0"});
