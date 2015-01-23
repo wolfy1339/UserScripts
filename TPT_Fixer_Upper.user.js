@@ -8,7 +8,7 @@
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
 // @version     1.46
 // @grant       none
-// @include     http*://powdertoy.co.uk/*
+// @match     *://powdertoy.co.uk/*
 // ==/UserScript==
 
 //Fix GitHub watch button
