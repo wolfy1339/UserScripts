@@ -49,3 +49,6 @@ if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
     jQuery(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
 }
+if (window.location.toString().indexOf("/Groups/Page/Groups.html")!=-1){
+    jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
+}
