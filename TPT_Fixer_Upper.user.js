@@ -6,13 +6,11 @@
 // @copyright   2014+, wolfy1339
 // @license     GNU GPLv3
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.46
+// @version     1.47
 // @grant       none
 // @match     *://powdertoy.co.uk/*
 // ==/UserScript==
 
-//Fix GitHub watch button
-jQuery(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
 //Fixes for the rebuilt search feature
 if (window.location.toString().indexOf("/Search.html")!=-1){
     jQuery(".search-avatar").css({"margin-right":"10px"});
@@ -21,8 +19,14 @@ if (window.location.toString().indexOf("/Search.html")!=-1){
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
-//Fix, if number is big it won't overflow as much
-jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
+if (window.location.toString().indexOf("/Discussions/Categories/Index.html")!=-1){
+    //Fix, if number is big it won't overflow as much
+    jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
+}
+if (window.location.toString().indexOf("/Download.html")!=-1)
+    //Fix GitHub watch button
+    jQuery(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
+}
 //Make Groups system better
 var author = jQuery(".Meta .Author a:contains('jacob1')");
 if (window.location.toString().indexOf("/Groups/Thread/")!=-1){
@@ -51,4 +55,5 @@ if (window.location.toString().indexOf("/Groups/Page/Index.html")!=-1){
 }
 if (window.location.toString().indexOf("/Groups/Page/Groups.html")!=-1){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
+    jQuery(".PageFooter").css({"margin":0,"padding":0}).addClass("breadcrumb").removeClass("PageFooter");
 }
