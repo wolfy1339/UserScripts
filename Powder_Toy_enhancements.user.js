@@ -1,211 +1,86 @@
 // ==UserScript==
-// @name		Powder Toy Enhancements
-// @description Fork of Powder Toy enhancements, Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
-// @author      wolfy1339
-// @include	 	http*://powdertoy.co.uk/*
-// @version		2.32
+// @name	Powder Toy enhancements
+// @namespace   http://powdertoythings.co.uk/tptenhance
+// @description Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
+// @match 	*://powdertoy.co.uk/*
+// @version	2.33
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
-// ==/UserScript==2
+// ==/UserScript==
 
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
 function contentEval(source) {
-  // Check for function input.
   if ('function' == typeof source) {
-    // Execute this function with no arguments, by adding parentheses.
-    // One set around the function, required for valid syntax, and a
-    // second empty set calls the surrounded function.
     source = '(' + source + ')();';
   }
-
-  // Create a script node holding this  source code.
   var script = document.createElement('script');
   script.setAttribute("type", "application/javascript");
   script.textContent = source;
-
-  // Insert the script node into the page, so it will run, and immediately
-  // remove it to clean up.
   document.body.appendChild(script);
   document.body.removeChild(script);
 }
 
-
-
+var tptenhance, url, cell, elem, d3, WYSIWYG, postID, currentSaveID, Link, Link2, self, OLHeight, Form, NewData, InformationForm, ProcessMessages, LoadForumBlocks;
 // Fix silly way of checking whether facebook stuff is loaded (Browse.View.js:3, "if(FB)")
 // If facebook is blocked, then the javascript on powdertoy.co.uk errors and does not execute important stuff like callbacks for showing tag info popups
 contentEval('if (typeof window.FB == "undefined") window.FB = false;');
 
 contentEval(function(){
-	if (typeof $ != "undefined") // check jQuery has loaded
-	{
+	if (typeof $ == "undefined") // check jQuery has loaded
+		return;
+
 	window.tptenhance = {
-		sessionKey:"",
+
+		// used by several functions to replace clicked "Delete" links to show that a request is in progress / finished
 		deletingHtml:'<div class="pull-right label label-info"><i class="icon-refresh icon-white"></i> <strong>Deleting...</strong></div>',
-		dummyUrl:"/Themes/Next/Javascript/Browse.View.js",// a random page to use for redirects, which will hopefully load faster than the default redirect (e.g. to a user moderation page) in ajax requests
+		deletedHtml:'<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>Deleted</strong></div>',
+
+		// a random page to use for redirects, which will hopefully load faster than the default redirect (e.g. to a user moderation page) in ajax requests
+		dummyUrl:"/Themes/Next/Javascript/Browse.View.js",
+
 		monthNamesShort:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+
+		// Return session key (the thing used as CSRF protection) - cached in tptenhance.sessionKey
 		getSessionKey:function()
 		{
-			if (tptenhance.sessionKey==="")
-			{
-				$('.main-menu').find('a').each(function(){
-					var url = this.href;
-					var matches = url.match(/Logout.html\?Key=[A-Za-z0-9]+/);
-					if (matches)
-					{
-						// Logout link found, extract key
-						tptenhance.sessionKey = matches[0].split("=")[1];
-					}
-				});
-			}
+			if (tptenhance.sessionKey!=="")
+				return tptenhance.sessionKey;
+
+			$('.main-menu').find('a').each(function(){
+				var url = this.href;
+				var matches = url.match(/Logout.html\?Key=[A-Za-z0-9]+/);
+				if (matches)
+				{
+					// Logout link found, extract key
+					tptenhance.sessionKey = matches[0].split("=")[1];
+				}
+			});
 			return tptenhance.sessionKey;
 		},
+		sessionKey:"",
+
+		// Get the username to which the page refers
+		// E.g. for moderation page, username of person being moderated.
+		getPageUsername:function()
+		{
+			if (window.location.pathname.toString().indexOf("/User/Moderation.html")!==-1)
+				return $('.SubmenuTitle').text();
+			return null;
+		},
+
+		// Returns bool indicating whether the user is logged in as a moderator
 		isMod:function()
 		{
 			if (typeof tptenhance.isModCache!="undefined")
 				return tptenhance.isModCache;
 			tptenhance.isModCache = false;
 			$(".main-menu .dropdown a.dropdown-toggle").each(function(){
-				if ($(this).text().indexOf("Admin")!=-1)
+				if ($(this).text().indexOf("Admin")!==-1)
 					tptenhance.isModCache = true;
 			});
 			return tptenhance.isModCache;
 		},
-		getCurrentGroupId:function()
-		{
-			return +($(".Pageheader a:eq(1)").attr("href").match(/[0-9]+/)[0]);
-		},
-		disableTagUrl:function(tag)
-		{
-			return "/Browse/Tags.html?Delete="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
-		},
-		removeTagUrl:function(tag, saveId)
-		{
-			return "/Browse/EditTag.json?Op=delete&ID="+encodeURIComponent(saveId)+"&Tag="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
-		},
-		searchTagUrl:function(search)
-		{
-			return "/Browse/Tags.html?Search_Query="+encodeURIComponent(search);
-		},
-		popoverSelectedTag:false,
-		popoverElement:false,
-		updatePopoverPosition:function()
-		{
-			var element = tptenhance.popoverElement;
-			var popOver = $(".popover");
-			if (!popOver.length || !element) return;
-			var left = element.offset().left - (popOver.width()/2) + (element.width()/2);
-			if (left<0) left = 0;
-			popOver.css("left", left);
-			popOver.css("top", element.offset().top + element.height());
-		},
-		removePopover:function()
-		{
-			tptenhance.popoverElement = false;
-			tptenhance.popoverSelectedTag = false;
-			$(".popover").remove();
-		},
-		createTagsPopover:function(element)
-		{
-			tptenhance.removePopover();
-			tptenhance.popoverElement = element;
-			var popOver = $('<div class="popover fade bottom in" style="display: block;"></div>');
-			popOver.appendTo(document.body);
-			var arrow = $('<div class="arrow"></div>').appendTo(popOver);
-			var inner = $('<div class="popover-inner"></div>').appendTo(popOver);
-			var title = $('<h3 class="popover-title">Tag Info</h3>').appendTo(inner);
-			var content = $('<div class="popover-content">Loading...</div>').appendTo(inner);
-			tptenhance.updatePopoverPosition();
-			return content;
-		},
-		tagsTooltip:function(element, tag){
-			// Tag info for tags in multiple places (e.g. /Browse/Tags.html and moderation page
 
-			// If clicking on the tag that is already open, close the info popup
-			if (tag==tptenhance.popoverSelectedTag)
-			{
-				tptenhance.removePopover();
-				return;
-			}
-
-			var filterUser = (window.location.toString().indexOf("/User/Moderation.html")!=-1);
-			var content = tptenhance.createTagsPopover(element);
-			tptenhance.popoverSelectedTag = tag;
-			var getLocation = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(tag);
-			$.get(getLocation, function(data){
-				content.html(data);
-				var separator = false;
-				var currentUserName = $('.SubmenuTitle').text();
-				// Go through the tags in the popup and add Remove links
-				content.find('div.TagInfo').each(function(){
-					var tagInfo = $(this);
-					var saveId = $(tagInfo.find("a")[0]).text();
-					var userName = $(tagInfo.find("a")[1]).text();
-					var delButton = $('<a class="pull-right" title="Remove tag from this save">Remove</a>');
-					delButton.attr('href',tptenhance.removeTagUrl(tag,saveId));
-					delButton.appendTo($(this));
-					delButton.on('click', tptenhance.tags.removeLinkClick);
-					// If on a user moderation page, show tags from other users at the end
-					if (filterUser && userName!=currentUserName)
-					{
-						if (!separator) separator = $('<hr>').appendTo(content);
-						$(this).appendTo(content);
-					}
-				});
-			}, "html");
-		},
-		tagTooltip:function(element, tag, saveId){
-			// Tag info for a tag in a single place, e.g. viewing a save
-
-			// If clicking on the tag that is already open, close the info popup
-			if (tag==tptenhance.popoverSelectedTag)
-			{
-				tptenhance.removePopover();
-				return;
-			}
-
-			var content = tptenhance.createTagsPopover(element);
-			tptenhance.popoverSelectedTag = tag;
-			var getLocation = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(tag)+"&SaveID="+encodeURIComponent(saveId);
-			$.get(getLocation, function(data){
-				content.html(data);
-				var clickFunc = function(e){
-					e.preventDefault();
-					var url = this.href;
-					var that = $(this);
-					if (that.text()=="Disable")
-						that.replaceWith('<div class="pull-right label label-info" style="margin-right:10px;"><i class="icon-refresh icon-white"></i> <strong>Disabling...</strong></div>');
-					else
-						that.replaceWith(tptenhance.deletingHtml);
-					$.get(url,function(){
-						element.remove();// remove tag text
-						if (tptenhance.popoverSelectedTag==tag)
-							tptenhance.removePopover();// remove tag info popup
-						tptenhance.updatePopoverPosition();
-					});
-				};
-				content.find('div.TagInfo').each(function(){
-					var delButton = $('<a class="pull-right" title="Remove tag from this save">Remove</a>');
-					delButton.attr('href',tptenhance.removeTagUrl(tag,saveId));
-					delButton.appendTo($(this));
-					delButton.on('click', clickFunc);
-					var disableButton = $('<a class="pull-right" title="Disable tag">Disable</a>');
-					disableButton.attr('href',tptenhance.disableTagUrl(tag)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
-					disableButton.css('margin','0 10px');
-					disableButton.appendTo($(this));
-					disableButton.on('click', clickFunc);
-					var showMore = $('<div style="text-align:right;clear:right;"><a>Show uses on other saves</a></div>');
-					showMore.appendTo($(this));
-					showMore = showMore.find("a");
-					showMore.attr('href',tptenhance.searchTagUrl(tag));
-					showMore.on('click', function(e){
-						e.preventDefault();
-						tptenhance.removePopover();
-						tptenhance.tagsTooltip(element, tag);
-					});
-					
-				});
-			}, "html");
-		},
 		LoadForumBlocks:function(){
 			tptenhance.oldLoadForumBlocks();
 			$(".Actions > a").each(function(){
@@ -224,72 +99,47 @@ contentEval(function(){
 				}
 			});
 		},
-		updateSaveComments:function(url, from){
-			$("#ActionSpinner").fadeIn("fast");
-			tptenhance.commentPageRequestType = from;
-			// url = url.replace(/\.html\?/, ".json?Mode=MessagesOnly&");
-			tptenhance.commentPageRequest = $.get(url, function(data){
-				data = $(data);
-				$("#ActionSpinner").fadeOut("fast");
-				tptenhance.commentPageRequest = false;
-				//$(".Pagination").html(data.Pagination);
-				$(".Pagination").replaceWith(data.find(".Pagination"));
-				//$("ul.MessageList").empty();
-				//$("ul.MessageList").html(data.Comments);
-				$("ul.MessageList").replaceWith(data.find("ul.MessageList"));
-				tptenhance.attachSaveCommentHandlers();
-			}, "html");//"json"
-		},
-		commentPageRequest:false,
-		commentPageRequestType:false,
-		commentDeleteWaiting:0,
-		attachSaveCommentHandlers:function(){
-			var clickFn = function(e){
-				e.preventDefault();
-				var url = this.href+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl);
-				var info = $(tptenhance.deletingHtml);
-				$(this).parents('.Actions').replaceWith(info);
-				tptenhance.commentDeleteWaiting++;
-				if (tptenhance.commentPageRequest && tptenhance.commentPageRequestType=="deleteComment")
-				{
-					tptenhance.commentPageRequest.abort();
-					tptenhance.commentPageRequest = false;
-				}
-				$.get(url, function(){
-					info.replaceWith('<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>Deleted</strong>');
-					tptenhance.commentDeleteWaiting--;
-					if (tptenhance.commentDeleteWaiting<=0)
-					{
-						tptenhance.updateSaveComments(window.lastComments, "deleteComment");
-					}
-				});
-				return false;
-			};
-			$(".Actions a").each(function(){
-				if (this.href.indexOf('DeleteComment=')!=-1)
-					$(this).click(clickFn);
-			});
-			$(".Pagination a").die('click');
-			$(".Pagination a").on('click', function(e){
-				e.preventDefault();
-				window.lastComments = this.href;
-				if (tptenhance.commentPageRequest)
-					tptenhance.commentPageRequest.abort();
-				tptenhance.updateSaveComments(window.lastComments, "pagination");
-			});
+		comments:
+		{
+			deleteUrl:function(commentId, saveId)
+			{
+				return "/Browse/View.html?ID="+encodeURIComponent(saveId)+"&DeleteComment="+encodeURIComponent(commentId);
+			},
+			// Get the ID of the comment inside elem (only works for moderators, since only they get a "Delete" link)
+			getId:function(elem)
+			{
+				var deleteLink = $(elem).find(".Actions a");
+				if (deleteLink.length)
+					return +(deleteLink.attr("href").match(/DeleteComment=[0-9]+/)[0].split("=")[1]);
+				else
+					return null;
+			}
 		},
 		tags:
 		{
-			removeLinkClick:function(e){
-				e.preventDefault();
-				var tagInfo = $(this).parents('div.TagInfo');
-				var url = this.href;
-				var info = $(tptenhance.deletingHtml);
-				$(this).replaceWith(info);
-				$.get(url, function(){
-					info.replaceWith('<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>Deleted</strong></div>');
-				});
+			disableUrl:function(tag)
+			{
+				return "/Browse/Tags.html?Delete="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
 			},
+			removeUrl:function(tag, saveId)
+			{
+				return "/Browse/EditTag.json?Op=delete&ID="+encodeURIComponent(saveId)+"&Tag="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
+			},
+			searchUrl:function(search)
+			{
+				return "/Browse/Tags.html?Search_Query="+encodeURIComponent(search);
+			},
+			// Tag info HTML, showing moderators which user placed a particular tag
+			// Optional argument saveId: only show who placed the tag on a single save, instead of showing all instances of the tag
+			infoUrl:function(tagText, saveId)
+			{
+				var url = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(tagText);
+				if (typeof saveId!="undefined")
+					url += "&SaveID="+encodeURIComponent(saveId);
+				return url;
+			},
+
+			// Event handlers to use an ajax request for enable/disable button clicks for tags displayed in a div.Tag (on /Browse/Tags.html and user moderation pages)
 			disableButtonClick:function(e){
 				e.preventDefault();
 				var tag = $(this).parents('.Tag').find(".TagText").text();
@@ -316,10 +166,13 @@ contentEval(function(){
 				});
 			},
 			attachHandlers:function(baseElem){
+				// Attach event handlers which will make tag disabling/enabling happen in an ajax request. Also add a clearer tooltip for Disable buttons.
+				// Does not attach event handlers for tag info popups
 				baseElem.find('.UnDelButton').off('click').on('click', tptenhance.tags.enableButtonClick);
 				baseElem.find('.DelButton').off('click').on('click', tptenhance.tags.disableButtonClick).attr('title', 'Disable');
 			},
-			// Change the tag to appear as disabled or enabled
+
+			// Change a tag to appear as disabled or enabled (used by event handlers above)
 			showDisabled:function(tagElem){
 				tagElem.addClass('Restricted');
 				tagElem.find('.icon-refresh').remove();
@@ -339,16 +192,23 @@ contentEval(function(){
 				tptenhance.tags.attachHandlers(tagElem);
 			}
 		},
-		makeSaveLinks:function(messages)
+		makeSaveLinks:function(messages, convertAllNumbers)
 		{
+			// Turn numbers which might be save IDs into links
+			// 'messages' should be the jQuery elements to process, contents should be plain text
+			var regex;
+			if (typeof convertAllNumbers!="undefined" && convertAllNumbers)
+				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]+)?[0-9]+\b/gi;
+			else
+				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]+)[0-9]+\b/gi;
 			messages.each(function(){
 				var msg = $(this);
 				var text = msg.text();
 				msg.empty();
-				var regex = /\b(?:(?:id|save|saveid)[^\d\w\s]?)?[0-9]+\b/gi;
+
 				var result, prevLastIndex = 0;
 				regex.lastIndex = 0;
-				while (result=regex.exec(text))
+				while (result==regex.exec(text))
 				{
 					// Append the text before the match
 					msg.append($('<span></span>').text(text.slice(prevLastIndex, result.index)));
@@ -368,6 +228,13 @@ contentEval(function(){
 			threadUrl:function(id)
 			{
 				return "/Discussions/Thread/View.html?Thread="+encodeURIComponent(id);
+			}
+		},
+		groups:{
+			currentGroupId:function()
+			{
+				// ID of the group currently being viewed
+				return +($(".Pageheader a:eq(1)").attr("href").match(/[0-9]+/)[0]);
 			}
 		},
 		reports:{
@@ -519,7 +386,7 @@ contentEval(function(){
 				gradient.append("svg:stop")
 				    .attr("offset", "0%")
 				    .attr("stop-color", "#9ecae1")
-				    .attr("stop-opacity", .5);
+				    .attr("stop-opacity", 0.5);
 				
 				gradient.append("svg:stop")
 				    .attr("offset", "100%")
@@ -658,8 +525,6 @@ contentEval(function(){
 											txt += data.Tags.length+" tags, ";
 											if (data.CommentPageCount>1)
 												txt += data.CommentPageCount+" pages of comments";
-											else if (data.Comments.length>=10)
-												txt += "many comments";
 											else
 												txt += data.Comments.length+" comments";
 										}
@@ -672,7 +537,7 @@ contentEval(function(){
 						});
 						
 						cell = $('<td><a></a></td>').addClass('IPAddress').appendTo(tableRow);
-						cell.children().first().attr('href', tptenhance.IPMapUrl(d.SourceAddress)).text(d.SourceAddress);
+						cell.children().first().attr('href', tptenhance.ipMapUrl(d.SourceAddress)).text(d.SourceAddress);
 						if (typeof ipcolours[d.SourceAddress] != "undefined" && ipcolours[d.SourceAddress] !== "")
 							cell.css('background-color', ipcolours[d.SourceAddress]);
 						cell = $('<td></td>').addClass('VoteType');
@@ -829,7 +694,7 @@ contentEval(function(){
 					data.Comments.push({
 						SaveID: +comment.find(".SaveInfo a").text(),
 						date: comment.find(".Date").text(),
-						CommentID: +comment.find(".Actions a").attr("href").match(/DeleteComment=[0-9]+/)[0].split("=")[1],
+						CommentID: +tptenhance.comments.getId(comment),
 						Message: comment.find(".Message").html()
 					});
 				});
@@ -872,21 +737,442 @@ contentEval(function(){
 				}, "html");
 			}
 		},
-		IPMapUrl:function(ip)
+		ipMapUrl:function(ip)
 		{
 			return "/IPTools.html?IP="+encodeURIComponent(ip);
 		}
 	};
 
+
+
+	tptenhance.tags.TagInfoPopup = function(){
+		this.targetElem = false;
+		this.popupElem = false;
+
+		this.selectedTagText = "";
+		this.getInfoXHR = false;
+		this.handleRemoveLinkClick = this.handleRemoveLinkClick.bind(this);
+		this.handleDisableLinkClick = this.handleDisableLinkClick.bind(this);
+	};
+	tptenhance.tags.TagInfoPopup.prototype.handleRemoveLinkClick = function(e){
+		var tagInfo = $(e.target).parents('div.TagInfo');
+		var url = e.target.href;
+		var placeholder = $(tptenhance.deletingHtml).addClass("Tag-LinkRemove");
+		$(e.target).replaceWith(placeholder);
+		var that = this;
+		$.get(url, function(){
+			placeholder.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemove"));
+
+			if (that.targetElem.filter("span.Tag.label").length)
+				that.targetElem.addClass("label-warning");
+		});
+		return false;
+	};
+	tptenhance.tags.TagInfoPopup.prototype.handleDisableLinkClick = function(e){
+		var tagInfo = $(e.target).parents('div.TagInfo');
+		var url = e.target.href;
+		var placeholder = $('<div class="pull-right label label-info Tag-LinkDisable"><i class="icon-refresh icon-white"></i> <strong>Disabling...</strong></div>');
+		$(e.target).replaceWith(placeholder);
+		var that = this;
+		$.get(url, function(){
+			placeholder.replaceWith('<div class="pull-right label label-success Tag-LinkDisable"><i class="icon-ok icon-white"></i> <strong>Disabled</strong></div>');
+
+			var tagElem = that.targetElem.parents("div.Tag");
+			if (tagElem.length)
+				tptenhance.tags.showDisabled(tagElem);
+			else if (that.targetElem.filter("span.Tag.label").length)
+				that.targetElem.addClass("label-danger label-important");
+
+			that.popupElem.find(".TagPopup-showOthers").remove();
+			that.popupElem.find(".Tag-LinkRemove").remove();
+		});
+		return false;
+	};
+	tptenhance.tags.TagInfoPopup.prototype.createRemoveLink = function(tagText, saveId){
+		var link = $('<a class="pull-right Tag-LinkRemove" title="Remove tag from this save">Remove</a>');
+		link.attr('href',tptenhance.tags.removeUrl(tagText,saveId));
+		link.on('click', this.handleRemoveLinkClick);
+		return link;
+	};
+	tptenhance.tags.TagInfoPopup.prototype.createDisableLink = function(tagText){
+		var link = $('<a class="pull-right Tag-LinkDisable" title="Disable tag">Disable</a>');
+		link.attr('href', tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
+		link.on('click', this.handleDisableLinkClick);
+		return link;
+	};
+
+	// Create a popup, with placeholder 'Loading...' text
+	tptenhance.tags.TagInfoPopup.prototype.create = function(targetElem){
+		this.remove();
+		this.targetElem = $(targetElem);
+		this.popupElem = $('<div class="popover fade bottom in" style="display: block;"></div>');
+		this.popupElem.appendTo(document.body);
+		var arrow = $('<div class="arrow"></div>').appendTo(this.popupElem);
+		var inner = $('<div class="popover-inner"></div>').appendTo(this.popupElem);
+		var title = $('<h3 class="popover-title">Tag Info</h3>').appendTo(inner);
+		var content = $('<div class="popover-content">Loading...</div>').appendTo(inner);
+		this.updatePosition();
+		return content;
+	};// Update popup position (below centre of element which generated popup)
+	tptenhance.tags.TagInfoPopup.prototype.updatePosition = function(){
+		if (!this.targetElem || !this.popupElem) return;
+		var left = this.targetElem.offset().left - (this.popupElem.width()/2) + (this.targetElem.width()/2);
+		if (left<0) left = 0;
+		this.popupElem.css("left", left);
+		this.popupElem.css("top", this.targetElem.offset().top + this.targetElem.height());
+	};
+	// Remove the popup
+	tptenhance.tags.TagInfoPopup.prototype.remove = function(){
+		if (this.popupElem)
+			this.popupElem.remove();
+		this.popupElem = false;
+		this.targetElem = false;
+	};
+
+	// Toggle a popup to show who placed a particular tag on a single save
+	tptenhance.tags.TagInfoPopup.prototype.showSingle = function(targetElem, tagText, saveId){
+		// If clicking on the tag that is already open, close the info popup
+		if (this.targetElem && targetElem.get(0)===this.targetElem.get(0))
+		{
+			this.remove();
+			return;
+		}
+		// Abort any previous pending request
+		if (this.getInfoXHR)
+			this.getInfoXHR.abort();
+
+		this.selectedTagText = tagText;
+		var content = this.create(targetElem);
+		var that = this;
+		this.getInfoXHR = $.get(tptenhance.tags.infoUrl(tagText, saveId), function(data){
+			that.getInfoXHR = false;
+			content.html(data);
+			content.find('div.TagInfo').each(function(){
+				$(this).append(that.createRemoveLink(tagText, saveId));
+				$(this).append(that.createDisableLink(tagText));
+			});
+			var showMore = $('<div class="TagPopup-showOthers"><a>Show uses on other saves</a></div>');
+			showMore.appendTo(content);
+			showMore.find("a")
+				.attr('href',tptenhance.tags.searchUrl(tagText))
+				.on('click', function(e){
+					that.remove();
+					that.showAll(targetElem, tagText);
+					return false;
+				});
+
+			that.updatePosition();
+		}, "html");
+	};
+
+	// Toggle a popup to show all instances of a particular tag
+	// Optional argument sortUser: sorts tags so that tags placed by that username are at the top
+	tptenhance.tags.TagInfoPopup.prototype.showAll = function(targetElem, tagText, sortUser){
+		// If clicking on the tag that is already open, close the info popup
+		if (this.targetElem && targetElem.get(0)===this.targetElem.get(0))
+		{
+			this.remove();
+			return;
+		}
+		// Abort any previous pending request
+		if (this.getInfoXHR)
+			this.getInfoXHR.abort();
+
+		this.selectedTagText = tagText;
+		var content = this.create(targetElem);
+		var that = this;
+		this.getInfoXHR = $.get(tptenhance.tags.infoUrl(tagText), function(data){
+			that.getInfoXHR = false;
+			content.html(data);
+
+			var disableLink = $('<div class="pull-right" style="margin-bottom:7px;"></div>').append(that.createDisableLink(tagText));
+			content.prepend(disableLink);
+
+			var shouldSortUser = (typeof sortUser!="undefined" && sortUser!=="");
+			var separator = false;
+			// Go through the tags in the popup and add Remove links
+			content.find('div.TagInfo').each(function(){
+				var tagInfo = $(this);
+				var saveId = $(tagInfo.find("a")[0]).text();
+				var userName = $(tagInfo.find("a")[1]).text();
+
+				$(this).append(that.createRemoveLink(tagText, saveId));
+
+				if (shouldSortUser && userName!==sortUser)
+				{
+					if (!separator) separator = $('<hr>').appendTo(content);
+					$(this).appendTo(content);// (move this tag to end - tags which don't get moved stay where they are, above the separator)
+				}
+			});
+
+			that.updatePosition();
+		}, "html");
+	};
+
+	tptenhance.tags.tagInfoPopup = new tptenhance.tags.TagInfoPopup();
+
+
+	// Class to remove many instances of tags ("instance" here means a specific tag on a specific save) with a delay between requests
+	tptenhance.tags.TagInstanceRemover = function(){
+		this.tags = [];
+		this.callback_progress = null;
+		this.callback_finished = null;
+		this.start = this.start.bind(this);
+		this._tagStart = this._tagStart.bind(this);
+		this._tagDone = this._tagDone.bind(this);
+		this.currentXHR = null;
+		this.interval = 500; // delay in ms between requests
+	};
+	tptenhance.tags.TagInstanceRemover.prototype.push = function(tagText, saveId){
+		this.tags.push({tagText:tagText, saveId:saveId});
+	};
+	tptenhance.tags.TagInstanceRemover.prototype.start = function(){
+		this.tagsCount = this.tags.length;
+		this._tagStart();
+	};
+	tptenhance.tags.TagInstanceRemover.prototype._tagStart = function(){
+		if (!this.tags.length){
+			if (this.callback_finished)
+				this.callback_finished();
+			return;
+		}
+
+		var total = this.tagsCount;
+		var done = total-this.tags.length;
+		this.currentTag = this.tags.shift();
+		if (this.callback_progress)
+			this.callback_progress(done, total, this.currentTag);
+		this.currentXHR = $.get(tptenhance.tags.removeUrl(this.currentTag.tagText,this.currentTag.saveId), this._tagDone);
+	};
+	tptenhance.tags.TagInstanceRemover.prototype._tagDone = function(){
+		setTimeout(this._tagStart, this.interval);
+	};
+
+
+	// Class to remove all tags by a specific user
+	// container is an element to put the progress bars in
+	// tagElements should be a jQuery collection of div.Tag's (e.g. obtained from the moderation page for that user)
+	// TODO: error handling for $.get ?
+	tptenhance.tags.RemoveAllTagsByUser = function(container, tagElements, targetUsername){
+		this.removeTag_start = this.removeTag_start.bind(this);
+		this.removeTag_fetched = this.removeTag_fetched.bind(this);
+		this.removeTag_progress = this.removeTag_progress.bind(this);
+		this.removeTag_done = this.removeTag_done.bind(this);
+
+		this.progressElem = $('<div style="width:40%;margin-right:5%" class="pull-left"><div class="progresstitle">Removing tags</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%;"></div></div></div>');
+		this.progressSubElem = $('<div style="width:40%;" class="pull-left"><div class="progresstitle">&nbsp;</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%; transition:width 0s;"></div></div>');
+		this.container = container;
+
+		this.tagElements = tagElements;
+		this.tagsQueue = tagElements.toArray();
+		this.targetUsername = targetUsername;
+		console.log(targetUsername);
+		this.currentXHR = null;
+		this.interval = 500; // delay in ms between requests
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype.start = function(){
+		this.container.append(this.progressElem).append(this.progressSubElem).append('<div class="Clear"></div>');
+		tptenhance.tags.tagInfoPopup.updatePosition();
+		this.removeTag_start();
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype._setProgress = function(elem, doneAmount, statusText){
+		elem.find(".bar").css('width', (doneAmount*100)+'%');
+		elem.find(".progresstitle").text(statusText);
+	};
+	tptenhance.tags.RemoveAllTagsByUser.prototype.setProgress = function(doneAmount, statusText){
+		this._setProgress(this.progressElem, doneAmount, statusText);
+	};
+	tptenhance.tags.RemoveAllTagsByUser.prototype.setProgressSub = function(doneAmount, statusText){
+		this._setProgress(this.progressSubElem, doneAmount, statusText);
+	};
+
+	// Fetch tag info (to find out which saves to remove it from) for the first tag in the queue
+	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_start = function(){
+		if (!this.tagsQueue.length){
+			this.onFinished();
+			return;
+		}
+
+		var total = this.tagElements.length;
+		var done = total-this.tagsQueue.length;
+		this.currentTag = this.tagsQueue.shift();
+		this.currentTagText = $(this.currentTag).find(".TagText").text();
+		this.setProgress(done/total, "Removing tag '"+this.currentTagText+"' ("+(done+1)+"/"+total+")");
+		this.setProgressSub(0, "Fetching save list for tag '"+this.currentTagText+"'");
+
+		this.currentXHR = $.get(tptenhance.tags.infoUrl(this.currentTagText), this.removeTag_fetched, "html");
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_fetched = function(data){
+		this.tagInstanceRemover = new tptenhance.tags.TagInstanceRemover();
+		var tagInfo = $(data).filter('.TagInfo');
+		this.currentTag_onlyUser = true;// true if all instances of this tag were placed by this user
+		// Parse tag info that has just been fetched
+		var that = this;
+		tagInfo.each(function(){
+			var tagInfo = $(this);
+			var saveId = $(tagInfo.find("a")[0]).text();
+			var userName = $(tagInfo.find("a")[1]).text();
+			if (userName===that.targetUsername)
+				that.tagInstanceRemover.push(that.currentTagText, saveId);
+			else
+				that.currentTag_onlyUser = false;
+		});
+		this.tagInstanceRemover.callback_progress = this.removeTag_progress;
+		this.tagInstanceRemover.callback_finished = this.removeTag_done;
+		// Start removing tags placed by this user
+		setTimeout(this.tagInstanceRemover.start, this.interval);
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_progress = function(done, total, tagInstance){
+		this.setProgressSub(done/total, "Removing tag '"+tagInstance.tagText+"' from save "+tagInstance.saveId+" ("+(done+1)+"/"+total+")");
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_done = function(){
+		this.setProgressSub(1, "Removed tag '"+this.currentTagText+"'");
+		if (this.currentTag_onlyUser)
+			$(this.currentTag).addClass("tag-removedall");// all instances of this tag removed
+		else
+			$(this.currentTag).addClass("tag-removedcurrent");// other users also placed this tag, so some instances left
+
+		setTimeout(this.removeTag_start, this.interval);
+	};
+
+	tptenhance.tags.RemoveAllTagsByUser.prototype.onFinished = function(){
+		this.container.empty();
+		this.container.append('<div class="alert alert-success">All tags by this user removed</span></div>');
+		tptenhance.tags.tagInfoPopup.updatePosition();
+	};
+
+	// Class to manage pagination and deletion+refreshing for a comments section (e.g. Browse/View.html or user moderation page)
+	tptenhance.comments.CommentView = function(container){
+		this.container = $(container);
+		this.wasPageChanged = {value:false};
+		this.commentPageRequest = null;
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handlePaginationClick = this.handlePaginationClick.bind(this);
+		this.handlePaginationFetched = this.handlePaginationFetched.bind(this);
+
+		var that = this;
+		$(window).bind('popstate', function(){
+			that.changePage(''+self.location);
+		});
+		this.msgList = this.container.find(".MessageList");
+		this.pagination = this.container.find(".Pagination");
+		this.attachCommentHandlers();
+		this.attachPaginationHandlers();
+	};
+	tptenhance.comments.CommentView.prototype.attachCommentHandlers = function(){
+		var that = this;
+		this.msgList.find(".Actions a").each(function(){
+			if (this.href.indexOf('DeleteComment=')!==-1)
+			{
+				$(this).off('click').on('click',that.handleDeleteClick);
+				var url = $(this).attr('href');
+				var redirectUrl = (''+self.location).replace(/^http:\/\/powdertoy.co.uk/, '');
+				if (url.match(/Redirect=[^&]*/))
+					url = url.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(redirectUrl));
+				else if (url.indexOf('?')!==-1)
+					url += '&Redirect='+encodeURIComponent(redirectUrl);
+				else
+					url += '?Redirect='+encodeURIComponent(redirectUrl);
+				$(this).attr('href', url);
+			}
+		});
+	};
+	tptenhance.comments.CommentView.prototype.attachPaginationHandlers = function(){
+		this.pagination.find("a").off('click').on('click', this.handlePaginationClick);
+	};
+	tptenhance.comments.CommentView.prototype.handleDeleteClick = function(e){
+		var deleteLink = $(e.target);
+		var msg = deleteLink.parents(".Post");
+		var wasPageChanged = this.wasPageChanged;
+		var that = this;
+		var placeholder = $(tptenhance.deletingHtml);
+		deleteLink.css("display", "none");
+		msg.find(".Meta").prepend(placeholder);
+		msg.addClass("Deleting");
+		$.get(deleteLink.attr('href'), function(data){
+			msg.removeClass("Deleting").addClass("Deleted");
+			placeholder.replaceWith(tptenhance.deletedHtml);
+			if (!wasPageChanged.value)
+				that.mergeComments(data);
+		});
+		return false;
+	};
+	tptenhance.comments.CommentView.prototype.extractCommentsFromResponse = function(data){
+		return $(data).find(".MessageList");
+	};
+	tptenhance.comments.CommentView.prototype.extractPaginationFromResponse = function(data){
+		return $(data).find(".Pagination").first();
+	};
+	tptenhance.comments.CommentView.prototype.mergeComments = function(data){
+		var newComments = this.extractCommentsFromResponse(data).find(".Post");
+		var existingCommentIds = [];
+		var that = this;
+		// Check which comments are already displayed on the page
+		this.msgList.find(".Post").each(function(){
+			existingCommentIds.push(tptenhance.comments.getId($(this)));
+		});
+		// Insert comments which are in the response but not yet on the page (i.e. the comments which have moved up into the current page because some of the comments that were previously on the current page have been deleted)
+		newComments.each(function(){
+			var commentId = tptenhance.comments.getId($(this));
+			if (existingCommentIds.indexOf(commentId)===-1)
+				that.msgList.append($(this));
+		});
+		// Sort comments into the correct order (newest first / descending ID)
+		var commentArray = this.msgList.find(".Post").toArray();
+		commentArray.sort(function(a,b){
+			var idA = tptenhance.comments.getId(a);
+			var idB = tptenhance.comments.getId(b);
+			return (idA<idB) ? 1 : -1;
+		});
+		$(commentArray).detach().appendTo(this.msgList);
+		this.attachCommentHandlers();
+	};
+
+	tptenhance.comments.CommentView.prototype.handlePaginationClick = function(e){
+		var url = $(e.target).attr("href");
+		if (typeof history.pushState!="undefined")
+			history.pushState(null, "", url);
+		this.changePage(url);
+		return false;
+	};
+	tptenhance.comments.CommentView.prototype.changePage = function(url){
+		this.container.find("#ActionSpinner").fadeIn("fast");
+		this.wasPageChanged.value = true;
+		this.wasPageChanged = {value:false};
+		if (this.commentPageRequest)
+			this.commentPageRequest.abort();
+		// url = url.replace(/\.html\?/, ".json?Mode=MessagesOnly&");
+		this.commentPageRequest = $.get(url, this.handlePaginationFetched);
+	};
+	tptenhance.comments.CommentView.prototype.handlePaginationFetched = function(data){
+		this.commentPageRequest = null;
+		this.container.find("#ActionSpinner").fadeOut("fast");
+		/*$(".Pagination").html(data.Pagination);
+		$("ul.MessageList").empty();
+		$("ul.MessageList").html(data.Comments);*/
+		var newPagination = this.extractPaginationFromResponse(data);
+		this.pagination.empty().append(newPagination);
+		var newComments = this.extractCommentsFromResponse(data).find(".Post");
+		this.msgList.empty().append(newComments);
+		this.attachCommentHandlers();
+		this.attachPaginationHandlers();
+	};
+
+
+
 	$(document).ready(function(){
 		if (tptenhance.isMod())
 		{
+			// Add a menu link for editing the changelog on the download page.
 			$(".main-menu .pull-right .dropdown:first-child .dropdown-menu").append('<li class="item"><a href="/Documentation/Changelog.html">Changelog</a>');
 		}
 	});
 
-	// Override tag info popups, and add them to the user moderation page
-	// The overridden version has links to delete (instead of disabling) tags, and disabling+deleting is done in an Ajax request (no full page reload)
 	if (window.location.toString().indexOf("/User/Moderation.html")!=-1)
 	{
 		$(document).ready(function(){setTimeout(function(){
@@ -899,138 +1185,24 @@ contentEval(function(){
 				{
 					if (!confirm("Are you sure you want to remove all tags by this user?"))
 						return;
-					var progress = $('<div style="width:40%;margin-right:5%" class="pull-left"><div class="progresstitle">Removing tags</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%;"></div></div></div>');
-					var progressSub = $('<div style="width:40%;" class="pull-left"><div class="progresstitle">&nbsp;</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%; transition:width 0s;"></div></div>');
-					$("div.Tag").first().before(progress).before(progressSub).before('<div class="Clear"></div>');
-					$(this).remove();
-					var tags = $("div.Tag").toArray();
-					var tagCount = tags.length;
-					var tagSaves, tagSavesCount, tagSavesAllUsersCount;
-					var tagRemoveTimeout;
-					var currentTag, currentTagText;
-					var startTag, fetchedTag, startSaveTag, fetchedSaveTag;
-					var interval = 500;
-					var currentUserName = $('.SubmenuTitle').text();
-					// TODO: error handling for $.get ?
-					startTag = function(){
-						if (!tags.length){
-							progress.next(".Clear").remove();
-							progressSub.remove();
-							progress.replaceWith('<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>All tags by this user removed</strong></span></div>');
-							return;
-						}
-						currentTag = tags.shift();
-						currentTagText = $(currentTag).find(".TagText").text();
-						progress.find(".bar").css('width', ((tagCount-tags.length-1)/tagCount*100)+'%');
-						progress.find(".progresstitle").text("Removing tag '"+currentTagText+"' ("+(tagCount-tags.length)+"/"+tagCount+")");
-						var getLocation = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(currentTagText);
-						$.get(getLocation, fetchedTag, "html");
-					};
-					fetchedTag = function(data){
-						tagSaves = [];
-						tagSavesAllUsersCount = 0;
-						$(data).filter('.TagInfo').each(function(){
-							var saveId = $($(this).find("a")[0]).text();
-							var userName = $($(this).find("a")[1]).text();
-							tagSavesAllUsersCount++;
-							if (userName==currentUserName)
-								tagSaves.push(saveId);
-						});
-						tagSavesCount = tagSaves.length;
-						progressSub.find(".bar").css('width', '0%');
-						progressSub.find(".progresstitle").text("Fetching save list for tag '"+currentTagText+"'");
-						tagRemoveTimeout = setTimeout(startSaveTag, interval);
-					};
-					startSaveTag = function(){
-						if (!tagSaves.length){
-							progressSub.find(".bar").css('width', '100%');
-							progressSub.find(".progresstitle").text("Removed tag '"+currentTagText+"'");
-							if (tagSavesAllUsersCount!=tagSavesCount)
-								$(currentTag).addClass("tag-removedcurrent");
-							else
-								$(currentTag).addClass("tag-removedall");
-							startTag();
-							return;
-						}
-						var saveId = tagSaves.shift();
-						progressSub.find(".bar").css('width', ((tagSavesCount-tagSaves.length-1)/tagSavesCount*100)+'%');
-						progressSub.find(".progresstitle").text("Removing tag '"+currentTagText+"' from save "+saveId+" ("+(tagSavesCount-tagSaves.length)+"/"+tagSavesCount+")");
-						$.get(tptenhance.removeTagUrl(currentTagText,saveId), fetchedSaveTag);
-					};
-					fetchedSaveTag = function(){
-						tagRemoveTimeout = setTimeout(startSaveTag, interval);
-					};
-					startTag();
+					$(this).remove();//remove the button
+					var container = $('<div></div>');
+					$("div.Tag").first().before(container);
+					var tagRemover = new tptenhance.tags.RemoveAllTagsByUser(container, $("div.Tag"), tptenhance.getPageUsername());
+					tagRemover.start();
 				});
 			}
 			$(".BanHistory ul").each(function(){
+				// Spelling...
 				$(this).html($(this).html().replace(/Permenantly/, "Permanently"));
 			});
 			$("span.TagText").on('click', function(){
-				tptenhance.tagsTooltip($(this), $(this).text());
+				var currentUsername = $('.SubmenuTitle').text();
+				tptenhance.tags.tagInfoPopup.showAll($(this), $(this).text(), currentUsername);
 			});
-			$("div.Tag .DelButton").attr('title', 'Disable');// A clearer tooltip
-			$("div.Tag .DelButton").on('click', tptenhance.tags.disableButtonClick);
-			// ajax for deleting comments
-			var modPageRequest = false, modPageRequestNeeded = false;
-			var clickFn;
-			clickFn = function(e){
-				e.preventDefault();
-				if (tptenhance.commentDeleteWaiting>0) modPageRequestNeeded = true;
-				tptenhance.commentDeleteWaiting++;
-				var post = $(this).parents('.Post');
-				var info = $(tptenhance.deletingHtml);
-				$(this).parents('.Actions').replaceWith(info);
-				url = this.href;
-				if (modPageRequestNeeded) url = url.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(tptenhance.dummyUrl));
-				else url = url.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent((''+self.location).replace(/^http:\/\/powdertoy.co.uk/, '')));
-				if (modPageRequest !== false) modPageRequest.abort();
-				modPageRequest = false;
-				$.get(url, function(data){
-					tptenhance.commentDeleteWaiting--;
-					post.css('color','#AAA');
-					info.replaceWith('<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>Deleted</strong></span></div>');
-					if (tptenhance.commentDeleteWaiting===0)
-					{
-						if (modPageRequestNeeded)
-						{
-							if (modPageRequest !== false) modPageRequest.abort();
-							modPageRequest = $.get(window.location, function(data){
-								var comments = $(data).find(".MessageList");
-								if (comments.length)
-								{
-									post.parents(".MessageList").replaceWith(comments);
-									$(".Actions a").each(function(){
-										if (this.href.indexOf('DeleteComment=')!=-1)
-											$(this).click(clickFn);
-									});
-								}
-								modPageRequestNeeded = false;
-								modPageRequest = false;
-							}, "html");
-						}
-						else
-						{
-							var comments = $(data).find(".MessageList");
-							if (comments.length)
-							{
-								post.parents(".MessageList").replaceWith(comments);
-								$(".Actions a").each(function(){
-									if (this.href.indexOf('DeleteComment=')!=-1)
-										$(this).click(clickFn);
-								});
-							}
-						}
-					}
-				});
-			};
-			$(".Actions a").each(function(){
-				if (this.href.indexOf('DeleteComment=')!=-1)
-				{
-					$(this).click(clickFn);
-					$(this).attr('href', $(this).attr('href').replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent((''+self.location).replace(/^http:\/\/powdertoy.co.uk/, ''))));
-				}
-			});
+			tptenhance.tags.attachHandlers($("div.Tag"));
+
+			tptenhance.comments.commentView = new tptenhance.comments.CommentView($(".Subpage"));
 			
 			/*
 			 * Existing submit hook:
@@ -1081,11 +1253,10 @@ contentEval(function(){
 	{
 		$(document).ready(function(){
 			var matches = window.location.toString().match(/(Name|ID)=.+/);
-            var elem;
 			if (matches)
 			{
 				$(".ProfileInfo > .alert-info:nth-child(2)").remove();
-				elem = $('<div class="UserInfoRow"><label>Registered:</label> <span></span></div>');
+				var elem = $('<div class="UserInfoRow"><label>Registered:</label> <span></span></div>');
 				elem.insertAfter($(".ProfileInfo .page-header").first());
 				$.get("http://powdertoythings.co.uk/Powder/User.json?"+matches[0], function(data) {
 					var txt = "unknown";
@@ -1099,6 +1270,7 @@ contentEval(function(){
 				}, "json");
 				if (tptenhance.isMod())
 				{
+					// Add links to the old user post/topic search pages
 					var username = $(".Pageheader .SubmenuTitle").text();
 					$(".MoreInfoForum a").each(function(){
 						if ($(this).text().indexOf("replies by")>-1)
@@ -1120,14 +1292,16 @@ contentEval(function(){
 	}
 	if (window.location.toString().indexOf("/Browse/View.html")!=-1)
 	{
-		window.lastComments = window.location.toString();
 		$(document).ready(function(){
 			setTimeout(function(){
+				$(".Pagination a").die('click');
+				tptenhance.comments.commentView = new tptenhance.comments.CommentView($(".Subpage"));
+
 				$("span.Tag").die('click');
 				if (tptenhance.isMod())
 				{
 					$("span.Tag").on('click', function(){
-						tptenhance.tagTooltip($(this), $(this).text(), currentSaveID);
+						tptenhance.tags.tagInfoPopup.showSingle($(this), $(this).text(), currentSaveID);
 					});
 
 					var tabs = $('<ul class="nav nav-pills"></ul>');
@@ -1136,7 +1310,7 @@ contentEval(function(){
 					var tagsTab = $('<li class="item"><a href="">Tags</a></li>').appendTo(tabs); // TODO: remove all tags button, click on tags in table to show other uses, remove all instances of tag button
 					var bumpsTab = $('<li class="item"><a href="">Bumps</a></li>').appendTo(tabs);
 					var searchesTab = $('<li class="item"><a href="">Search similar</a></li>').appendTo(tabs);
-					var signsTab = $('<li class="item"><a href="">Signs</a></li>').appendTo(tabs);
+					var detailTab = $('<li class="item"><a href="">More info</a></li>').appendTo(tabs);
 
 					var tagsTable = false;
 					var currentTabLink = false;
@@ -1146,7 +1320,7 @@ contentEval(function(){
 						{
 							tptenhance.saveDetailsTabContent.find("table").detach();
 						}
-						currentTabLink = $(newTabLink).find("a");
+						currentTabLink = $(newTabLink);
 						tabs.find("li.active").removeClass("active");
 						$(newTabLink).parent().addClass("active");
 						//$("#VoteGraph").hide();
@@ -1165,6 +1339,8 @@ contentEval(function(){
 					reportsTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.reports.viewReportUrl(currentSaveID), function(html){
+							if (currentTabLink.text()!==reportsTab.find("a").text())
+								return;
 							tptenhance.saveDetailsTabContent.empty();
 							var reports = tptenhance.reports.parseViewReport(html);
 							var msgList = $('<ul class="MessageList"></ul>');
@@ -1178,7 +1354,7 @@ contentEval(function(){
 									msg.find(".Message").text(report.Message);
 									msgList.append(msg);
 								});
-								tptenhance.makeSaveLinks(msgList.find(".Post .Message"));
+								tptenhance.makeSaveLinks(msgList.find(".Post .Message"), true);
 								tptenhance.saveDetailsTabContent.append(msgList);
 							}
 							else
@@ -1235,11 +1411,11 @@ contentEval(function(){
 								var usernameCell = $('<td>Loading...</td>').appendTo(tableRow);
 								var actionsCell = $('<td class="TagActions"></td>').appendTo(tableRow);
 								$('<a title="Remove tag from this save">Remove</a>')
-									.attr('href',tptenhance.removeTagUrl(tagText,currentSaveID))
+									.attr('href',tptenhance.tags.removeUrl(tagText,currentSaveID))
 									.on('click', actionClickFunc)
 									.appendTo(actionsCell);
 								$('<a title="Disable tag">Disable</a>')
-									.attr('href',tptenhance.disableTagUrl(tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
+									.attr('href',tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
 									.on('click', actionClickFunc)
 									.appendTo(actionsCell);
 								tagsTableBody.append(tableRow);
@@ -1253,9 +1429,11 @@ contentEval(function(){
 					bumpsTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.saves.infoJsonUrlPTT(currentSaveID), function(data){
+							if (currentTabLink.text()!==bumpsTab.find("a").text())
+								return;
 							tptenhance.saveDetailsTabContent.empty();
 							var bumpList = $('<div style="text-align:center;"></div>');
-							data.BumpTimes.sort(function(a,b){return b-a};);
+							data.BumpTimes.sort(function(a,b){return b-a;});
 							if (data.BumpTimes.length)
 							{
 								if (data.BumpTimes.length>1)
@@ -1277,20 +1455,60 @@ contentEval(function(){
 						}, "json");
 						e.preventDefault();
 					});
-					signsTab.find("a").on("click", function(e){
+					detailTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.saves.infoDetailedJsonUrlPTT(currentSaveID), function(data){
+							if (currentTabLink.text()!==detailTab.find("a").text())
+								return;
 							tptenhance.saveDetailsTabContent.empty();
 							if (typeof data.Error!="undefined")
 							{
 								tptenhance.saveDetailsTabContent.append($("<div></div>").addClass("alert alert-error").text(data.Error));
 							}
+							else if (data==="")
+							{
+								tptenhance.saveDetailsTabContent.append($("<div></div>").addClass("alert alert-error").text("Error while fetching save info"));
+							}
 							else
 							{
-								var container = $('<div style="text-align:center;">(data may be up to 5 minutes old)<br><br></div>');
+								var container;
+								container = $('<div><div class="ElemCountChart"></div></div>');
+								var elemsChart = d3.select(container.find(".ElemCountChart").get(0));
+								var totalCount = d3.sum(data.ElementCount, function(d) { return d.Count; });
+								elemsChart.selectAll("div.bar")
+								.data(data.ElementCount.sort(function(a,b){return d3.descending(a.Count,b.Count);}))
+								.enter()
+								.append("div")
+								.classed("bar", true)
+								.style("width", function(d){return (d.Count/totalCount*100)+"%";})
+								.style("background-color", function(d){return (typeof d.Colour!="undefined") ? "#"+d.Colour : "#000"; })
+								.style("color", function(d){
+									if (typeof d.Colour=="undefined")
+										return "#FFF";
+									//2*r + 3*g + b
+									if (2*parseInt(d.Colour.substring(0,2),16) + 3*parseInt(d.Colour.substring(2,4),16) + parseInt(d.Colour.substring(4,6),16) > 544)
+										return "#000";
+									else
+										return "#FFF";
+								})
+								.each(function(d){
+									var nametxt;
+									if (typeof d.Name!="undefined")
+										nametxt = d.Name;
+									else
+										nametxt = d.Identifier;
+									var tooltiptxt = nametxt+": "+d.Count+" ";
+									tooltiptxt += (d.Count===1) ? "particle" : "particles";
+									$(this).tooltip({title:tooltiptxt, placement:"top"});
+									$(this).append($("<span class=\"barlabel\"></span>").text(nametxt));
+								});
+								elemsChart.append("div").classed("Clear", true);
+								tptenhance.saveDetailsTabContent.append(container);
+
+								container = $('<div style="text-align:center;"><div class="SaveDetails-notifyOld">(data may be up to 5 minutes old)</div></div>');
 								var signsTbl = $('<table cellspacing="0" cellpadding="0" style="margin:0 auto;" class="SignsTbl"><thead><tr><th>Position</th><th>Displayed text</th><th>Sign type</th></tr></thead><tbody></tbody></table>');
 								var signsTblBody = signsTbl.find('tbody');
-								data.Signs.sort(function(a,b){return a.PlacementY*10000-b.PlacementY*10000+a.PlacementX-b.PlacementX});
+								data.Signs.sort(function(a,b){return a.PlacementY*10000-b.PlacementY*10000+a.PlacementX-b.PlacementX;});
 								if (data.Signs.length)
 								{
 									data.Signs.forEach(function(s){
@@ -1306,11 +1524,9 @@ contentEval(function(){
 										$('<td></td>').text(s.PlacementX+','+s.PlacementY).appendTo(row);
 										if (s.Type=="Save link" || s.Type=="Thread link")
 										{
-											var cell, url;
-                                            if (s.Type=="Save link")
+											if (s.Type=="Save link")
 											{
-												
-                                                url = tptenhance.saves.viewUrl(s.LinkID);
+												url = tptenhance.saves.viewUrl(s.LinkID);
 												cell = $('<td></td>').appendTo(row);
 												$('<a></a>').text(s.DisplayText).attr('href', url).appendTo(cell);
 
@@ -1342,10 +1558,6 @@ contentEval(function(){
 										row.appendTo(signsTblBody);
 									});
 									container.append(signsTbl);
-								}
-								else
-								{
-									container.text('No signs found (data may be up to 5 minutes old)');
 								}
 								tptenhance.saveDetailsTabContent.append(container);
 							}
@@ -1388,9 +1600,9 @@ contentEval(function(){
 					tptenhance.saveDetailsTabContent = $('<div></div>').appendTo(newDetailsPane);
 				}
 				$(".AddComment .OtherF textarea").attr("maxlength", 500);
-				tptenhance.attachSaveCommentHandlers();
 			},1);
 			$(".SaveDetails .Warning").addClass("alert alert-error").css("margin-bottom", "5px");
+			tptenhance.makeSaveLinks($(".SaveDescription"));
 			window.showSaveVotes = tptenhance.saves.showVotes;
 		});
 	}
@@ -1400,7 +1612,7 @@ contentEval(function(){
 			setTimeout(function(){
 				$("span.TagText").die('click');
 				$("span.TagText").on('click', function(){
-					tptenhance.tagsTooltip($(this), $(this).text());
+					tptenhance.tags.tagInfoPopup.showAll($(this), $(this).text());
 				});
 				tptenhance.tags.attachHandlers($("div.Tag"));
 			},1);
@@ -1619,7 +1831,7 @@ contentEval(function(){
 				});
 				return false;
 			});
-			var groupId = tptenhance.getCurrentGroupId();
+			var groupId = tptenhance.groups.currentGroupId();
 			$(".Post a").each(function(){
 				if ($(this).text()!="(View Post)") return;
 				var matches = $(this).attr('href').match(/\/Discussions\/Thread\/View.html\?Post=([0-9]+)$/);
@@ -1632,14 +1844,14 @@ contentEval(function(){
 			var threadId = $(".Pagination .active a").first().attr("href").match(/Thread=([0-9]+)/)[1];
 			$(".Post .Permalink a").each(function(){
 				var postId = $(this).attr("href").match(/Post=([0-9]+)/)[1];
-				$(this).attr("href", "/Groups/Thread/View.html?"+"Thread="+encodeURIComponent(threadId)+"&Group="+encodeURIComponent(groupId)+"&PageNum="+encodeURIComponent(threadPageNum)	+"#Message="+encodeURIComponent(postId)	);
+				$(this).attr("href", "/Groups/Thread/View.html?"+"Thread="+encodeURIComponent(threadId)	+"&Group="+encodeURIComponent(groupId)+"&PageNum="+encodeURIComponent(threadPageNum)+"#Message="+encodeURIComponent(postId));
 			});
 		});
 	}
 	if (window.location.toString().indexOf("/Reports/View.html")!=-1)
 	{
 		$(document).ready(function(){
-			tptenhance.makeSaveLinks($(".Post .Message"));
+			tptenhance.makeSaveLinks($(".Post .Message"), true);
 		});
 	}
 	if (window.location.toString().indexOf("/Reports.html")!=-1)
@@ -1710,7 +1922,7 @@ contentEval(function(){
 	{
 		$(document).ready(function(){
 			var usernameElem = $(".SubmenuTitle");
-			if (usernameElem.length || 1)
+			if (usernameElem.length)
 			{
 				var tabElem = $('<li class=\"item\"><a>Published</a></li>');
 				tabElem.find("a").attr("href", "/Browse.html?Search_Query=user:"+encodeURIComponent(usernameElem.text()));
@@ -1722,8 +1934,7 @@ contentEval(function(){
 	// Correct repository username for github button, so that number of stars displays correctly
 	if ($(".social-github iframe").length)
 		$(".social-github iframe").attr("src", $(".social-github iframe").attr("src").replace("FacialTurd", "simtr"));
-	
-	}
+
 });
 
 function addCss(cssString)
@@ -1735,107 +1946,103 @@ function addCss(cssString)
 	newCss.innerHTML = cssString;
 	head.appendChild(newCss);
 }
-addCss('\
-.Tag .DelButton, .Tag .UnDelButton { top:auto; background-color:transparent; }\
-.Tag .LoadingIcon { position:absolute; right:3px; line-height:20px; }\
-.popover-inner { width:380px; }\
-.VoteUpIcon { background-color:#0C0; border:1px solid #080; }\
-.VoteDownIcon { background-color:#C00; border:1px solid #800; }\
-.VoteUpIcon, .VoteDownIcon { margin-top:2px; }\
-.DupVotes { margin-top: 10px; }\
-.DupVotes h4 { text-align:center; margin:3px 0; }\
-.DupVotes table { margin:0 auto; border:1px solid #CCC; }\
-.DupVotes td, .DupVotes th { padding:3px 6px; }\
-.DupVotes th { text-align:left; background-color:#DDD; }\
-.DupVotes tr:nth-child(even) { background-color:#FFF; }\
-.DupVotes tr:nth-child(odd) { background-color:#EFEFEF; }\
-.DupVotes tr:hover, .DupVotes tr.highlight:hover { background-color:#E0E0FF; }\
-.DupVotes tr.highlight .IPAddress { background-color:#FFF !important; }\
-.DupVotes tr.highlight { background-color:#C8C8FF; }\
-.DupVotes .Date { font-family:monospace; }\
-.SignsTbl { margin:0 auto; border:1px solid #CCC; }\
-.SignsTbl td, .SignsTbl th { padding:3px 6px; border:1px solid #CCC}\
-.SignsTbl th { text-align:left; background-color:#DDD; }\
-.SignsTbl th:nth-child(2) { min-width:200px; }\
-.SignsTbl td:nth-child(2), .SignsTbl td:nth-child(3) { text-align:left; }\
-.SignsTbl tr:nth-child(even) { background-color:#FFF; }\
-.SignsTbl tr:nth-child(odd) { background-color:#F9F9F9; }\
-.SignsTbl tr:hover, .DupVotes tr.highlight:hover { background-color:#E0E0FF; }\
-.SignsTbl tr.DupSign td:nth-child(1) { color:#C00; font-weight:bold; }\
-.SignLinkSaveThumb { display:block; }\
-.SignLinkSaveThumb img { clear:left; width:102px; height:64px; }\
-.Post { word-wrap: break-word; }\
-.savegame { width:153px; }\
-.savegame .caption a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\
-.TagInfo { clear:right; }\
-.TagInfo .label { margin-bottom:1px; }\
-.SaveDetails ul.MessageList li.Post { border-top:1px solid #DCDCDC; border-bottom:0 none; }\
-.new-topic-button .btn { white-space:nowrap; }\
-.tag-removedcurrent { text-decoration: line-through; background-color:#ffd; }\
-.tag-removedall { text-decoration: line-through; background-color:#fed; }\
-.progresstitle { font-size:10px; margin-bottom:4px; }\
-.TagsTable .TagActions a, .TagsTable .TagActions > span { margin:0 5px; min-width:50px; display:inline-block; text-align:center; }\
-.TagsTable { margin:0 auto; border:1px solid #CCC; }\
-.TagsTable td, .TagsTable th { padding:3px 6px; border:1px solid #CCC}\
-.TagsTable th { text-align:left; background-color:#DDD; }\
-.TagsTable td:nth-child(1) { min-width:100px; }\
-.TagsTable td:nth-child(2) { min-width:100px; }\
-');
-if (window.location.toString().indexOf("/Groups/")!=-1)
+addCss([".Tag .DelButton, .Tag .UnDelButton { top:auto; background-color:transparent; }",
+".Tag .LoadingIcon { position:absolute; right:3px; line-height:20px; }",
+".popover-inner { width:380px; }",
+".VoteUpIcon { background-color:#0C0; border:1px solid #080; }",
+".VoteDownIcon { background-color:#C00; border:1px solid #800; }",
+".VoteUpIcon, .VoteDownIcon { margin-top:2px; }",
+"DupVotes { margin-top: 10px; }",
+".DupVotes h4 { text-align:center; margin:3px 0; }",
+".DupVotes table { margin:0 auto; border:1px solid #CCC; }",
+".DupVotes td, .DupVotes th { padding:3px 6px; }",
+".DupVotes th { text-align:left; background-color:#DDD; }",
+".DupVotes tr:nth-child(even) { background-color:#FFF; }",
+".DupVotes tr:nth-child(odd) { background-color:#EFEFEF; }",
+".DupVotes tr:hover, .DupVotes tr.highlight:hover { background-color:#E0E0FF; }",
+".DupVotes tr.highlight .IPAddress { background-color:#FFF !important; }",
+".DupVotes tr.highlight { background-color:#C8C8FF; }",
+".DupVotes .Date { font-family:monospace; }",
+".SignsTbl { margin:0 auto; border:1px solid #CCC; }",
+".SignsTbl td, .SignsTbl th { padding:3px 6px; border:1px solid #CCC}",
+".SignsTbl th { text-align:left; background-color:#DDD; }",
+".SignsTbl th:nth-child(2) { min-width:200px; }",
+".SignsTbl td:nth-child(2), .SignsTbl td:nth-child(3) { text-align:left; }",
+".SignsTbl tr:nth-child(even) { background-color:#FFF; }",
+".SignsTbl tr:nth-child(odd) { background-color:#F9F9F9; }",
+".SignsTbl tr:hover, .DupVotes tr.highlight:hover { background-color:#E0E0FF; }",
+".SignsTbl tr.DupSign td:nth-child(1) { color:#C00; font-weight:bold; }",
+".SignLinkSaveThumb { display:block; }",
+".SignLinkSaveThumb img { clear:left; width:102px; height:64px; }",
+".Post { word-wrap: break-word; }",
+".savegame { width:153px; }",
+".savegame .caption a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }",
+".TagInfo { clear:right; }",
+".TagInfo .label { margin-bottom:1px; }",
+".SaveDetails ul.MessageList li.Post { border-top:1px solid #DCDCDC; border-bottom:0 none; }",
+".new-topic-button .btn { white-space:nowrap; }",
+".tag-removedcurrent { text-decoration: line-through; background-color:#ffd; }",
+".tag-removedall { text-decoration: line-through; background-color:#fed; }",
+".progresstitle { font-size:10px; margin-bottom:4px; }",
+".TagsTable .TagActions a, .TagsTable .TagActions > span { margin:0 5px; min-width:50px; display:inline-block; text-align:center; }",
+".TagsTable { margin:0 auto; border:1px solid #CCC; }",
+".TagsTable td, .TagsTable th { padding:3px 6px; border:1px solid #CCC}",
+".TagsTable th { text-align:left; background-color:#DDD; }",
+".TagsTable td:nth-child(1) { min-width:100px; }",
+".TagsTable td:nth-child(2) { min-width:100px; }",
+".ElemCountChart { display:flex; flex-direction:row; margin:10px 0; border:1px solid #CCC; }",
+".ElemCountChart .bar { flex:1 1 auto; min-width:2px; box-sizing:border-box; overflow:hidden; text-align:center; }",
+".ElemCountChart .barlabel { padding:2px; }",
+".SaveDetails-notifyOld { text-align:center; margin:10px 0;}",
+".TagInfo .Tag-LinkDisable { margin:0 10px; }",
+".TagPopup-showOthers { text-align:right; clear:right; }",
+".Post.Deleting { }",
+".Post.Deleted { opacity:0.7;text-decoration:line-through; }"].join("\n"));
+if (window.location.toString().indexOf("/Groups/")!==-1)
 {
-	addCss('\
-.TopicList li .TopicPages { width:auto; }\
-.TopicList .Pagination li { padding:0; border-bottom: 1px solid #DCDCDC; line-height: normal; }\
-.TopicList .Pagination a { font-size: 9px !important; line-height: 16px; min-width: 10px !important; padding: 0 3px; text-align: center; border-width: 1px 1px 1px 0 !important; }\
-.TopicList .Pagination li:first-child a { border-left-width: 1px !important; }\
-.TopicList .pagination { height: 16px; margin: 0; padding: 3px; }\
-.contents h1 { font-size: 20px; }\
-.GroupOptions { position:relative; top:0; right:0; float:right; clear:right;}\
-.GroupDescription { margin:0; }\
-.MessageListOuter { margin-bottom:7px; }\
-.PostFForm #AddReplyMessage { width:100%; margin:0; padding:0; }\
-.PostFForm, .ModerationFooter { margin:0; }\
-.container { background: none repeat scroll 0 0 rgba(0, 0, 0, 0); border: medium none; padding: 0; }\
-.Page { border: 1px solid #CDD2D7; }\
-.Moderator .Author, .Administrator .Author { background-image: url("/Themes/Next/Design/Images/Shield.png"); }\
-.main-menu li a[href="/Groups.html"] { display: none; }\
-ul.MessageList li.Post div.Meta span.Actions2 { float:right; }\
-ul.MessageList li.Post div.Meta span.Actions2 a { visibility:hidden; }\
-ul.MessageList li.Post:hover div.Meta span.Actions2 a { visibility:visible; }\
-.CurrentMembers .MemberActions select[name="Elevation"] { width:100px; }\
-.MemberColumn { width:360px; }\
-\
-');
+	addCss([".TopicList li .TopicPages { width:auto; }",
+".TopicList .Pagination li { padding:0; border-bottom: 1px solid #DCDCDC; line-height: normal; }",
+".TopicList .Pagination a { font-size: 9px !important; line-height: 16px; min-width: 10px !important; padding: 0 3px; text-align: center; border-width: 1px 1px 1px 0 !important; }",
+".TopicList .Pagination li:first-child a { border-left-width: 1px !important; }",
+".TopicList .pagination { height: 16px; margin: 0; padding: 3px; }",
+".contents h1 { font-size: 20px; }",
+".GroupOptions { position:relative; top:0; right:0; float:right; clear:right;}",
+".GroupDescription { margin:0; }",
+".MessageListOuter { margin-bottom:7px; }",
+".PostFForm #AddReplyMessage { width:100%; margin:0; padding:0; }",
+".PostFForm, .ModerationFooter { margin:0; }",
+".container { background: none repeat scroll 0 0 rgba(0, 0, 0, 0); border: medium none; padding: 0; }",
+".Page { border: 1px solid #CDD2D7; }",
+".Moderator .Author, .Administrator .Author { background-image: url(\"/Themes/Next/Design/Images/Shield.png\"); }",
+".main-menu li a[href=\"/Groups.html\"] { display: none; }",
+"ul.MessageList li.Post div.Meta span.Actions2 { float:right; }",
+"ul.MessageList li.Post div.Meta span.Actions2 a { visibility:hidden; }",
+"ul.MessageList li.Post:hover div.Meta span.Actions2 a { visibility:visible; }",
+".CurrentMembers .MemberActions select[name=\"Elevation\"] { width:100px; }",
+".MemberColumn { width:360px; }"].join("\n"));
 }
-if (window.location.toString().indexOf("/Reports.html")!=-1)
+if (window.location.toString().indexOf("/Reports.html")!==-1)
 {
-	addCss('\
-.container { background: none repeat scroll 0 0 rgba(0, 0, 0, 0); border: medium none; padding: 0; }\
-.Page { border: 1px solid #CDD2D7; }\
-.Subpage { background-color: #FFFFFF; padding:15px; }\
-.contents h1 { font-size:20px; }\
-/*ul.SaveReports, ul.SaveReports li { list-style:none outside none; margin:0; padding:0; border: 0 none; background-color:#FDFDFD; }\
-.SaveReports .Save { border:1px solid #999; border-radius: 3px; margin:10px 0; }\
-.SaveReports .Save .badge { float:right; margin:0 5px;}\
-.SaveReports .Save .Actions .btn { margin:5px 10px 0 10px; min-width:100px;}\
-.SaveReports .Save .Actions { padding:0 10px;  text-align:center; }\
-.SaveReports .SaveThumb { float:left; height:128px; width:204px; border-radius:0 3px 0 0; margin:5px 10px 5px 5px;}\
-.SaveReports .SaveTitleContainer { font-size:16px; font-weight:bold; border-radius:3px 0 0 0; border:0 none; margin:0; padding:10px; border-bottom:1px solid #DDDDDD; }\
-.SaveReports .SaveDetails { font-size:15px; overflow:hidden;margin-bottom:15px; }\
-.SaveReports .SaveDetails .btn { margin:0 3px; float:right; }\
-.SaveReports .SaveDetails .SaveId, .SaveReports .SaveDetails .SaveAuthor { font-weight:bold; }\
-.SaveReports .Save .DetailsContainer { padding:10px; }*/\
-\
-/*.SaveReports img { height: 96px; width:153px; margin:5px;  }*/\
-.SaveReports .MainInfo { width:auto !important; }\
-.SaveReports li > span { margin:0 5px 0 5px !important; }\
-\
-');
+	addCss([".container { background: none repeat scroll 0 0 rgba(0, 0, 0, 0); border: medium none; padding: 0; }",
+".Page { border: 1px solid #CDD2D7; }",
+".Subpage { background-color: #FFFFFF; padding:15px; }",
+".contents h1 { font-size:20px; }",
+"/*ul.SaveReports, ul.SaveReports li { list-style:none outside none; margin:0; padding:0; border: 0 none; background-color:#FDFDFD; }",
+".SaveReports .Save { border:1px solid #999; border-radius: 3px; margin:10px 0; }",
+".SaveReports .Save .badge { float:right; margin:0 5px;}",
+".SaveReports .Save .Actions .btn { margin:5px 10px 0 10px; min-width:100px;}",
+".SaveReports .Save .Actions { padding:0 10px;  text-align:center; }",
+".SaveReports .SaveThumb { float:left; height:128px; width:204px; border-radius:0 3px 0 0; margin:5px 10px 5px 5px;}",
+".SaveReports .SaveTitleContainer { font-size:16px; font-weight:bold; border-radius:3px 0 0 0; border:0 none; margin:0; padding:10px; border-bottom:1px solid #DDDDDD; }",
+".SaveReports .SaveDetails { font-size:15px; overflow:hidden;margin-bottom:15px; }",
+".SaveReports .SaveDetails .btn { margin:0 3px; float:right; }",
+".SaveReports .SaveDetails .SaveId, .SaveReports .SaveDetails .SaveAuthor { font-weight:bold; }",
+".SaveReports .Save .DetailsContainer { padding:10px; }*/",
+"/*.SaveReports img { height: 96px; width:153px; margin:5px;  }*/",
+".SaveReports .MainInfo { width:auto !important; }",
+".SaveReports li > span { margin:0 5px 0 5px !important; }"].join("\n"));
 }
-if (window.location.toString().indexOf("/Reports")!=-1)
+if (window.location.toString().indexOf("/Reports")!==-1)
 {
-	addCss('\
-.main-menu .pull-left li a[href="/Reports.html"] { display: none; }\
-\
-');
+	addCss('.main-menu .pull-left li a[href="/Reports.html"] { display: none; }');
 }
