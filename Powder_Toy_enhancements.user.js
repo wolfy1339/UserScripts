@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name	Powder Toy enhancements
-// @namespace   http://powdertoythings.co.uk/tptenhance
+// @name	Powder Toy Enhancements
+// @namespace   https://github.com/wolfy1339/UserScripts
 // @description Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
 // @match 	*://powdertoy.co.uk/*
 // @version	2.33
