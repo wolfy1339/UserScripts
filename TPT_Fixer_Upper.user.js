@@ -4,7 +4,7 @@
 // @description This Script fixes some bugs/errors on The Powder Toy's website (http://powdertoy.co.uk)
 // @author      wolfy1339
 // @copyright   2014-2015, wolfy1339
-// @license     GNU GPLv3
+// @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
 // @version     1.47
 // @grant       none
