@@ -46,6 +46,9 @@ if (window.location.pathname.indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pagination").remove();
     jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
 }
+if (window.location.pathname.indexOf("/Groups/Admin/MemberElevation.html")!=-1){
+    jQuery("input[type=\"submit\"]").addClass("btn");
+}
 if (window.location.pathname.indexOf("/Groups/Page/Index.html")!=-1){
     jQuery(".Pageheader").css({"background":"#fff","border-bottom":"0px","font-weight":"normal","padding":"0"});
     jQuery(".Page").css({"border":"none"});
