@@ -57,5 +57,5 @@ if (window.location.pathname == "/Groups/Page/Index.html"){
 }
 if (window.location.pathname == "/Groups/Page/Groups.html"){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
-    jQuery(".PageFooter").css({"margin":0,"padding":0}).addClass("breadcrumb").removeClass("PageFooter");
+    jQuery(".PageFooter").css({"border-left":"none","border-right":"none","border-bottom":"none","margin":0,"padding":0}).addClass("breadcrumb").removeClass("PageFooter");
 }
