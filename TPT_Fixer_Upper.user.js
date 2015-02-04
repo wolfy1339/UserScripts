@@ -6,24 +6,24 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.48
+// @version     1.49
 // @grant       none
 // @match     *://powdertoy.co.uk/*
 // ==/UserScript==
 
 //Fixes for the rebuilt search feature
-if (window.location.pathname.indexOf("/Search.html")!=-1){
+if (window.location.pathname == "/Search.html"){
     jQuery(".search-avatar").css({"margin-right":"10px"});
     jQuery(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"});
     jQuery(".search-result .details").css({"margin-left":"70px", "margin-right":"20px"});
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
-if (window.location.pathname.indexOf("/Discussions/Categories/Index.html")!=-1){
+if (window.location.pathname == "/Discussions/Categories/Index.html"){
     //Fix, if number is big it won't overflow as much
     jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
 }
-if (window.location.pathname.indexOf("/Download.html")!=-1 || window.location.pathname.indexOf("/")!=-1){
+if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
     //Fix GitHub watch button
     jQuery(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
 }
@@ -39,23 +39,23 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Developer .Comment .Meta .Author").css({"background-image":"url(/Themes/Next/Design/Images/Developer.png)"});
     jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
 }
-if (window.location.pathname.indexOf("/Groups/Page/View.html")!=-1 || window.location.pathname.indexOf("/Groups/Page/Register.html")!=-1 || window.location.pathname.indexOf("/Groups/Admin/")!=-1){
+if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
 }
 if (window.location.pathname.indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pagination").remove();
     jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
 }
-if (window.location.pathname.indexOf("/Groups/Admin/MemberElevation.html")!=-1){
+if (window.location.pathname == "/Groups/Admin/MemberElevation.html"){
     jQuery("input[type=\"submit\"]").addClass("btn");
 }
-if (window.location.pathname.indexOf("/Groups/Page/Index.html")!=-1){
+if (window.location.pathname == "/Groups/Page/Index.html"){
     jQuery(".Pageheader").css({"background":"#fff","border-bottom":"0px","font-weight":"normal","padding":"0"});
     jQuery(".Page").css({"border":"none"});
     jQuery(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
 }
-if (window.location.pathname.indexOf("/Groups/Page/Groups.html")!=-1){
+if (window.location.pathname == "/Groups/Page/Groups.html"){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
     jQuery(".PageFooter").css({"margin":0,"padding":0}).addClass("breadcrumb").removeClass("PageFooter");
 }
