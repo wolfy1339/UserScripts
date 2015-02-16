@@ -5,7 +5,7 @@
 // @match       *://powdertoy.co.uk/*
 // @version     2.34
 // @grant       none
-// @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
+// @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_Enhancements.user.js
 // ==/UserScript==
 
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
