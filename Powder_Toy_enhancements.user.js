@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	Powder Toy Enhancements
+// @name        Powder Toy Enhancements
 // @namespace   https://github.com/wolfy1339/UserScripts
 // @description Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
 // @match       *://powdertoy.co.uk/*
