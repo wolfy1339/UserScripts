@@ -2,15 +2,15 @@
 // @name	Powder Toy Enhancements
 // @namespace   https://github.com/wolfy1339/UserScripts
 // @description Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
-// @match 	*://powdertoy.co.uk/*
-// @version	2.33
+// @match       *://powdertoy.co.uk/*
+// @version     2.34
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_enhancements.user.js
 // ==/UserScript==
 
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
 function contentEval(source) {
-  if ('function' == typeof source) {
+  if ('function' === typeof source) {
     source = '(' + source + ')();';
   }
   var script = document.createElement('script');
@@ -20,13 +20,14 @@ function contentEval(source) {
   document.body.removeChild(script);
 }
 
-var tptenhance, url, cell, elem, d3, WYSIWYG, postID, currentSaveID, Link, Link2, self, OLHeight, Form, NewData, InformationForm, ProcessMessages, LoadForumBlocks;
+var tptenhance, currentSaveID, d3, cell, url, zoom, draw , self, Link, Link2, OLHeight, ProcessMessages, LoadForumBlocks, WYSIWYG, InformationForm, Form, NewData, y, xAxis, yAxis;
+
 // Fix silly way of checking whether facebook stuff is loaded (Browse.View.js:3, "if(FB)")
 // If facebook is blocked, then the javascript on powdertoy.co.uk errors and does not execute important stuff like callbacks for showing tag info popups
 contentEval('if (typeof window.FB == "undefined") window.FB = false;');
 
 contentEval(function(){
-	if (typeof $ == "undefined") // check jQuery has loaded
+	if (typeof $ === "undefined") // check jQuery has loaded
 		return;
 
 	window.tptenhance = {
@@ -88,10 +89,11 @@ contentEval(function(){
 				{
 					$(this).click(function(e){
 						e.preventDefault();
+						$(this).addClass("disabled btn-primary");
 						$.get(this.href);
 						var newElement = $(this).parents('.Comment').children('.Message');
-						postID = newElement.attr('id').split("-")[1];
-						$.get("/Discussions/Thread/Post.json?Post="+postID, function(data){
+						var postID = newElement.attr('id').split("-")[1];
+						$.get("/Discussions/Thread/Post.json?Post="+postID, function(){
 							location.reload(true);
 							// TODO: reload like http://powdertoy.co.uk/Applications/Application.Discussions/Javascript/Thread.js $(".Pagination a") click does
 						});
@@ -117,9 +119,20 @@ contentEval(function(){
 		},
 		tags:
 		{
+			// lists of callbacks triggered when tags are removed/disabled/enabled
+			// callback fn arguments: tag text, save id
+			tagRemovedCallbacks:$.Callbacks(),
+			// callback fn arguments: tag text
+			tagDisabledCallbacks:$.Callbacks(),
+			tagEnabledCallbacks:$.Callbacks(),
+
 			disableUrl:function(tag)
 			{
 				return "/Browse/Tags.html?Delete="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
+			},
+			enableUrl:function(tag)
+			{
+				return "/Browse/Tags.html?UnDelete="+encodeURIComponent(tag)+"&Key="+encodeURIComponent(tptenhance.getSessionKey());
 			},
 			removeUrl:function(tag, saveId)
 			{
@@ -152,6 +165,7 @@ contentEval(function(){
 				$.get(url, function()
 				{
 					tptenhance.tags.showDisabled(tagElem);
+					tptenhance.tags.tagDisabledCallbacks.fire(tagElem.find(".TagText").text());
 				});
 			},
 			enableButtonClick:function(e){
@@ -163,6 +177,7 @@ contentEval(function(){
 				$.get(url, function()
 				{
 					tptenhance.tags.showEnabled(tagElem);
+					tptenhance.tags.tagEnabledCallbacks.fire(tagElem.find(".TagText").text());
 				});
 			},
 			attachHandlers:function(baseElem){
@@ -174,6 +189,8 @@ contentEval(function(){
 
 			// Change a tag to appear as disabled or enabled (used by event handlers above)
 			showDisabled:function(tagElem){
+				if (tagElem.hasClass('Restricted'))
+					return;
 				tagElem.addClass('Restricted');
 				tagElem.find('.icon-refresh').remove();
 				var btn = tagElem.find('.DelButton');
@@ -183,6 +200,8 @@ contentEval(function(){
 				tptenhance.tags.attachHandlers(tagElem);
 			},
 			showEnabled:function(tagElem){
+				if (!tagElem.hasClass('Restricted'))
+					return;
 				tagElem.removeClass('Restricted');
 				tagElem.find('.icon-refresh').remove();
 				var btn = tagElem.find('.UnDelButton');
@@ -190,6 +209,62 @@ contentEval(function(){
 				btn.attr('href', btn.attr('href').replace('/Browse/Tags.html?UnDelete=','/Browse/Tags.html?Delete='));
 				btn.attr('title', 'Approve');
 				tptenhance.tags.attachHandlers(tagElem);
+			},
+			// callbacks for updating status of built-in tag elements (provided by powdertoy.co.uk instead of added by this script) when this script removes/disables/enables a tag
+			default_onTagRemoved:function(affectedTagText, affectedSaveId){
+				if (typeof currentSaveID=="undefined" || affectedSaveId!=currentSaveID)
+					return;
+				$(".SaveTags span.Tag.label").each(function(){
+					if ($(this).text()===affectedTagText)
+						$(this).addClass("label-warning");
+				});
+			},
+			default_onTagDisabled:function(affectedTagText){
+				$("div.Tag").each(function(){
+					var tagtextelems = $(this).find(".TagText");
+					if (tagtextelems.length && tagtextelems.text()===affectedTagText)
+						tptenhance.tags.showDisabled($(this));
+				});
+				$(".SaveTags span.Tag.label").each(function(){
+					if ($(this).text()===affectedTagText)
+						$(this).addClass("label-danger label-important");
+				});
+			},
+			default_onTagEnabled:function(affectedTagText){
+				$("div.Tag").each(function(){
+					var tagtextelems = $(this).find(".TagText");
+					if (tagtextelems.length && tagtextelems.text()===affectedTagText)
+						tptenhance.tags.showEnabled($(this));
+				});
+				$(".SaveTags span.Tag.label").each(function(){
+					if ($(this).text()===affectedTagText)
+						$(this).removeClass("label-danger label-important");
+				});
+			},
+			isTagElemDisabled:function(tagElem){
+				tagElem = $(tagElem);
+				if (tagElem.is("span.TagText"))
+					tagElem = tagElem.parents(".Tag");
+				if (tagElem.is(".label.Tag"))
+					return tagElem.hasClass("label-danger") || tagElem.hasClass("label-important");
+				else
+					return tagElem.hasClass("Restricted");
+			},
+			isTagElemRemoved:function(tagElem){
+				tagElem = $(tagElem);
+				if (tagElem.is("span.TagText"))
+					tagElem = tagElem.parents(".Tag");
+				if (tagElem.is(".label.Tag"))
+					return tagElem.hasClass("label-warning");
+				return false;
+			},
+			createDisableLink:function(tagText){
+				return $('<a class="Tag-LinkDisable" title="Disable tag">Disable</a>')
+					.attr('href', tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
+			},
+			createEnableLink:function(tagText){
+				return $('<a class="Tag-LinkEnable" title="Enable tag">Enable</a>')
+					.attr('href', tptenhance.tags.enableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
 			}
 		},
 		makeSaveLinks:function(messages, convertAllNumbers)
@@ -198,9 +273,9 @@ contentEval(function(){
 			// 'messages' should be the jQuery elements to process, contents should be plain text
 			var regex;
 			if (typeof convertAllNumbers!="undefined" && convertAllNumbers)
-				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]+)?[0-9]+\b/gi;
+				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]*)?[0-9]+\b/gi;
 			else
-				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]+)[0-9]+\b/gi;
+				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]*)[0-9]+\b/gi;
 			messages.each(function(){
 				var msg = $(this);
 				var text = msg.text();
@@ -350,28 +425,15 @@ contentEval(function(){
 				var m = [40, 40, 20, 20],
 				    w = 612 - m[1] - m[3],
 				    h = 300 - m[0] - m[2],
-				    parse = d3.time.format("%Y-%m-%d").parse,
-				    format = d3.time.format("%Y");
-				
+				    				
 				// Scales. Note the inverted domain for the y-scale: bigger is up!
-				var x = d3.time.scale().range([0, w]),
-				    y = d3.scale.linear().range([h, 0]),
-				    xAxis = d3.svg.axis().scale(x).orient("bottom").tickSize(-h, 0).tickPadding(6),
+				    x = d3.time.scale().range([0, w]);
+				    y = d3.scale.linear().range([h, 0]);
+				    xAxis = d3.svg.axis().scale(x).orient("bottom").tickSize(-h, 0).tickPadding(6);
 				    yAxis = d3.svg.axis().scale(y).orient("right").tickSize(-w).tickPadding(6);
 				
-				// An area generator.
-				var area = d3.svg.area()
-				    .interpolate("step-after")
-				    .x(function(d) { return x(d.date); })
-				    .y0(function(d) { return y((d.value<0)?d.value:0); })
-				    .y1(function(d) { return y((d.value>0)?d.value:0); });
 				
-				// A line generator.
-				var line = d3.svg.line()
-				    .interpolate("step-after")
-				    .x(function(d) { return x(d.date); })
-				    .y(function(d) { return y(d.value); });
-				
+		
 				var svg = d3.select("#VoteGraph").append("svg:svg")
 				    .attr("width", w + m[1] + m[3])
 				    .attr("height", h + m[0] + m[2])
@@ -449,7 +511,7 @@ contentEval(function(){
 					var ipcolours = {};
 					var iplist = [];
 					dupVotes.forEach(function(d) {
-						if (typeof ipcolours[d.SourceAddress] == "undefined")
+						if (typeof ipcolours[d.SourceAddress] === "undefined")
 						{
 							ipcolours[d.SourceAddress] = "";
 							iplist.push(d.SourceAddress);
@@ -484,7 +546,7 @@ contentEval(function(){
 								hoverTimeout = false;
 							}
 						});
-						cell.on("mouseenter", function(evt, ui){
+						cell.on("mouseenter", function(){
 							hovered = true;
 							var that = $(this);
 							if (hoverTimeout===false)
@@ -538,7 +600,7 @@ contentEval(function(){
 						
 						cell = $('<td><a></a></td>').addClass('IPAddress').appendTo(tableRow);
 						cell.children().first().attr('href', tptenhance.ipMapUrl(d.SourceAddress)).text(d.SourceAddress);
-						if (typeof ipcolours[d.SourceAddress] != "undefined" && ipcolours[d.SourceAddress] !== "")
+						if (typeof ipcolours[d.SourceAddress] !== "undefined" && ipcolours[d.SourceAddress] !== "")
 							cell.css('background-color', ipcolours[d.SourceAddress]);
 						cell = $('<td></td>').addClass('VoteType');
 						if (d.Vote==1) cell.html('<i class="VoteUpIcon icon-chevron-up icon-white"></i>');
@@ -628,32 +690,32 @@ contentEval(function(){
 				  draw();
 				});
 				
-				function draw() {
+				/*function draw() {
 					svg.select("g.x.axis").call(xAxis);
 					svg.select("g.y.axis").call(yAxis);
 					svg.select("path.area").attr("d", area);
 					svg.select("path.line").attr("d", line);
-					/*dupVLine.attr("x1", function(d) { return x(d.Date); })
+					  dupVLine.attr("x1", function(d) { return x(d.Date); })
 						.attr("y1", function(d) { return h; })
 						.attr("x2", function(d) { return x(d.Date); })
-						.attr("y2", function(d) { return -5; });*/
+						.attr("y2", function(d) { return -5; });
 					dupVLine.attr("transform", function(d) { return "translate("+x(d.Date)+", 0)"; });
 					//svg.select("dupVotes.line").attr();
-				}
+				}*/
 
 				// Using a timeout here to defer drawing seems to improve zooming in Firefox on slow computers
 				// Possibly multiple calls to zoom are issued simultaneously depending on the amount of
 				// scroll wheel movement, and unnecessary redraws occur. The setTimeout defers drawing, 
 				// hopefully until after all zoom calls occur.
-				var zoomDrawTimeout = false;
+				/*var zoomDrawTimeout = false;
 				function zoomDraw() {
 					zoomDrawTimeout = false;
 					draw();
-				}
-				function zoom() {
+				}*/
+				/*function zoom() {
 					//d3.event.transform(x); // TODO d3.behavior.zoom should support extents
 					if (zoomDrawTimeout===false) zoomDrawTimeout = setTimeout(zoomDraw, 1);
-				}
+				}*/
 			}
 		},
 		users:{
@@ -743,77 +805,162 @@ contentEval(function(){
 		}
 	};
 
-
+	tptenhance.tags.tagRemovedCallbacks.add(tptenhance.tags.default_onTagRemoved);
+	tptenhance.tags.tagDisabledCallbacks.add(tptenhance.tags.default_onTagDisabled);
+	tptenhance.tags.tagEnabledCallbacks.add(tptenhance.tags.default_onTagEnabled);
 
 	tptenhance.tags.TagInfoPopup = function(){
 		this.targetElem = false;
 		this.popupElem = false;
 
 		this.selectedTagText = "";
+		this.tagDisabled = false;
 		this.getInfoXHR = false;
+		this.updatePosition = this.updatePosition.bind(this);
 		this.handleRemoveLinkClick = this.handleRemoveLinkClick.bind(this);
 		this.handleDisableLinkClick = this.handleDisableLinkClick.bind(this);
+		this.handleEnableLinkClick = this.handleEnableLinkClick.bind(this);
+		this.onTagRemoved = this.onTagRemoved.bind(this);
+		this.onTagDisabled = this.onTagDisabled.bind(this);
+		this.onTagEnabled = this.onTagEnabled.bind(this);
+	};
+	tptenhance.tags.TagInfoPopup.prototype.isOpen = function(){
+		return (!!this.targetElem);// return true if the popup is visible
+	};
+	tptenhance.tags.TagInfoPopup.prototype.normaliseTargetElem = function(elem){
+		elem = $(elem);
+		if (elem.hasClass("TagText"))
+			elem = elem.parents(".Tag");
+		return elem;
 	};
 	tptenhance.tags.TagInfoPopup.prototype.handleRemoveLinkClick = function(e){
 		var tagInfo = $(e.target).parents('div.TagInfo');
+		var saveId;
+		var matches = $(tagInfo).find("a.Tag-LinkRemove").attr("href").match(/ID=([0-9]+)/);
+		if (matches)
+			saveId = +matches[1];
+		else if (typeof currentSaveID!="undefined")
+			saveId = currentSaveID;
 		var url = e.target.href;
 		var placeholder = $(tptenhance.deletingHtml).addClass("Tag-LinkRemove");
 		$(e.target).replaceWith(placeholder);
 		var that = this;
+		var tagText = this.selectedTagText;
 		$.get(url, function(){
-			placeholder.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemove"));
+			placeholder.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemoved"));
 
-			if (that.targetElem.filter("span.Tag.label").length)
+			if (that.targetElem.is("span.Tag.label"))
 				that.targetElem.addClass("label-warning");
+			tptenhance.tags.tagRemovedCallbacks.fire(tagText, saveId);
 		});
 		return false;
 	};
+	tptenhance.tags.TagInfoPopup.prototype.onDisabledStateChange = function(newState){// newState=true means the tag is now disabled
+		this.tagDisabled = newState;
+		if (this.tagDisabled)
+		{
+			this.popupElem.find(".Tag-LinkDisable").addClass("hide");
+			this.popupElem.find(".Tag-LinkEnable").removeClass("hide");
+
+			this.popupElem.find(".TagPopup-showOthers").remove();
+			this.popupElem.find(".Tag-LinkRemove").remove();
+		}
+		else
+		{
+			this.popupElem.find(".Tag-LinkDisable").removeClass("hide");
+			this.popupElem.find(".Tag-LinkEnable").addClass("hide");
+		}
+		this.popupElem.find(".Tag-placeholder-StatusChange").remove();
+	};
+
 	tptenhance.tags.TagInfoPopup.prototype.handleDisableLinkClick = function(e){
-		var tagInfo = $(e.target).parents('div.TagInfo');
 		var url = e.target.href;
-		var placeholder = $('<div class="pull-right label label-info Tag-LinkDisable"><i class="icon-refresh icon-white"></i> <strong>Disabling...</strong></div>');
-		$(e.target).replaceWith(placeholder);
-		var that = this;
+		var placeholder = $('<div class="pull-right label label-info Tag-LinkDisable Tag-placeholder-StatusChange"><i class="icon-refresh icon-white"></i> <strong>Disabling...</strong></div>');
+		placeholder.insertAfter(e.target);
+		$(e.target).addClass("hide");
+		var tagText = this.selectedTagText;
 		$.get(url, function(){
-			placeholder.replaceWith('<div class="pull-right label label-success Tag-LinkDisable"><i class="icon-ok icon-white"></i> <strong>Disabled</strong></div>');
-
-			var tagElem = that.targetElem.parents("div.Tag");
-			if (tagElem.length)
-				tptenhance.tags.showDisabled(tagElem);
-			else if (that.targetElem.filter("span.Tag.label").length)
-				that.targetElem.addClass("label-danger label-important");
-
-			that.popupElem.find(".TagPopup-showOthers").remove();
-			that.popupElem.find(".Tag-LinkRemove").remove();
+			tptenhance.tags.tagDisabledCallbacks.fire(tagText);
 		});
 		return false;
 	};
+	tptenhance.tags.TagInfoPopup.prototype.handleEnableLinkClick = function(e){
+		var url = e.target.href;
+		var placeholder = $('<div class="pull-right label label-info Tag-LinkEnable Tag-placeholder-StatusChange"><i class="icon-refresh icon-white"></i> <strong>Enabling...</strong></div>');
+		placeholder.insertAfter(e.target);
+		$(e.target).addClass("hide");
+		var tagText = this.selectedTagText;
+		$.get(url, function(){
+			tptenhance.tags.tagEnabledCallbacks.fire(tagText);
+		});
+		return false;
+	};
+	tptenhance.tags.TagInfoPopup.prototype.onTagRemoved = function(affectedTagText, affectedSaveId){
+		if (!this.isOpen() || affectedTagText!==this.selectedTagText)
+			return;
+
+		this.popupElem.find('div.TagInfo').each(function(){
+			var removeLink = $(this).find("a.Tag-LinkRemove");
+			if (!removeLink.length)
+				return;
+			var tagSaveId;
+			var matches = removeLink.attr("href").match(/ID=([0-9]+)/);
+			if (matches)
+				tagSaveId = +matches[1];
+			else if (typeof currentSaveID!="undefined")
+				tagSaveId = currentSaveID;
+			if (tagSaveId==affectedSaveId)
+				removeLink.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemoved"));
+		});
+		setTimeout(this.updatePosition,1);
+	};
+	tptenhance.tags.TagInfoPopup.prototype.onTagDisabled = function(affectedTagText){
+		if (this.isOpen() && affectedTagText===this.selectedTagText)
+			this.onDisabledStateChange(true);
+		setTimeout(this.updatePosition,1);
+	};
+	tptenhance.tags.TagInfoPopup.prototype.onTagEnabled = function(affectedTagText){
+		if (this.isOpen() && affectedTagText===this.selectedTagText)
+			this.onDisabledStateChange(false);
+		setTimeout(this.updatePosition,1);
+	};
+
 	tptenhance.tags.TagInfoPopup.prototype.createRemoveLink = function(tagText, saveId){
 		var link = $('<a class="pull-right Tag-LinkRemove" title="Remove tag from this save">Remove</a>');
 		link.attr('href',tptenhance.tags.removeUrl(tagText,saveId));
 		link.on('click', this.handleRemoveLinkClick);
 		return link;
 	};
-	tptenhance.tags.TagInfoPopup.prototype.createDisableLink = function(tagText){
-		var link = $('<a class="pull-right Tag-LinkDisable" title="Disable tag">Disable</a>');
-		link.attr('href', tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
-		link.on('click', this.handleDisableLinkClick);
-		return link;
+	tptenhance.tags.TagInfoPopup.prototype.createTagStatusLinks = function(tagText){
+		var container = $("<span></span>");
+		container.append(tptenhance.tags.createDisableLink(tagText)
+			.addClass("pull-right")
+			.on('click', this.handleDisableLinkClick)
+		);
+		container.append(tptenhance.tags.createEnableLink(tagText)
+			.addClass("pull-right hide")
+			.on('click', this.handleEnableLinkClick)
+		);
+		return container.children();
 	};
 
 	// Create a popup, with placeholder 'Loading...' text
 	tptenhance.tags.TagInfoPopup.prototype.create = function(targetElem){
+		tptenhance.tags.tagRemovedCallbacks.add(this.onTagRemoved);
+		tptenhance.tags.tagDisabledCallbacks.add(this.onTagDisabled);
+		tptenhance.tags.tagEnabledCallbacks.add(this.onTagEnabled);
+
 		this.remove();
-		this.targetElem = $(targetElem);
+		this.targetElem = targetElem = this.normaliseTargetElem(targetElem);
+		this.tagDisabled = tptenhance.tags.isTagElemDisabled(this.targetElem);
 		this.popupElem = $('<div class="popover fade bottom in" style="display: block;"></div>');
 		this.popupElem.appendTo(document.body);
-		var arrow = $('<div class="arrow"></div>').appendTo(this.popupElem);
 		var inner = $('<div class="popover-inner"></div>').appendTo(this.popupElem);
-		var title = $('<h3 class="popover-title">Tag Info</h3>').appendTo(inner);
 		var content = $('<div class="popover-content">Loading...</div>').appendTo(inner);
 		this.updatePosition();
 		return content;
-	};// Update popup position (below centre of element which generated popup)
+	};
+	// Update popup position (below centre of element which generated popup)
 	tptenhance.tags.TagInfoPopup.prototype.updatePosition = function(){
 		if (!this.targetElem || !this.popupElem) return;
 		var left = this.targetElem.offset().left - (this.popupElem.width()/2) + (this.targetElem.width()/2);
@@ -832,7 +979,8 @@ contentEval(function(){
 	// Toggle a popup to show who placed a particular tag on a single save
 	tptenhance.tags.TagInfoPopup.prototype.showSingle = function(targetElem, tagText, saveId){
 		// If clicking on the tag that is already open, close the info popup
-		if (this.targetElem && targetElem.get(0)===this.targetElem.get(0))
+		targetElem = this.normaliseTargetElem(targetElem);
+		if (this.isOpen() && targetElem.get(0)===this.targetElem.get(0))
 		{
 			this.remove();
 			return;
@@ -849,19 +997,20 @@ contentEval(function(){
 			content.html(data);
 			content.find('div.TagInfo').each(function(){
 				$(this).append(that.createRemoveLink(tagText, saveId));
-				$(this).append(that.createDisableLink(tagText));
+				$(this).append(that.createTagStatusLinks(tagText));
 			});
 			var showMore = $('<div class="TagPopup-showOthers"><a>Show uses on other saves</a></div>');
 			showMore.appendTo(content);
 			showMore.find("a")
 				.attr('href',tptenhance.tags.searchUrl(tagText))
-				.on('click', function(e){
+				.on('click', function(){
 					that.remove();
 					that.showAll(targetElem, tagText);
 					return false;
 				});
-
 			that.updatePosition();
+			if (that.tagDisabled)
+				that.onDisabledStateChange(true);
 		}, "html");
 	};
 
@@ -869,7 +1018,8 @@ contentEval(function(){
 	// Optional argument sortUser: sorts tags so that tags placed by that username are at the top
 	tptenhance.tags.TagInfoPopup.prototype.showAll = function(targetElem, tagText, sortUser){
 		// If clicking on the tag that is already open, close the info popup
-		if (this.targetElem && targetElem.get(0)===this.targetElem.get(0))
+		targetElem = this.normaliseTargetElem(targetElem);
+		if (this.isOpen() && targetElem.get(0)===this.targetElem.get(0))
 		{
 			this.remove();
 			return;
@@ -885,8 +1035,8 @@ contentEval(function(){
 			that.getInfoXHR = false;
 			content.html(data);
 
-			var disableLink = $('<div class="pull-right" style="margin-bottom:7px;"></div>').append(that.createDisableLink(tagText));
-			content.prepend(disableLink);
+			var tagStatusLinks = $('<div class="pull-right" style="margin-bottom:7px;"></div>').append(that.createTagStatusLinks(tagText));
+			content.prepend(tagStatusLinks);
 
 			var shouldSortUser = (typeof sortUser!="undefined" && sortUser!=="");
 			var separator = false;
@@ -906,6 +1056,8 @@ contentEval(function(){
 			});
 
 			that.updatePosition();
+			if (that.tagDisabled)
+				that.onDisabledStateChange(true);
 		}, "html");
 	};
 
@@ -945,6 +1097,7 @@ contentEval(function(){
 		this.currentXHR = $.get(tptenhance.tags.removeUrl(this.currentTag.tagText,this.currentTag.saveId), this._tagDone);
 	};
 	tptenhance.tags.TagInstanceRemover.prototype._tagDone = function(){
+		tptenhance.tags.tagRemovedCallbacks.fire(this.currentTag.tagText,this.currentTag.saveId);
 		setTimeout(this._tagStart, this.interval);
 	};
 
@@ -966,7 +1119,6 @@ contentEval(function(){
 		this.tagElements = tagElements;
 		this.tagsQueue = tagElements.toArray();
 		this.targetUsername = targetUsername;
-		console.log(targetUsername);
 		this.currentXHR = null;
 		this.interval = 500; // delay in ms between requests
 	};
@@ -1046,6 +1198,133 @@ contentEval(function(){
 		tptenhance.tags.tagInfoPopup.updatePosition();
 	};
 
+
+
+	tptenhance.tags.SaveTagsTable = function(tagElems){
+		this.tagStart = this.tagStart.bind(this);
+		this.tagFetched = this.tagFetched.bind(this);
+		this.pendingRows = [];
+		this.fetchRow = false;
+		this.tableElem = $('<table cellspacing="0" cellpadding="0" class="TagsTable"><thead><tr><th>Tag</th><th>Username</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>');
+		var tbody = this.tableElem.find("tbody");
+		var that = this;
+		tagElems.each(function(){
+			var row = new tptenhance.tags.SaveTagsTableRow(this);
+			if (!tptenhance.tags.isTagElemDisabled(this) && !tptenhance.tags.isTagElemRemoved(this))
+				that.pendingRows.push(row);
+			tbody.append(row.rowElem);
+		});
+		this.tagStart();
+	};
+	tptenhance.tags.SaveTagsTable.prototype.tagStart = function()
+	{
+		this.fetchTimeout = false;
+		if (!this.pendingRows.length)
+			return;
+		this.fetchRow = this.pendingRows.shift();
+		$.get(tptenhance.tags.infoUrl(this.fetchRow.tagText, currentSaveID), this.tagFetched, "html");
+	};
+	tptenhance.tags.SaveTagsTable.prototype.tagFetched = function(data)
+	{
+		this.fetchRow.processFetchedInfo(data);
+		this.fetchTimeout = setTimeout(this.tagStart, 500);
+	};
+
+	tptenhance.tags.SaveTagsTableRow = function(tagElem){
+		this.handleRemoveLinkClick = this.handleRemoveLinkClick.bind(this);
+		this.handleDisableLinkClick = this.handleDisableLinkClick.bind(this);
+		this.handleEnableLinkClick = this.handleEnableLinkClick.bind(this);
+		this.onTagRemoved = this.onTagRemoved.bind(this);
+		this.onTagDisabled = this.onTagDisabled.bind(this);
+		this.onTagEnabled = this.onTagEnabled.bind(this);
+
+		this.tagElem = $(tagElem);
+		this.tagText = this.tagElem.text();
+		this.rowElem = $('<tr></tr>');
+		this.textCell = $('<td class="TagText"></td>').text(this.tagText).appendTo(this.rowElem);
+		this.userCell = $('<td>Loading...</td>').appendTo(this.rowElem);
+		this.actionsCell = $('<td class="TagActions"></td>').appendTo(this.rowElem);
+		this.removeLink = $('<a title="Remove tag from this save">Remove</a>')
+			.attr('href',tptenhance.tags.removeUrl(this.tagText,currentSaveID))
+			.on('click', this.handleRemoveLinkClick);
+		this.disableLink = $('<a title="Disable tag">Disable</a>')
+			.attr('href',tptenhance.tags.disableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
+			.on('click', this.handleDisableLinkClick);
+		this.enableLink = $('<a title="Enable tag">Enable</a>')
+			.attr('href',tptenhance.tags.enableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
+			.on('click', this.handleEnableLinkClick);
+		this.actionsCell.append(this.removeLink, this.disableLink, this.enableLink);
+
+		if (tptenhance.tags.isTagElemDisabled(this.tagElem))
+			this.disableLink.addClass("hide");
+		else
+			this.enableLink.addClass("hide");
+		if (tptenhance.tags.isTagElemDisabled(this.tagElem) || tptenhance.tags.isTagElemRemoved(this.tagElem))
+			this.userCell.html("&nbsp;");
+		if (tptenhance.tags.isTagElemRemoved(this.tagElem))
+			this.removeLink.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+
+		tptenhance.tags.tagRemovedCallbacks.add(this.onTagRemoved);
+		tptenhance.tags.tagDisabledCallbacks.add(this.onTagDisabled);
+		tptenhance.tags.tagEnabledCallbacks.add(this.onTagEnabled);
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.onTagRemoved = function(affectedTagText, affectedSaveId){
+		if (affectedSaveId==currentSaveID && affectedTagText===this.tagText)
+		{
+			this.removeLink.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+		}
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.onTagDisabled = function(affectedTagText){
+		if (affectedTagText===this.tagText)
+		{
+			this.disableLink.addClass("hide");
+			this.enableLink.removeClass("hide");
+		}
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.onTagEnabled = function(affectedTagText){
+		if (affectedTagText===this.tagText)
+		{
+			this.disableLink.removeClass("hide");
+			this.enableLink.addClass("hide");
+		}
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.processFetchedInfo = function(data){
+		this.userCell.empty();
+		this.userCell.append($(data).filter("div.TagInfo").find("a").first());
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.handleRemoveLinkClick = function(e){
+		var pendingIndicator = $('<span><span class="label label-info" title="Removing..."><i class="icon-refresh icon-white"></i></span></span>');
+		var url = e.target.href;
+		var that = this;
+		$.get(url,function(){
+			pendingIndicator.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+			tptenhance.tags.tagRemovedCallbacks.fire(that.tagText, currentSaveID);
+		});
+		return false;
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.handleDisableLinkClick = function(e){
+		var pendingIndicator = $('<span><span class="label label-info" title="Disabling..."><i class="icon-refresh icon-white"></i></span></span>');
+		$(e.target).addClass("hide").before(pendingIndicator);
+		var url = e.target.href;
+		var that = this;
+		$.get(url,function(){
+			pendingIndicator.remove();
+			tptenhance.tags.tagDisabledCallbacks.fire(that.tagText);
+		});
+		return false;
+	};
+	tptenhance.tags.SaveTagsTableRow.prototype.handleEnableLinkClick = function(e){
+		var pendingIndicator = $('<span><span class="label label-info" title="Enabling..."><i class="icon-refresh icon-white"></i></span></span>');
+		$(e.target).addClass("hide").before(pendingIndicator);
+		var url = e.target.href;
+		var that = this;
+		$.get(url,function(){
+			pendingIndicator.remove();
+			tptenhance.tags.tagEnabledCallbacks.fire(that.tagText);
+		});
+		return false;
+	};
+
 	// Class to manage pagination and deletion+refreshing for a comments section (e.g. Browse/View.html or user moderation page)
 	tptenhance.comments.CommentView = function(container){
 		this.container = $(container);
@@ -1081,6 +1360,7 @@ contentEval(function(){
 				$(this).attr('href', url);
 			}
 		});
+		tptenhance.makeSaveLinks(this.msgList.find(".Post .Message"));
 	};
 	tptenhance.comments.CommentView.prototype.attachPaginationHandlers = function(){
 		this.pagination.find("a").off('click').on('click', this.handlePaginationClick);
@@ -1325,6 +1605,7 @@ contentEval(function(){
 						$(newTabLink).parent().addClass("active");
 						//$("#VoteGraph").hide();
 						tptenhance.saveDetailsTabContent.empty();
+						setTimeout(tptenhance.tags.tagInfoPopup.updatePosition,1);
 					};
 
 					/*var votesShown = false;
@@ -1362,6 +1643,7 @@ contentEval(function(){
 								$('<div class="alert alert-success" style="margin-top: 10px;">This save has never been reported.</div>').appendTo(tptenhance.saveDetailsTabContent);
 							}
 							reportsTab.find("a").text("Reports ("+reports.length+")");
+							tptenhance.tags.tagInfoPopup.updatePosition();
 						}, "html");
 						e.preventDefault();
 					});
@@ -1370,60 +1652,9 @@ contentEval(function(){
 						tptenhance.saveDetailsTabContent.empty();
 						if (tagsTable===false)
 						{
-							var actionClickFunc = function(e){
-								e.preventDefault();
-								var url = this.href;
-								var that = $(this);
-								var pendingIndicator;
-								if (that.text()=="Disable")
-									pendingIndicator = $('<span><span class="label label-info" title="Disabling..."><i class="icon-refresh icon-white"></i></span></span>');
-								else
-									pendingIndicator = $('<span><span class="label label-info" title="Removing..."><i class="icon-refresh icon-white"></i></span></span>');
-								that.replaceWith(pendingIndicator);
-								$.get(url,function(){
-									pendingIndicator.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white"></i> <strong>Done</strong></span></span></span>');
-								});
-							};
-							tagsTable = $('<table cellspacing="0" cellpadding="0" class="TagsTable"><thead><tr><th>Tag</th><th>Username</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>');
-							var pendingTags = [];
-							var pendingTagsFetchTimeout = false;
-							var pendingTagStart, pendingTagFetched;
-							var currentFetchTag = false;
-							pendingTagStart = function()
-							{
-								if (!pendingTags.length)
-									return;
-								currentFetchTag = pendingTags.shift();
-								var getLocation = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(currentFetchTag.text)+"&SaveID="+encodeURIComponent(currentSaveID);
-								$.get(getLocation, pendingTagFetched, "html");
-							};
-							pendingTagFetched = function(data)
-							{
-								currentFetchTag.userCell.empty();
-								currentFetchTag.userCell.append($(data).filter("div.TagInfo").find("a").first());
-								pendingTagsFetchTimeout = setTimeout(pendingTagStart, 500);
-							};
-							var tagsTableBody = tagsTable.find("tbody");
-							$(".SaveTags .Tag").each(function(){
-								var tableRow = $('<tr></tr>');
-								var tagText = $(this).text();
-								var tagTextCell = $('<td></td>').text(tagText).appendTo(tableRow);
-								var usernameCell = $('<td>Loading...</td>').appendTo(tableRow);
-								var actionsCell = $('<td class="TagActions"></td>').appendTo(tableRow);
-								$('<a title="Remove tag from this save">Remove</a>')
-									.attr('href',tptenhance.tags.removeUrl(tagText,currentSaveID))
-									.on('click', actionClickFunc)
-									.appendTo(actionsCell);
-								$('<a title="Disable tag">Disable</a>')
-									.attr('href',tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
-									.on('click', actionClickFunc)
-									.appendTo(actionsCell);
-								tagsTableBody.append(tableRow);
-								pendingTags.push({row:tableRow, userCell:usernameCell, text:tagText});
-							});
-							pendingTagStart();
+							tagsTable = new tptenhance.tags.SaveTagsTable($(".SaveTags .Tag"));
 						}
-						tptenhance.saveDetailsTabContent.append(tagsTable);
+						tptenhance.saveDetailsTabContent.append(tagsTable.tableElem);
 						e.preventDefault();
 					});
 					bumpsTab.find("a").on("click", function(e){
@@ -1452,6 +1683,7 @@ contentEval(function(){
 								bumpList.text('No record found of this save ever being published');
 							}
 							tptenhance.saveDetailsTabContent.append(bumpList);
+							tptenhance.tags.tagInfoPopup.updatePosition();
 						}, "json");
 						e.preventDefault();
 					});
@@ -1561,6 +1793,7 @@ contentEval(function(){
 								}
 								tptenhance.saveDetailsTabContent.append(container);
 							}
+							tptenhance.tags.tagInfoPopup.updatePosition();
 						}, "json");
 						e.preventDefault();
 					});
@@ -1709,6 +1942,7 @@ contentEval(function(){
 			// submit form via Ajax request then redirect to the correct page ourselves
 			$('.FullForm').on('submit', function(e){
 				e.preventDefault();
+				$(this).find(".btn.btn-primary").addClass("disabled").attr("value", "Hiding...");
 				var formData = $(this).serialize();
 				formData += "&Hide_Hide=Hide+Post";
 				$.post($(this).attr('action'), formData, function(){
@@ -1823,7 +2057,7 @@ contentEval(function(){
 					Link = $(this).attr("action").replace(/\.html/, ".json");
 					NewData = $(this).serialize();
 					NewData = NewData+"&Hide_Hide=Hide";
-					$.post(Link, NewData, null, "json").always(function(data){
+					$.post(Link, NewData, null, "json").always(function(){
 						location.reload(true);
 					});
 					$(this).replaceWith('Hiding...<div class="AJAXSpinner"></div>');
@@ -1844,7 +2078,7 @@ contentEval(function(){
 			var threadId = $(".Pagination .active a").first().attr("href").match(/Thread=([0-9]+)/)[1];
 			$(".Post .Permalink a").each(function(){
 				var postId = $(this).attr("href").match(/Post=([0-9]+)/)[1];
-				$(this).attr("href", "/Groups/Thread/View.html?"+"Thread="+encodeURIComponent(threadId)	+"&Group="+encodeURIComponent(groupId)+"&PageNum="+encodeURIComponent(threadPageNum)+"#Message="+encodeURIComponent(postId));
+				$(this).attr("href", "/Groups/Thread/View.html?"+"Thread="+encodeURIComponent(threadId)+"&Group="+encodeURIComponent(groupId)+"&PageNum="+encodeURIComponent(threadPageNum)+"#Message="+encodeURIComponent(postId));
 			});
 		});
 	}
