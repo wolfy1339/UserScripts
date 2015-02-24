@@ -49,17 +49,18 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
         jQuery(".fComments").addClass("comments").removeClass("fComments");
         jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
         
-        var href = jQuery(".fTitle a").attr("href");
+        var href = jQuery(".fTitle").find("a").attr("href");
         var pthref = href.substring(21, 28);
+        var title = jQuery(".fTitle").attr("title");
         var overlay = jQuery("<div class=\"overlay\"></div>");
 
         overlay.append("<a class=\"btn btn-primary\" href=\""+ href +"\">View</a>");
-        overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:"+ pthref +"\">Open</a>");
+        overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:"+ pthref +"#"+ title.replace(/[,.\s]+/g, "_") +"\">Open</a>");
         overlay.css({"opacity":0});
         overlay.appendTo(".fSaveGame");
 
         jQuery(".fTitle").each(function(){
-            var title = $(this).attr("title");
+            title = $(this).attr("title");
             var text = $(this).find("a").text();
             href = $(this).find("a").attr("href");
             $(this).replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
