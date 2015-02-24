@@ -49,10 +49,7 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
         jQuery(".fComments").addClass("comments").removeClass("fComments");
         jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
         
-        var title = jQuery(".fTitle").attr("title");
-        var text = jQuery(".fTitle a").text();
         var href = jQuery(".fTitle a").attr("href");
-        
         var pthref = href.substring(21, 28);
         var overlay = jQuery("<div class=\"overlay\"></div>");
 
@@ -61,7 +58,12 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
         overlay.css({"opacity":0});
         overlay.appendTo(".fSaveGame");
 
-        jQuery(".fTitle").replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
+        jQuery(".fTitle").each(function(){
+            var title = $(this).attr("title");
+            var text = $(this).find("a").text();
+            href = $(this).find("a").attr("href");
+            $(this).replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
+        });
         jQuery(".fTitle").addClass("title").removeClass("fTitle");
         jQuery(".SaveDownloadDo").each(function(){
             jQuery(this).remove();
