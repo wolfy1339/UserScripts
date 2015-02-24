@@ -8,7 +8,7 @@
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
 // @version     1.49
 // @grant       none
-// @match     *://powdertoy.co.uk/*
+// @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 
 //Fixes for the rebuilt search feature
@@ -38,6 +38,42 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Meta .Author a:contains('jacob1')").closest(".Post").removeClass("Moderator").addClass("Developer");
     jQuery(".Developer .Comment .Meta .Author").css({"background-image":"url(/Themes/Next/Design/Images/Developer.png)"});
     jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
+    
+    //Set timeout to wait for all page content to load
+    setTimeout(function(){
+        jQuery(".fSaveRating").each(function(){
+            $(this).remove();
+        });
+        jQuery(".fSaveGameThumb").contents().unwrap();
+        jQuery(".fAuthor").addClass("author").removeClass("fAuthor");
+        jQuery(".fComments").addClass("comments").removeClass("fComments");
+        jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
+        
+        var title = jQuery(".fTitle").attr("title");
+        var text = jQuery(".fTitle a").text();
+        var href = jQuery(".fTitle a").attr("href");
+        
+        var pthref = href.substring(21, 28);
+        var overlay = jQuery("<div class=\"overlay\"></div>");
+
+        overlay.append("<a class=\"btn btn-primary\" href=\""+ href +"\">View</a>");
+        overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:"+ pthref +"\">Open</a>");
+        overlay.css({"opacity":0});
+        overlay.appendTo(".fSaveGame");
+
+        jQuery(".fTitle").replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
+        jQuery(".fTitle").addClass("title").removeClass("fTitle");
+        jQuery(".SaveDownloadDo").each(function(){
+            jQuery(this).remove();
+        });
+        jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
+        jQuery(".savegame").on("mouseover", function () {
+            jQuery(this).find(".overlay").animate({ opacity: 1, top: "3px" }, 150);
+        });
+        jQuery(".savegame").on("mouseleave", function () {
+            jQuery(this).find(".overlay").animate({ opacity: 0, top: "-23px" }, 150);
+        });
+    }, 10000);
 }
 if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
