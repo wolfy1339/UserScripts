@@ -1,0 +1,6 @@
+language: c
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get -q install python
+script:
+  - python ${TRAVIS_BUILD_DIR}/check_trailing_whitespaces.py $TRAVIS_BUILD_DIR
