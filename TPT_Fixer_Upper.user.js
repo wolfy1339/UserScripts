@@ -88,7 +88,7 @@ if (window.location.pathname.indexOf("/Groups/Admin/")!=-1){
     jQuery(".Pagination").remove();
     jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
     jQuery(".contents").css({"width":"900px"});
-    jQuery(".MemberRow").css({"width":"417.5px"});
+    jQuery(".MemberColumn").css({"width":"417.5px"});
     jQuery(".MemberName").css({"width":"120px"});
 }
 if (window.location.pathname == "/Groups/Admin/MemberElevation.html"){
