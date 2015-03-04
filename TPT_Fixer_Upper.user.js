@@ -39,8 +39,8 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Meta .Author a:contains('jacob1')").closest(".Post").removeClass("Moderator").addClass("Developer");
     jQuery(".Developer .Comment .Meta .Author").css({"background-image":"url(/Themes/Next/Design/Images/Developer.png)"});
     jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
-    
-    //Set timeout to wait for all page content to load
+
+    //Set timeout to wait for all page content (embedded saves) to load
     setTimeout(function(){
         jQuery(".fSaveRating").each(function(){
             $(this).remove();
@@ -49,13 +49,13 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
         jQuery(".fAuthor").addClass("author").removeClass("fAuthor");
         jQuery(".fComments").addClass("comments").removeClass("fComments");
         jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
-        
+
         jQuery(".fSaveGame").each(function(){
             var overlay = jQuery("<div class=\"overlay\"></div>");
             var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
             var href = jQuery(this).find(".fTitle a").attr("href");
             var pthref = href.substring(21, 28);
-            
+
             overlay.append("<a class=\"btn btn-primary\" href=\""+ href +"\">View</a>");
             overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:"+ pthref +"#"+ title +"\">Open</a>");
             overlay.css({"opacity":0});
