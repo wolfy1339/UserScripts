@@ -37,7 +37,7 @@ if len(sys.argv) == 2:
 
 for root, dirs, files in os.walk(top):
   for f in files:
-    if f.endswith('.py') or f.endswith('.js'):
+    if f.endswith('.py') or f.endswith('.js') or f.endswith('.yml'):
       path = root + '/' + f
       if has_trailing_whitespaces(path):
         sys.exit('Found a file with trailing whitespaces: ' + path)
