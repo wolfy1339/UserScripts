@@ -50,10 +50,11 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
         jQuery(".fComments").addClass("comments").removeClass("fComments");
         jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
 
+        var title, href;
         jQuery(".fSaveGame").each(function(){
             var overlay = jQuery("<div class=\"overlay\"></div>");
-            var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
-            var href = jQuery(this).find(".fTitle a").attr("href");
+            title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
+            href = jQuery(this).find(".fTitle a").attr("href");
             var pthref = href.substring(21, 28);
 
             overlay.append("<a class=\"btn btn-primary\" href=\""+ href +"\">View</a>");
@@ -73,10 +74,10 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
             jQuery(this).remove();
         });
         jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
-        jQuery(".savegame").on("mouseover", function () {
+        jQuery(".savegame").on("mouseover", function() {
             jQuery(this).find(".overlay").animate({ opacity: 1, top: "3px" }, 150);
         });
-        jQuery(".savegame").on("mouseleave", function () {
+        jQuery(".savegame").on("mouseleave", function() {
             jQuery(this).find(".overlay").animate({ opacity: 0, top: "-23px" }, 150);
         });
     }, 10000);
