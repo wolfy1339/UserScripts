@@ -79,8 +79,9 @@ contentEval(function(){
 			}
 			tptenhance.isModCache = false;
 			$(".main-menu .dropdown a.dropdown-toggle").each(function(){
-				if ($(this).text().indexOf("Admin")!==-1)
+				if ($(this).text().indexOf("Admin")!==-1){
 					tptenhance.isModCache = true;
+				}
 			});
 			return tptenhance.isModCache;
 		},
@@ -94,8 +95,8 @@ contentEval(function(){
 						e.preventDefault();
 						$(this).addClass("disabled btn-primary");
 						$.get(this.href);
-						var newElement = $(this).parents('.Comment').children('.Message');
-						var postID = newElement.attr('id').split("-")[1];
+						var newElement = $(this).parents(".Comment").children(".Message");
+						var postID = newElement.attr("id").split("-")[1];
 						$.get("/Discussions/Thread/Post.json?Post="+postID, function(){
 							location.reload(true);
 							// TODO: reload like http://powdertoy.co.uk/Applications/Application.Discussions/Javascript/Thread.js $(".Pagination a") click does
@@ -165,7 +166,7 @@ contentEval(function(){
 					tptenhance.removePopover();
 				}
 				var tagElem = $(this).parents(".Tag");
-				var url = this.href.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(tptenhance.dummyUrl));
+				var url = this.href.replace(/Redirect=[^&]*/, "Redirect="+encodeURIComponent(tptenhance.dummyUrl));
 				$(this).parent().append(" <span class=\"LoadingIcon\"><i class=\"icon-refresh\"></i></span>");
 				$(this).css("display","none");
 				$.get(url, function()
@@ -177,7 +178,7 @@ contentEval(function(){
 			enableButtonClick:function(e){
 				e.preventDefault();
 				var tagElem = $(this).parents(".Tag");
-				var url = this.href.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(tptenhance.dummyUrl));
+				var url = this.href.replace(/Redirect=[^&]*/, "Redirect="+encodeURIComponent(tptenhance.dummyUrl));
 				$(this).parent().append(" <span class=\"LoadingIcon\"><i class=\"icon-refresh\"></i></span>");
 				$(this).css("display","none");
 				$.get(url, function()
@@ -195,7 +196,7 @@ contentEval(function(){
 
 			// Change a tag to appear as disabled or enabled (used by event handlers above)
 			showDisabled:function(tagElem){
-				if (tagElem.hasClass('Restricted')){
+				if (tagElem.hasClass("Restricted")){
 					return;
 				}
 				tagElem.addClass("Restricted");
@@ -207,62 +208,71 @@ contentEval(function(){
 				tptenhance.tags.attachHandlers(tagElem);
 			},
 			showEnabled:function(tagElem){
-				if (!tagElem.hasClass('Restricted'))
+				if (!tagElem.hasClass("Restricted")){
 					return;
-				tagElem.removeClass('Restricted');
-				tagElem.find('.icon-refresh').remove();
-				var btn = tagElem.find('.UnDelButton');
-				btn.removeClass('UnDelButton').addClass('DelButton').css('display','inline');
-				btn.attr('href', btn.attr('href').replace('/Browse/Tags.html?UnDelete=','/Browse/Tags.html?Delete='));
-				btn.attr('title', 'Approve');
+				}
+				tagElem.removeClass("Restricted");
+				tagElem.find(".icon-refresh").remove();
+				var btn = tagElem.find(".UnDelButton");
+				btn.removeClass("UnDelButton").addClass("DelButton").css("display","inline");
+				btn.attr("href", btn.attr("href").replace("/Browse/Tags.html?UnDelete=","/Browse/Tags.html?Delete="));
+				btn.attr("title", "Approve");
 				tptenhance.tags.attachHandlers(tagElem);
 			},
 			// callbacks for updating status of built-in tag elements (provided by powdertoy.co.uk instead of added by this script) when this script removes/disables/enables a tag
 			default_onTagRemoved:function(affectedTagText, affectedSaveId){
-				if (typeof currentSaveID=="undefined" || affectedSaveId!=currentSaveID)
+				if (typeof currentSaveID=="undefined" || affectedSaveId!=currentSaveID){
 					return;
+				}
 				$(".SaveTags span.Tag.label").each(function(){
-					if ($(this).text()===affectedTagText)
+					if ($(this).text()===affectedTagText){
 						$(this).addClass("label-warning");
+					}
 				});
 			},
 			default_onTagDisabled:function(affectedTagText){
 				$("div.Tag").each(function(){
 					var tagtextelems = $(this).find(".TagText");
-					if (tagtextelems.length && tagtextelems.text()===affectedTagText)
+					if (tagtextelems.length && tagtextelems.text()===affectedTagText){
 						tptenhance.tags.showDisabled($(this));
+					}
 				});
 				$(".SaveTags span.Tag.label").each(function(){
-					if ($(this).text()===affectedTagText)
+					if ($(this).text()===affectedTagText){
 						$(this).addClass("label-danger label-important");
+					}
 				});
 			},
 			default_onTagEnabled:function(affectedTagText){
 				$("div.Tag").each(function(){
 					var tagtextelems = $(this).find(".TagText");
-					if (tagtextelems.length && tagtextelems.text()===affectedTagText)
+					if (tagtextelems.length && tagtextelems.text()===affectedTagText){
 						tptenhance.tags.showEnabled($(this));
+					}
 				});
 				$(".SaveTags span.Tag.label").each(function(){
-					if ($(this).text()===affectedTagText)
+					if ($(this).text()===affectedTagText){
 						$(this).removeClass("label-danger label-important");
+					}
 				});
 			},
 			isTagElemDisabled:function(tagElem){
 				tagElem = $(tagElem);
-				if (tagElem.is("span.TagText"))
+				if (tagElem.is("span.TagText")){
 					tagElem = tagElem.parents(".Tag");
-				if (tagElem.is(".label.Tag"))
+				} else if (tagElem.is(".label.Tag")){
 					return tagElem.hasClass("label-danger") || tagElem.hasClass("label-important");
-				else
+				} else {
 					return tagElem.hasClass("Restricted");
+				}
 			},
 			isTagElemRemoved:function(tagElem){
 				tagElem = $(tagElem);
-				if (tagElem.is("span.TagText"))
+				if (tagElem.is("span.TagText")){
 					tagElem = tagElem.parents(".Tag");
-				if (tagElem.is(".label.Tag"))
+				} else if (tagElem.is(".label.Tag")){
 					return tagElem.hasClass("label-warning");
+				}
 				return false;
 			},
 			createDisableLink:function(tagText){
@@ -279,10 +289,11 @@ contentEval(function(){
 			// Turn numbers which might be save IDs into links
 			// 'messages' should be the jQuery elements to process, contents should be plain text
 			var regex;
-			if (typeof convertAllNumbers!="undefined" && convertAllNumbers)
+			if (typeof convertAllNumbers!="undefined" && convertAllNumbers){
 				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]*)?[0-9]+\b/gi;
-			else
+			} else {
 				regex = /\b(?:(?:id|save|saveid|~)[^\d\w]?[\s]*)[0-9]+\b/gi;
+			}
 			messages.each(function(){
 				var msg = $(this);
 				var text = msg.text();
@@ -375,15 +386,15 @@ contentEval(function(){
 			{
 				$(".ButtonLink").addClass("btn btn-mini").each(function(){
 					var btn = $(this);
-					var url = btn.attr('href');
-					btn.attr('title', btn.text());
-					if (url.indexOf('Unpublish=')!=-1)
+					var url = btn.attr("href");
+					btn.attr("title", btn.text());
+					if (url.indexOf("Unpublish=")!=-1)
 					{
-						btn.addClass("btn-warning").html('<i class="icon-lock icon-white"></i> Unpublish');
+						btn.addClass("btn-warning").html("<i class=\"icon-lock icon-white\"></i> Unpublish");
 					}
-					if (url.indexOf('Read=')!=-1)
+					if (url.indexOf("Read=")!=-1)
 					{
-						btn.addClass("btn-success").html('<i class="icon-ok icon-white"></i> Mark as read');
+						btn.addClass("btn-success").html("<i class=\"icon-ok icon-white\"></i> Mark as read");
 					}
 				});
 			}
@@ -510,9 +521,9 @@ contentEval(function(){
 
 				if (data.dupVotes.length)
 				{
-					var dupVotesDiv = $('<div></div>').addClass("DupVotes");
-					$('<h4>Suspicious votes (<a>see map</a>)</h4>').appendTo(dupVotesDiv).find('a').attr('href',tptenhance.saves.voteMapUrl(currentSaveID));
-					var dupVotesTbl = $('<table cellspacing="0" cellpadding="0"><thead><tr><th>Date</th><th>Username</th><th>IP address</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>').appendTo(dupVotesDiv);
+					var dupVotesDiv = $("<div></div>").addClass("DupVotes");
+					$("<h4>Suspicious votes (<a>see map</a>)</h4>").appendTo(dupVotesDiv).find("a").attr("href",tptenhance.saves.voteMapUrl(currentSaveID));
+					var dupVotesTbl = $("<table cellspacing=\"0\" cellpadding=\"0\"><thead><tr><th>Date</th><th>Username</th><th>IP address</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>").appendTo(dupVotesDiv);
 					var dupVotesTblBody = dupVotesTbl.find('tbody');
 					var dupVotes = data.dupVotes.sort(function(a,b){return (+b.Date)-(+a.Date);});
 					var ipcolours = {};
@@ -529,17 +540,17 @@ contentEval(function(){
 						var hueStep = 340/iplist.length;
 						for (var i=0; i<iplist.length; i++)
 						{
-							ipcolours[iplist[i]] = 'hsl('+(hueStep*i)+',50%,80%)';
+							ipcolours[iplist[i]] = "hsl("+(hueStep*i)+',50%,80%)';
 						}
 					}
 					dupVotes.forEach(function(d) {
-						var tableRow = $('<tr></tr>');
+						var tableRow = $("<tr></tr>");
 						var cell;
-						cell = $('<td><a></a></td>').addClass('Date').appendTo(tableRow);
+						cell = $("<td><a></a></td>").addClass('Date').appendTo(tableRow);
 						var timeString = [('0'+d.Date.getHours()).slice(-2), ('0'+d.Date.getMinutes()).slice(-2), ('0'+d.Date.getSeconds()).slice(-2)].join(':');
 						cell.text([('0'+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(' '));
-						cell = $('<td><a></a></td>').addClass('Username').appendTo(tableRow);
-						cell.children().first().attr('href', tptenhance.users.moderationUrlById(d.UserID)).text(d.Username);
+						cell = $("<td><a></a></td>").addClass("Username").appendTo(tableRow);
+						cell.children().first().attr("href", tptenhance.users.moderationUrlById(d.UserID)).text(d.Username);
 
 						
 						// This is a bootstrap tooltip, not the jquery tooltip plugin
@@ -605,14 +616,14 @@ contentEval(function(){
 							}
 						});
 						
-						cell = $('<td><a></a></td>').addClass('IPAddress').appendTo(tableRow);
-						cell.children().first().attr('href', tptenhance.ipMapUrl(d.SourceAddress)).text(d.SourceAddress);
+						cell = $("<td><a></a></td>").addClass("IPAddress").appendTo(tableRow);
+						cell.children().first().attr("href", tptenhance.ipMapUrl(d.SourceAddress)).text(d.SourceAddress);
 						if (typeof ipcolours[d.SourceAddress] !== "undefined" && ipcolours[d.SourceAddress] !== "")
-							cell.css('background-color', ipcolours[d.SourceAddress]);
-						cell = $('<td></td>').addClass('VoteType');
-						if (d.Vote==1) cell.html('<i class="VoteUpIcon icon-chevron-up icon-white"></i>');
-						else if (d.Vote==-1) cell.html('<i class="VoteDownIcon icon-chevron-down icon-white"></i>');
-						else cell.html('&nbsp;');
+							cell.css("background-color", ipcolours[d.SourceAddress]);
+						cell = $("<td></td>").addClass("VoteType");
+						if (d.Vote==1) cell.html("<i class=\"VoteUpIcon icon-chevron-up icon-white\"></i>");
+						else if (d.Vote==-1) cell.html("<i class=\"VoteDownIcon icon-chevron-down icon-white\"></i>");
+						else cell.html("&nbsp;");
 						cell.appendTo(tableRow);
 
 						if (iplist.length>1)
