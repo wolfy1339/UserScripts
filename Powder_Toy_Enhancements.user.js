@@ -10,10 +10,10 @@
 
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
 function contentEval(source) {
-  if ('function' === typeof source) {
-    source = '(' + source + ')();';
+  if ("function" === typeof source) {
+    source = "(' + source + ')();";
   }
-  var script = document.createElement('script');
+  var script = document.createElement("script");
   script.setAttribute("type", "application/javascript");
   script.textContent = source;
   document.body.appendChild(script);
@@ -27,9 +27,9 @@ var tptenhance, currentSaveID, d3, cell, url, zoom, draw , self, Link, Link2, OL
 contentEval('if (typeof window.FB == "undefined") window.FB = false;');
 
 contentEval(function(){
-	if (typeof $ === "undefined") // check jQuery has loaded
+	if (typeof $ === "undefined"){ // check jQuery has loaded
 		return;
-
+	}
 	window.tptenhance = {
 
 		// used by several functions to replace clicked "Delete" links to show that a request is in progress / finished
