@@ -24,7 +24,7 @@ var tptenhance, currentSaveID, d3, cell, url, zoom, draw , self, Link, Link2, OL
 
 // Fix silly way of checking whether facebook stuff is loaded (Browse.View.js:3, "if(FB)")
 // If facebook is blocked, then the javascript on powdertoy.co.uk errors and does not execute important stuff like callbacks for showing tag info popups
-contentEval('if (typeof window.FB == "undefined") window.FB = false;');
+contentEval("if (typeof window.FB == \"undefined\") window.FB = false;");
 
 contentEval(function(){
 	if (typeof $ === "undefined"){ // check jQuery has loaded
@@ -33,21 +33,22 @@ contentEval(function(){
 	window.tptenhance = {
 
 		// used by several functions to replace clicked "Delete" links to show that a request is in progress / finished
-		deletingHtml:'<div class="pull-right label label-info"><i class="icon-refresh icon-white"></i> <strong>Deleting...</strong></div>',
-		deletedHtml:'<div class="pull-right label label-success"><i class="icon-ok icon-white"></i> <strong>Deleted</strong></div>',
+		deletingHtml:"<div class=\"pull-right label label-info\"><i class=\"icon-refresh icon-white\"></i> <strong>Deleting...</strong></div>",
+		deletedHtml:"<div class=\"pull-right label label-success\"><i class=\"icon-ok icon-white\"></i> <strong>Deleted</strong></div>",
 
 		// a random page to use for redirects, which will hopefully load faster than the default redirect (e.g. to a user moderation page) in ajax requests
 		dummyUrl:"/Themes/Next/Javascript/Browse.View.js",
 
-		monthNamesShort:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+		monthNamesShort:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
 
 		// Return session key (the thing used as CSRF protection) - cached in tptenhance.sessionKey
 		getSessionKey:function()
 		{
-			if (tptenhance.sessionKey!=="")
+			if (tptenhance.sessionKey!==""){
 				return tptenhance.sessionKey;
+			}
 
-			$('.main-menu').find('a').each(function(){
+			$(".main-menu").find("a").each(function(){
 				var url = this.href;
 				var matches = url.match(/Logout.html\?Key=[A-Za-z0-9]+/);
 				if (matches)
@@ -64,16 +65,18 @@ contentEval(function(){
 		// E.g. for moderation page, username of person being moderated.
 		getPageUsername:function()
 		{
-			if (window.location.pathname.toString().indexOf("/User/Moderation.html")!==-1)
-				return $('.SubmenuTitle').text();
+			if (window.location.pathname.toString().indexOf("/User/Moderation.html")!==-1){
+				return $(".SubmenuTitle").text();
+			}
 			return null;
 		},
 
 		// Returns bool indicating whether the user is logged in as a moderator
 		isMod:function()
 		{
-			if (typeof tptenhance.isModCache!="undefined")
+			if (typeof tptenhance.isModCache!="undefined"){
 				return tptenhance.isModCache;
+			}
 			tptenhance.isModCache = false;
 			$(".main-menu .dropdown a.dropdown-toggle").each(function(){
 				if ($(this).text().indexOf("Admin")!==-1)
@@ -111,10 +114,11 @@ contentEval(function(){
 			getId:function(elem)
 			{
 				var deleteLink = $(elem).find(".Actions a");
-				if (deleteLink.length)
+				if (deleteLink.length){
 					return +(deleteLink.attr("href").match(/DeleteComment=[0-9]+/)[0].split("=")[1]);
-				else
+				} else {
 					return null;
+				}
 			}
 		},
 		tags:
@@ -147,21 +151,23 @@ contentEval(function(){
 			infoUrl:function(tagText, saveId)
 			{
 				var url = "/Browse/Tag.xhtml?Tag="+encodeURIComponent(tagText);
-				if (typeof saveId!="undefined")
+				if (typeof saveId!="undefined"){
 					url += "&SaveID="+encodeURIComponent(saveId);
+				}
 				return url;
 			},
 
 			// Event handlers to use an ajax request for enable/disable button clicks for tags displayed in a div.Tag (on /Browse/Tags.html and user moderation pages)
 			disableButtonClick:function(e){
 				e.preventDefault();
-				var tag = $(this).parents('.Tag').find(".TagText").text();
-				if (tptenhance.popoverSelectedTag==tag)
+				var tag = $(this).parents(".Tag").find(".TagText").text();
+				if (tptenhance.popoverSelectedTag==tag){
 					tptenhance.removePopover();
-				var tagElem = $(this).parents('.Tag');
+				}
+				var tagElem = $(this).parents(".Tag");
 				var url = this.href.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(tptenhance.dummyUrl));
-				$(this).parent().append(' <span class="LoadingIcon"><i class="icon-refresh"></i></span>');
-				$(this).css('display','none');
+				$(this).parent().append(" <span class=\"LoadingIcon\"><i class=\"icon-refresh\"></i></span>");
+				$(this).css("display","none");
 				$.get(url, function()
 				{
 					tptenhance.tags.showDisabled(tagElem);
@@ -170,10 +176,10 @@ contentEval(function(){
 			},
 			enableButtonClick:function(e){
 				e.preventDefault();
-				var tagElem = $(this).parents('.Tag');
+				var tagElem = $(this).parents(".Tag");
 				var url = this.href.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(tptenhance.dummyUrl));
-				$(this).parent().append(' <span class="LoadingIcon"><i class="icon-refresh"></i></span>');
-				$(this).css('display','none');
+				$(this).parent().append(" <span class=\"LoadingIcon\"><i class=\"icon-refresh\"></i></span>");
+				$(this).css("display","none");
 				$.get(url, function()
 				{
 					tptenhance.tags.showEnabled(tagElem);
@@ -183,20 +189,21 @@ contentEval(function(){
 			attachHandlers:function(baseElem){
 				// Attach event handlers which will make tag disabling/enabling happen in an ajax request. Also add a clearer tooltip for Disable buttons.
 				// Does not attach event handlers for tag info popups
-				baseElem.find('.UnDelButton').off('click').on('click', tptenhance.tags.enableButtonClick);
-				baseElem.find('.DelButton').off('click').on('click', tptenhance.tags.disableButtonClick).attr('title', 'Disable');
+				baseElem.find(".UnDelButton").off("click").on("click", tptenhance.tags.enableButtonClick);
+				baseElem.find(".DelButton").off("click").on("click", tptenhance.tags.disableButtonClick).attr("title", "Disable");
 			},
 
 			// Change a tag to appear as disabled or enabled (used by event handlers above)
 			showDisabled:function(tagElem){
-				if (tagElem.hasClass('Restricted'))
+				if (tagElem.hasClass('Restricted')){
 					return;
-				tagElem.addClass('Restricted');
-				tagElem.find('.icon-refresh').remove();
-				var btn = tagElem.find('.DelButton');
-				btn.removeClass('DelButton').addClass('UnDelButton').css('display','inline');
-				btn.attr('href', btn.attr('href').replace('/Browse/Tags.html?Delete=','/Browse/Tags.html?UnDelete='));
-				btn.attr('title', 'Disable');
+				}
+				tagElem.addClass("Restricted");
+				tagElem.find(".icon-refresh").remove();
+				var btn = tagElem.find(".DelButton");
+				btn.removeClass("DelButton").addClass("UnDelButton").css("display","inline");
+				btn.attr("href", btn.attr("href").replace("/Browse/Tags.html?Delete=","/Browse/Tags.html?UnDelete="));
+				btn.attr("title", "Disable");
 				tptenhance.tags.attachHandlers(tagElem);
 			},
 			showEnabled:function(tagElem){
@@ -2278,5 +2285,5 @@ if (window.location.toString().indexOf("/Reports.html")!==-1)
 }
 if (window.location.toString().indexOf("/Reports")!==-1)
 {
-	addCss('.main-menu .pull-left li a[href="/Reports.html"] { display: none; }');
+	addCss(".main-menu .pull-left li a[href=\"/Reports.html\"] { display: none; }");
 }
