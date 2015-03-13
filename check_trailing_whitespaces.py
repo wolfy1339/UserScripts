@@ -28,7 +28,7 @@ def has_trailing_whitespaces(path):
   handle.close()
   return False
 
-if (len(sys.argv) > 2):
+if len(sys.argv) > 2:
   sys.exit('Usage: ' + sys.argv[0] + ' [root]')
 
 top = os.getcwd()
