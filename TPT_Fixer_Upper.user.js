@@ -12,17 +12,29 @@
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 
+// addCss function from Powder Toy enhancements
+function addCss(cssString){
+	var head = document.getElementsByTagName('head')[0];
+	if (!head){
+	    return;
+	}
+	var newCss = document.createElement('style');
+	newCss.type = "text/css";
+	newCss.innerHTML = cssString;
+	head.appendChild(newCss);
+}
+
 //Fixes for the rebuilt search feature
 if (window.location.pathname == "/Search.html"){
     jQuery(".search-avatar").css({"margin-right":"10px"});
-    jQuery(".search-thumbnail img").css({"border-radius":"3px", "border":"2px solid #DDD"});
+    addCss([".search-thumbnail img {border-radius:3px;border:2px solid #DDD;});
     jQuery(".search-result .details").css({"margin-left":"70px", "margin-right":"20px"});
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
 if (window.location.pathname == "/Discussions/Categories/Index.html"){
     //Fix, if number is big it won't overflow as much
-    jQuery(".TopicList li .Meta span").css({"max-height":"14px", "font-size":"10px"});
+    addCss([".TopicList li .Meta span {max-height:14px;font-size:10px;}"]);
 }
 if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
     //Fix GitHub watch button
