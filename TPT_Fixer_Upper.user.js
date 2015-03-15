@@ -32,7 +32,7 @@ if (window.location.pathname == "/Download.html" || window.location.pathname == 
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery("head").append("<style>.Meta .Author img{background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);}");
     jQuery(".Meta .Author img").css({"z-index":"-1", "border-radius":"3px", "box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-moz-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-webkit-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-o-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)", "-ms-box-shadow":"0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)"});
-    jQuery('.Message span[style="color: white;"]').removeAttr("style");
+    jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
     jQuery(".Meta .Author a:contains('jacob1')").closest(".Post").removeClass("Moderator").addClass("Developer");
