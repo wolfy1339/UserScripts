@@ -280,8 +280,8 @@ contentEval(function(){
 					.attr("href", tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
 			},
 			createEnableLink:function(tagText){
-				return $("<a class=\"Tag-LinkDisable\"  title=\"Enable tag\">Enable</a>")
-					.attr('href', tptenhance.tags.enableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
+				return $("<a class=\"Tag-LinkEnable\"  title=\"Enable tag\">Enable</a>")
+					.attr("href", tptenhance.tags.enableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
 			}
 		},
 		makeSaveLinks:function(messages, convertAllNumbers)
@@ -555,7 +555,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						var cell;
 						cell = $("<td><a></a></td>").addClass("Date").appendTo(tableRow);
 						var timeString = [("0"+d.Date.getHours()).slice(-2), ("0"+d.Date.getMinutes()).slice(-2), ("0"+d.Date.getSeconds()).slice(-2)].join(':');
-						cell.text([('0'+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(' '));
+						cell.text([("0"+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(' '));
 						cell = $("<td><a></a></td>").addClass("Username").appendTo(tableRow);
 						cell.children().first().attr("href", tptenhance.users.moderationUrlById(d.UserID)).text(d.Username);
 
@@ -581,7 +581,10 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 									that.off("mouseenter");
 									tptenhance.users.getModerationInfoById(d.UserID, function(data){
 										var txt = "";
-										if (data.Banned && data.Bans[0].Duration===0) txt += "Perm banned";
+										if (data.Banned && data.Bans[0].Duration===0)
+										{
+											txt += "Perm banned";
+										}
 										else
 										{
 											if (data.Banned)
@@ -590,7 +593,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 												if (data.Bans.length>1)
 												{
 													txt += ", "+(data.Bans.length-1)+" previous ban";
-													if (data.Bans.length>2) txt += "s";
+													if (data.Bans.length>2){ txt += "s";}
 												}	
 											}
 											else
@@ -599,21 +602,22 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 												if (data.Bans.length>0)
 												{
 													txt += ", "+data.Bans.length+" previous ban";
-													if (data.Bans.length>1) txt += "s";
+													if (data.Bans.length>1){ txt += "s";}
 												}
 											}
 										}
 										
 										txt += "<br>";
-										if (!data.Comments.length && !data.Tags.length)
+										if (!data.Comments.length && !data.Tags.length){
 											txt += "No tags or comments";
-										else
+										} else
 										{
 											txt += data.Tags.length+" tags, ";
-											if (data.CommentPageCount>1)
+											if (data.CommentPageCount>1){
 												txt += data.CommentPageCount+" pages of comments";
-											else
+											} else {
 												txt += data.Comments.length+" comments";
+											}
 										}
 										// TODO: saves?
 										that.tooltip({title:txt, placement:"left"});
