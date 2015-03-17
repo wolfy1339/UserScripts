@@ -22,32 +22,42 @@ function addCss(cssString){
 //Fixes for the rebuilt search feature
 if (window.location.pathname == "/Search.html"){
     jQuery(".search-avatar").css({"margin-right":"10px"});
-    addCss(".search-thumbnail img {border-radius:3px;border:2px solid #DDD;}");
-    addCss(".search-result .details {margin-left:70px;margin-right:20px;}");
+    addCss([".search-thumbnail img {border-radius:3px;border:2px solid #DDD;}",
+    ".search-result .details {margin-left:70px;margin-right:20px;}"].join("\n"));
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
 if (window.location.pathname == "/Discussions/Categories/Index.html"){
     //Fix, if number is big it won't overflow as much
-    addCss([".TopicList li .Meta span {max-height:14px;font-size:10px;}"]);
+    addCss(".TopicList li .Meta span {max-height:14px;font-size:10px;}");
 }
 if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
     //Fix GitHub watch button
-    jQuery(".social-github iframe").attr('src', "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
+    jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
 }
 //Make Groups system better
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
-    addCss(".Meta .Author img{background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%); background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);}");
-    addCss([".Meta .Author img {",
+    addCss(
+    [".Meta .Author img{",
+    "background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "}",
+    ".Meta .Author img {",
     "z-index:-1; border-radius:3px;box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "-moz-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);-webkit-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);-o-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "-moz-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    -webkit-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "-o-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
     "-ms-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "}"].join("\n"));
+    "}",
+    ".Developer .Comment .Meta .Author {",
+    "background-image:url(/Themes/Next/Design/Images/Developer.png);}"].join("\n"));
+
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
     jQuery(".Meta .Author a:contains(\"jacob1\")").closest(".Post").removeClass("Moderator").addClass("Developer");
-    addCss(".Developer .Comment .Meta .Author {background-image:url(/Themes/Next/Design/Images/Developer.png);}");
     jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
 
     setTimeout(function(){
