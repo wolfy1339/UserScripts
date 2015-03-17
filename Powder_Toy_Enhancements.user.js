@@ -934,7 +934,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			return;
 		}
 
-		this.popupElem.find('div.TagInfo').each(function(){
+		this.popupElem.find("div.TagInfo").each(function(){
 			var removeLink = $(this).find("a.Tag-LinkRemove");
 			if (!removeLink.length){
 				return;
@@ -1036,7 +1036,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.getInfoXHR = $.get(tptenhance.tags.infoUrl(tagText, saveId), function(data){
 			that.getInfoXHR = false;
 			content.html(data);
-			content.find('div.TagInfo').each(function(){
+			content.find("div.TagInfo").each(function(){
 				$(this).append(that.createRemoveLink(tagText, saveId));
 				$(this).append(that.createTagStatusLinks(tagText));
 			});
@@ -1067,8 +1067,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			return;
 		}
 		// Abort any previous pending request
-		if (this.getInfoXHR)
+		if (this.getInfoXHR){
 			this.getInfoXHR.abort();
+		}
 
 		this.selectedTagText = tagText;
 		var content = this.create(targetElem);
@@ -1077,13 +1078,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			that.getInfoXHR = false;
 			content.html(data);
 
-			var tagStatusLinks = $('<div class="pull-right" style="margin-bottom:7px;"></div>').append(that.createTagStatusLinks(tagText));
+			var tagStatusLinks = $("<div class=\"pull-right\" style=\"margin-bottom:7px;\"></div>").append(that.createTagStatusLinks(tagText));
 			content.prepend(tagStatusLinks);
 
 			var shouldSortUser = (typeof sortUser!="undefined" && sortUser!=="");
 			var separator = false;
 			// Go through the tags in the popup and add Remove links
-			content.find('div.TagInfo').each(function(){
+			content.find("div.TagInfo").each(function(){
 				var tagInfo = $(this);
 				var saveId = $(tagInfo.find("a")[0]).text();
 				var userName = $(tagInfo.find("a")[1]).text();
@@ -1098,8 +1099,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			});
 
 			that.updatePosition();
-			if (that.tagDisabled)
+			if (that.tagDisabled){
 				that.onDisabledStateChange(true);
+			}
 		}, "html");
 	};
 
@@ -1156,8 +1158,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.removeTag_progress = this.removeTag_progress.bind(this);
 		this.removeTag_done = this.removeTag_done.bind(this);
 
-		this.progressElem = $('<div style="width:40%;margin-right:5%" class="pull-left"><div class="progresstitle">Removing tags</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%;"></div></div></div>');
-		this.progressSubElem = $('<div style="width:40%;" class="pull-left"><div class="progresstitle">&nbsp;</div><div class="progress"><div class="bar" role="progressbar" style="width: 0%; transition:width 0s;"></div></div>');
+		this.progressElem = $("<div style=\"width:40%;margin-right:5%\" class=\"pull-left\"><div class=\"progresstitle\">Removing tags</div><div class="progress"><div class=\"bar\" role=\"progressbar\" style=\"width: 0%;\"></div></div></div>");
+		this.progressSubElem = $("<div style=\"width:40%;\" class=\"pull-left\"><div class=\"progresstitle\">&nbsp;</div><div class=\"progress\"><div class=\"bar\" role=\"progressbar\" style=\"width: 0%; transition:width 0s;\"></div></div>");
 		this.container = container;
 
 		this.tagElements = tagElements;
@@ -1168,13 +1170,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	};
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype.start = function(){
-		this.container.append(this.progressElem).append(this.progressSubElem).append('<div class="Clear"></div>');
+		this.container.append(this.progressElem).append(this.progressSubElem).append("<div class=\"Clear\"></div>");
 		tptenhance.tags.tagInfoPopup.updatePosition();
 		this.removeTag_start();
 	};
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype._setProgress = function(elem, doneAmount, statusText){
-		elem.find(".bar").css('width', (doneAmount*100)+'%');
+		elem.find(".bar").css("width", (doneAmount*100)+'%');
 		elem.find(".progresstitle").text(statusText);
 	};
 	tptenhance.tags.RemoveAllTagsByUser.prototype.setProgress = function(doneAmount, statusText){
@@ -1203,7 +1205,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_fetched = function(data){
 		this.tagInstanceRemover = new tptenhance.tags.TagInstanceRemover();
-		var tagInfo = $(data).filter('.TagInfo');
+		var tagInfo = $(data).filter(".TagInfo");
 		this.currentTag_onlyUser = true;// true if all instances of this tag were placed by this user
 		// Parse tag info that has just been fetched
 		var that = this;
@@ -1229,10 +1231,11 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype.removeTag_done = function(){
 		this.setProgressSub(1, "Removed tag '"+this.currentTagText+"'");
-		if (this.currentTag_onlyUser)
+		if (this.currentTag_onlyUser){
 			$(this.currentTag).addClass("tag-removedall");// all instances of this tag removed
-		else
+		} else {
 			$(this.currentTag).addClass("tag-removedcurrent");// other users also placed this tag, so some instances left
+		}
 
 		setTimeout(this.removeTag_start, this.interval);
 	};
@@ -1287,29 +1290,31 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 		this.tagElem = $(tagElem);
 		this.tagText = this.tagElem.text();
-		this.rowElem = $('<tr></tr>');
-		this.textCell = $('<td class="TagText"></td>').text(this.tagText).appendTo(this.rowElem);
-		this.userCell = $('<td>Loading...</td>').appendTo(this.rowElem);
-		this.actionsCell = $('<td class="TagActions"></td>').appendTo(this.rowElem);
-		this.removeLink = $('<a title="Remove tag from this save">Remove</a>')
-			.attr('href',tptenhance.tags.removeUrl(this.tagText,currentSaveID))
-			.on('click', this.handleRemoveLinkClick);
-		this.disableLink = $('<a title="Disable tag">Disable</a>')
-			.attr('href',tptenhance.tags.disableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
-			.on('click', this.handleDisableLinkClick);
-		this.enableLink = $('<a title="Enable tag">Enable</a>')
-			.attr('href',tptenhance.tags.enableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
-			.on('click', this.handleEnableLinkClick);
+		this.rowElem = $("<tr></tr>");
+		this.textCell = $("<td class=\"TagText\"></td>").text(this.tagText).appendTo(this.rowElem);
+		this.userCell = $("<td>Loading...</td>").appendTo(this.rowElem);
+		this.actionsCell = $("<td class=\"TagActions\"></td>").appendTo(this.rowElem);
+		this.removeLink = $("<a title=\"Remove tag from this save\">Remove</a>")
+			.attr("href",tptenhance.tags.removeUrl(this.tagText,currentSaveID))
+			.on("click", this.handleRemoveLinkClick);
+		this.disableLink = $("<a title=\"Disable tag\">Disable</a>")
+			.attr("href",tptenhance.tags.disableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
+			.on("click", this.handleDisableLinkClick);
+		this.enableLink = $("<a title=\"Enable tag\">Enable</a>")
+			.attr("href",tptenhance.tags.enableUrl(this.tagText)+"&Redirect="+encodeURIComponent(tptenhance.dummyUrl))
+			.on("click", this.handleEnableLinkClick);
 		this.actionsCell.append(this.removeLink, this.disableLink, this.enableLink);
 
-		if (tptenhance.tags.isTagElemDisabled(this.tagElem))
+		if (tptenhance.tags.isTagElemDisabled(this.tagElem)){
 			this.disableLink.addClass("hide");
-		else
+		} else {
 			this.enableLink.addClass("hide");
-		if (tptenhance.tags.isTagElemDisabled(this.tagElem) || tptenhance.tags.isTagElemRemoved(this.tagElem))
+		}
+		if (tptenhance.tags.isTagElemDisabled(this.tagElem) || tptenhance.tags.isTagElemRemoved(this.tagElem)){
 			this.userCell.html("&nbsp;");
-		if (tptenhance.tags.isTagElemRemoved(this.tagElem))
-			this.removeLink.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+		}
+		if (tptenhance.tags.isTagElemRemoved(this.tagElem)){
+			this.removeLink.replaceWith("<span><span class=\"label label-success\"><i class=\"icon-ok icon-white\" title=\"Removed\"></i></span></span></span>");
 
 		tptenhance.tags.tagRemovedCallbacks.add(this.onTagRemoved);
 		tptenhance.tags.tagDisabledCallbacks.add(this.onTagDisabled);
@@ -1340,17 +1345,17 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.userCell.append($(data).filter("div.TagInfo").find("a").first());
 	};
 	tptenhance.tags.SaveTagsTableRow.prototype.handleRemoveLinkClick = function(e){
-		var pendingIndicator = $('<span><span class="label label-info" title="Removing..."><i class="icon-refresh icon-white"></i></span></span>');
+		var pendingIndicator = $("<span><span class="\label label-info\" title\="Removing...\"><i class=\"icon-refresh icon-white\"></i></span></span>");
 		var url = e.target.href;
 		var that = this;
 		$.get(url,function(){
-			pendingIndicator.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+			pendingIndicator.replaceWith("<span><span class=\"label label-success\"><i class=\"icon-ok icon-white\" title=\"Removed\"></i></span></span></span>");
 			tptenhance.tags.tagRemovedCallbacks.fire(that.tagText, currentSaveID);
 		});
 		return false;
 	};
 	tptenhance.tags.SaveTagsTableRow.prototype.handleDisableLinkClick = function(e){
-		var pendingIndicator = $('<span><span class="label label-info" title="Disabling..."><i class="icon-refresh icon-white"></i></span></span>');
+		var pendingIndicator = $("<span><span class=\"label label-info\" title=\"Disabling...\"><i class=\"icon-refresh icon-white\"></i></span></span>");
 		$(e.target).addClass("hide").before(pendingIndicator);
 		var url = e.target.href;
 		var that = this;
@@ -1361,7 +1366,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		return false;
 	};
 	tptenhance.tags.SaveTagsTableRow.prototype.handleEnableLinkClick = function(e){
-		var pendingIndicator = $('<span><span class="label label-info" title="Enabling..."><i class="icon-refresh icon-white"></i></span></span>');
+		var pendingIndicator = $("<span><span class=\"label label-info\" title=\"Enabling...\"><i class=\"icon-refresh icon-white\"></i></span></span>");
 		$(e.target).addClass("hide").before(pendingIndicator);
 		var url = e.target.href;
 		var that = this;
@@ -1382,7 +1387,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.handlePaginationFetched = this.handlePaginationFetched.bind(this);
 
 		var that = this;
-		$(window).bind('popstate', function(){
+		$(window).bind("popstate", function(){
 			that.changePage(''+self.location);
 		});
 		this.msgList = this.container.find(".MessageList");
@@ -1395,16 +1400,17 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.msgList.find(".Actions a").each(function(){
 			if (this.href.indexOf('DeleteComment=')!==-1)
 			{
-				$(this).off('click').on('click',that.handleDeleteClick);
+				$(this).off('click').on("click",that.handleDeleteClick);
 				var url = $(this).attr('href');
-				var redirectUrl = (''+self.location).replace(/^http:\/\/powdertoy.co.uk/, '');
-				if (url.match(/Redirect=[^&]*/))
-					url = url.replace(/Redirect=[^&]*/, 'Redirect='+encodeURIComponent(redirectUrl));
-				else if (url.indexOf('?')!==-1)
-					url += '&Redirect='+encodeURIComponent(redirectUrl);
-				else
-					url += '?Redirect='+encodeURIComponent(redirectUrl);
-				$(this).attr('href', url);
+				var redirectUrl = (""+self.location).replace(/^http:\/\/powdertoy.co.uk/, "");
+				if (url.match(/Redirect=[^&]*/)){
+					url = url.replace(/Redirect=[^&]*/, "Redirect="+encodeURIComponent(redirectUrl));
+				} else if (url.indexOf('?')!==-1){
+					url += "&Redirect="+encodeURIComponent(redirectUrl);
+				} else{
+					url += "?Redirect="+encodeURIComponent(redirectUrl);
+				}
+				$(this).attr("href", url);
 			}
 		});
 		tptenhance.makeSaveLinks(this.msgList.find(".Post .Message"));
@@ -1421,11 +1427,12 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		deleteLink.css("display", "none");
 		msg.find(".Meta").prepend(placeholder);
 		msg.addClass("Deleting");
-		$.get(deleteLink.attr('href'), function(data){
+		$.get(deleteLink.attr("href"), function(data){
 			msg.removeClass("Deleting").addClass("Deleted");
 			placeholder.replaceWith(tptenhance.deletedHtml);
-			if (!wasPageChanged.value)
+			if (!wasPageChanged.value){
 				that.mergeComments(data);
+			}
 		});
 		return false;
 	};
@@ -1446,8 +1453,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		// Insert comments which are in the response but not yet on the page (i.e. the comments which have moved up into the current page because some of the comments that were previously on the current page have been deleted)
 		newComments.each(function(){
 			var commentId = tptenhance.comments.getId($(this));
-			if (existingCommentIds.indexOf(commentId)===-1)
+			if (existingCommentIds.indexOf(commentId)===-1){
 				that.msgList.append($(this));
+			}
 		});
 		// Sort comments into the correct order (newest first / descending ID)
 		var commentArray = this.msgList.find(".Post").toArray();
@@ -1462,8 +1470,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 	tptenhance.comments.CommentView.prototype.handlePaginationClick = function(e){
 		var url = $(e.target).attr("href");
-		if (typeof history.pushState!="undefined")
+		if (typeof history.pushState!="undefined"){
 			history.pushState(null, "", url);
+		}
 		this.changePage(url);
 		return false;
 	};
@@ -1471,8 +1480,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.container.find("#ActionSpinner").fadeIn("fast");
 		this.wasPageChanged.value = true;
 		this.wasPageChanged = {value:false};
-		if (this.commentPageRequest)
+		if (this.commentPageRequest){
 			this.commentPageRequest.abort();
+		}
 		// url = url.replace(/\.html\?/, ".json?Mode=MessagesOnly&");
 		this.commentPageRequest = $.get(url, this.handlePaginationFetched);
 	};
@@ -1496,7 +1506,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		if (tptenhance.isMod())
 		{
 			// Add a menu link for editing the changelog on the download page.
-			$(".main-menu .pull-right .dropdown:first-child .dropdown-menu").append('<li class="item"><a href="/Documentation/Changelog.html">Changelog</a>');
+			$(".main-menu .pull-right .dropdown:first-child .dropdown-menu").append("<li class=\"item\"><a href=\"/Documentation/Changelog.html\">Changelog</a>");
 		}
 	});
 
@@ -1505,13 +1515,14 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		$(document).ready(function(){setTimeout(function(){
 			if ($("div.Tag").length)
 			{
-				var removeAll = $("<a class='pull-right btn btn-mini btn-danger'></a>");
+				var removeAll = $("<a class=\"pull-right btn btn-mini btn-danger\"></a>");
 				removeAll.text("Remove all tags by this user");
 				removeAll.insertBefore($("div.Tag").prev(".page-header"));
 				removeAll.click(function()
 				{
-					if (!confirm("Are you sure you want to remove all tags by this user?"))
+					if (!confirm("Are you sure you want to remove all tags by this user?")){
 						return;
+					}
 					$(this).remove();//remove the button
 					var container = $('<div></div>');
 					$("div.Tag").first().before(container);
@@ -1523,8 +1534,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				// Spelling...
 				$(this).html($(this).html().replace(/Permenantly/, "Permanently"));
 			});
-			$("span.TagText").on('click', function(){
-				var currentUsername = $('.SubmenuTitle').text();
+			$("span.TagText").on("click", function(){
+				var currentUsername = $(".SubmenuTitle").text();
 				tptenhance.tags.tagInfoPopup.showAll($(this), $(this).text(), currentUsername);
 			});
 			tptenhance.tags.attachHandlers($("div.Tag"));
@@ -1552,12 +1563,12 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			*    The confirm() is a particular nuisance when trying to perm ban lots of accounts simultaneously for multiple account voting. 
 			*    Also, since pressing enter means submit for forms and OK for confirm dialogs, the confirm doesn't necessarily help if the enter button is accidentally pressed and gets stuck, or is trodden on by a cat.
 			*/
-			$(".BanUser form").off('submit').on('submit', function(e){
+			$(".BanUser form").off("submit").on("submit", function(e){
 				// Try to prevent accidental perm bans
 				var form = $(".BanUser form");
-				var banReason = form.find('input[name="BanReason"]').val();
-				var banTimeType = form.find('select[name="BanTimeSpan"]').val();
-				var banTime = form.find('input[name="BanTime"]').val();
+				var banReason = form.find("input[name=\"BanReason\"]").val();
+				var banTimeType = form.find("select[name=\"BanTimeSpan\"]").val();
+				var banTime = form.find("input[name=\"BanTime\"]'".val();
 				if (banTimeType!="p")
 				{
 					if (banTime.toString() != (+banTime).toString() || (+banTime)<=0 || (+banTime)!=(+banTime))
@@ -1583,15 +1594,15 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			if (matches)
 			{
 				$(".ProfileInfo > .alert-info:nth-child(2)").remove();
-				var elem = $('<div class="UserInfoRow"><label>Registered:</label> <span></span></div>');
+				var elem = $("<div class=\"UserInfoRow\"><label>Registered:</label> <span></span></div>");
 				elem.insertAfter($(".ProfileInfo .page-header").first());
 				$.get("http://powdertoythings.co.uk/Powder/User.json?"+matches[0], function(data) {
 					var txt = "unknown";
 					if (typeof data.User!="undefined" && typeof data.User.RegisterTime!="undefined")
 					{
 						var regTime = new Date(data.User.RegisterTime*1000);
-						var timeString = [('0'+regTime.getHours()).slice(-2), ('0'+regTime.getMinutes()).slice(-2), ('0'+regTime.getSeconds()).slice(-2)].join(':');
-						txt = [('0'+regTime.getDate()).slice(-2), tptenhance.monthNamesShort[regTime.getMonth()], regTime.getFullYear(), timeString].join(' ');
+						var timeString = [("0"+regTime.getHours()).slice(-2), ("0"+regTime.getMinutes()).slice(-2), ("0"+regTime.getSeconds()).slice(-2)].join(":");
+						txt = [("0"+regTime.getDate()).slice(-2), tptenhance.monthNamesShort[regTime.getMonth()], regTime.getFullYear(), timeString].join(" ");
 					}
 					elem.find("span").text(txt);
 				}, "json");
@@ -1608,7 +1619,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						}
 						if ($(this).text().indexOf("topics by")>-1)
 						{
-							elem = $('<div class="UserInfoRow"><a></a></div>');
+							elem = $("<div class=\"UserInfoRow\"><a></a></div>");
 							elem.find("a").attr("href", "/Discussions/Search/TopicsByAuthor.html?Search_Query="+encodeURIComponent(username)).text("Find all topics by "+username+" (old version)");
 							elem.insertAfter($(this).closest(".UserInfoRow"));
 						}
@@ -1621,23 +1632,23 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	{
 		$(document).ready(function(){
 			setTimeout(function(){
-				$(".Pagination a").die('click');
+				$(".Pagination a").die("click");
 				tptenhance.comments.commentView = new tptenhance.comments.CommentView($(".Subpage"));
 
-				$("span.Tag").die('click');
+				$("span.Tag").die("click");
 				if (tptenhance.isMod())
 				{
 					$("span.Tag").on('click', function(){
 						tptenhance.tags.tagInfoPopup.showSingle($(this), $(this).text(), currentSaveID);
 					});
 
-					var tabs = $('<ul class="nav nav-pills"></ul>');
+					var tabs = $("<ul class=\"nav nav-pills\"></ul>");
 					tabs.css({"display": "inline-block", "margin-bottom":"0"});
-					var reportsTab = $('<li class="item"><a href="">Reports</a></li>').appendTo(tabs);
-					var tagsTab = $('<li class="item"><a href="">Tags</a></li>').appendTo(tabs); // TODO: remove all tags button, click on tags in table to show other uses, remove all instances of tag button
-					var bumpsTab = $('<li class="item"><a href="">Bumps</a></li>').appendTo(tabs);
-					var searchesTab = $('<li class="item"><a href="">Search similar</a></li>').appendTo(tabs);
-					var detailTab = $('<li class="item"><a href="">More info</a></li>').appendTo(tabs);
+					var reportsTab = $("<li class=\"item\"><a href=\"\">Reports</a></li>").appendTo(tabs);
+					var tagsTab = $("<li class=\"item\"><a href=\"\">Tags</a></li>").appendTo(tabs); // TODO: remove all tags button, click on tags in table to show other uses, remove all instances of tag button
+					var bumpsTab = $("<li class=\"item\"><a href=\"\">Bumps</a></li>").appendTo(tabs);
+					var searchesTab = $("<li class=\"item\"><a href=\"\">Search similar</a></li>").appendTo(tabs);
+					var detailTab = $("<li class=\"item\"><a href=\"\">More info</a></li>").appendTo(tabs);
 
 					var tagsTable = false;
 					var currentTabLink = false;
@@ -1667,17 +1678,18 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					reportsTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.reports.viewReportUrl(currentSaveID), function(html){
-							if (currentTabLink.text()!==reportsTab.find("a").text())
+							if (currentTabLink.text()!==reportsTab.find("a").text()){
 								return;
+							}
 							tptenhance.saveDetailsTabContent.empty();
 							var reports = tptenhance.reports.parseViewReport(html);
-							var msgList = $('<ul class="MessageList"></ul>');
+							var msgList = $("<ul class=\"MessageList\"></ul>");
 							if (reports.length)
 							{
 								reports.forEach(function(report){
-									var msg = $('<li class="Post"><div class="Meta"><span class="Author"><div class="gravatar"><div class="gravatar-inner"><img></div></div><a></a></span><span class="Date"></span></div><div class="Message"></div></li>');
-									msg.find(".gravatar-inner img").attr('src', report.UserAvatar).attr('alt', report.UserName);
-									msg.find("a").attr('href', tptenhance.users.profileUrlById(report.UserID)).text(report.UserName);
+									var msg = $("<li class=\"Post\"><div class=\"Meta\"><span class=\"Author\"><div class=\"gravatar"\><div class=\"gravatar-inner\"><img></div></div><a></a></span><span class=\"Date\"></span></div><div class=\"Message"\></div></li>");
+									msg.find(".gravatar-inner img").attr("src", report.UserAvatar).attr("alt", report.UserName);
+									msg.find("a").attr("href", tptenhance.users.profileUrlById(report.UserID)).text(report.UserName);
 									msg.find(".Date").text(report.ReportDate);
 									msg.find(".Message").text(report.Message);
 									msgList.append(msg);
