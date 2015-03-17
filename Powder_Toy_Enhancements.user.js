@@ -276,11 +276,11 @@ contentEval(function(){
 				return false;
 			},
 			createDisableLink:function(tagText){
-				return $('<a class="Tag-LinkDisable" title="Disable tag">Disable</a>')
-					.attr('href', tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
+				return $("<a class=\"Tag-LinkDisable\" title=\"Disable tag\">Disable</a>")
+					.attr("href", tptenhance.tags.disableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
 			},
 			createEnableLink:function(tagText){
-				return $('<a class="Tag-LinkEnable" title="Enable tag">Enable</a>')
+				return $("<a class=\"Tag-LinkDisable\"  title=\"Enable tag\">Enable</a>")
 					.attr('href', tptenhance.tags.enableUrl(tagText)+"&Redirect="+encodeURIComponent(location.pathname+location.search));
 			}
 		},
@@ -304,17 +304,17 @@ contentEval(function(){
 				while (result==regex.exec(text))
 				{
 					// Append the text before the match
-					msg.append($('<span></span>').text(text.slice(prevLastIndex, result.index)));
+					msg.append($("<span></span>").text(text.slice(prevLastIndex, result.index)));
 					// Turn the match into a link
-					var link = $('<a></a>');
-					link.attr('href', tptenhance.saves.viewUrl(result[0].match(/[0-9]+/)[0]));
+					var link = $("<a></a>");
+					link.attr("href", tptenhance.saves.viewUrl(result[0].match(/[0-9]+/)[0]));
 					link.text(result[0]);
 					msg.append(link);
 					// store the position of the end of the match
 					prevLastIndex = regex.lastIndex;
 				}
 				// Append last plain text part
-				msg.append($('<span></span>').text(text.slice(prevLastIndex)));
+				msg.append($("<span></span>").text(text.slice(prevLastIndex)));
 			});
 		},
 		forums:{
@@ -347,7 +347,14 @@ contentEval(function(){
 			 * <span class="badge badge-info">16</span>
 
 
-<li style="background-color:rgb(240, 240, 240);border-top-color: rgb(250, 250, 250);">	<a href="/Browse/View.html?ID=355967" target="_blank">		<img src="/GetScreenshot.util?ID=355967&Size=small"/>	</a>	<span style="float: right; margin: 5px;">		<a href="/Reports.html?Unpublish=355967" class="ButtonLink">Unpublish</a>		<a href="/Reports.html?Read=355967" class="ButtonLink">Mark as Read</a>	</span>	<div class="MainInfo" style="width: 355px; display: block; padding: 2px;">		<span class="ReportsCount">1</span>		<span class="SaveName">			<a href="/Reports/View.html?ID=355967" target="_blank">				Light Splitter 2			</a>		</span> by		<span class="SaveAuthor">WinstonsDomain</span>	</div>	<div class="Clear"></div></li></ul>
+<li style="background-color:rgb(240, 240, 240);border-top-color: rgb(250, 250, 250);">
+<a href="/Browse/View.html?ID=355967" target="_blank"><img src="/GetScreenshot.util?ID=355967&Size=small"/></a>
+<span style="float: right; margin: 5px;"><a href="/Reports.html?Unpublish=355967" class="ButtonLink">Unpublish</a>
+<a href="/Reports.html?Read=355967" class="ButtonLink">Mark as Read</a></span>
+<div class="MainInfo" style="width: 355px; display: block; padding: 2px;">
+<span class="ReportsCount">1</span><span class="SaveName"><a href="/Reports/View.html?ID=355967" target="_blank">Light Splitter 2</a></span> 
+by <span class="SaveAuthor">WinstonsDomain</span></div>
+<div class="Clear"></div></li></ul>
 */
 			parseReportsHtml:function(html)
 			{
@@ -524,7 +531,7 @@ contentEval(function(){
 					var dupVotesDiv = $("<div></div>").addClass("DupVotes");
 					$("<h4>Suspicious votes (<a>see map</a>)</h4>").appendTo(dupVotesDiv).find("a").attr("href",tptenhance.saves.voteMapUrl(currentSaveID));
 					var dupVotesTbl = $("<table cellspacing=\"0\" cellpadding=\"0\"><thead><tr><th>Date</th><th>Username</th><th>IP address</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>").appendTo(dupVotesDiv);
-					var dupVotesTblBody = dupVotesTbl.find('tbody');
+					var dupVotesTblBody = dupVotesTbl.find("tbody");
 					var dupVotes = data.dupVotes.sort(function(a,b){return (+b.Date)-(+a.Date);});
 					var ipcolours = {};
 					var iplist = [];
@@ -540,14 +547,14 @@ contentEval(function(){
 						var hueStep = 340/iplist.length;
 						for (var i=0; i<iplist.length; i++)
 						{
-							ipcolours[iplist[i]] = "hsl("+(hueStep*i)+',50%,80%)';
+							ipcolours[iplist[i]] = "hsl("+(hueStep*i)+",50%,80%)";
 						}
 					}
 					dupVotes.forEach(function(d) {
 						var tableRow = $("<tr></tr>");
 						var cell;
-						cell = $("<td><a></a></td>").addClass('Date').appendTo(tableRow);
-						var timeString = [('0'+d.Date.getHours()).slice(-2), ('0'+d.Date.getMinutes()).slice(-2), ('0'+d.Date.getSeconds()).slice(-2)].join(':');
+						cell = $("<td><a></a></td>").addClass("Date").appendTo(tableRow);
+						var timeString = [("0"+d.Date.getHours()).slice(-2), ("0"+d.Date.getMinutes()).slice(-2), ("0"+d.Date.getSeconds()).slice(-2)].join(':');
 						cell.text([('0'+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(' '));
 						cell = $("<td><a></a></td>").addClass("Username").appendTo(tableRow);
 						cell.children().first().attr("href", tptenhance.users.moderationUrlById(d.UserID)).text(d.Username);
