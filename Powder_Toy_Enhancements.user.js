@@ -554,8 +554,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						var tableRow = $("<tr></tr>");
 						var cell;
 						cell = $("<td><a></a></td>").addClass("Date").appendTo(tableRow);
-						var timeString = [("0"+d.Date.getHours()).slice(-2), ("0"+d.Date.getMinutes()).slice(-2), ("0"+d.Date.getSeconds()).slice(-2)].join(':');
-						cell.text([("0"+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(' '));
+						var timeString = [("0"+d.Date.getHours()).slice(-2), ("0"+d.Date.getMinutes()).slice(-2), ("0"+d.Date.getSeconds()).slice(-2)].join(":");
+						cell.text([("0"+d.Date.getDate()).slice(-2), tptenhance.monthNamesShort[d.Date.getMonth()], d.Date.getFullYear(), timeString].join(" "));
 						cell = $("<td><a></a></td>").addClass("Username").appendTo(tableRow);
 						cell.children().first().attr("href", tptenhance.users.moderationUrlById(d.UserID)).text(d.Username);
 
@@ -621,7 +621,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 										}
 										// TODO: saves?
 										that.tooltip({title:txt, placement:"left"});
-										if (hovered) that.tooltip("show");
+										if (hovered){ that.tooltip("show");}
 									});
 								}, 500);
 							}
@@ -629,12 +629,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						
 						cell = $("<td><a></a></td>").addClass("IPAddress").appendTo(tableRow);
 						cell.children().first().attr("href", tptenhance.ipMapUrl(d.SourceAddress)).text(d.SourceAddress);
-						if (typeof ipcolours[d.SourceAddress] !== "undefined" && ipcolours[d.SourceAddress] !== "")
+						if (typeof ipcolours[d.SourceAddress] !== "undefined" && ipcolours[d.SourceAddress] !== ""){
 							cell.css("background-color", ipcolours[d.SourceAddress]);
+						}
 						cell = $("<td></td>").addClass("VoteType");
-						if (d.Vote==1) cell.html("<i class=\"VoteUpIcon icon-chevron-up icon-white\"></i>");
-						else if (d.Vote==-1) cell.html("<i class=\"VoteDownIcon icon-chevron-down icon-white\"></i>");
-						else cell.html("&nbsp;");
+						if (d.Vote==1){ cell.html("<i class=\"VoteUpIcon icon-chevron-up icon-white\"></i>");}
+						else if (d.Vote==-1){ cell.html("<i class=\"VoteDownIcon icon-chevron-down icon-white\"></i>");}
+						else {cell.html("&nbsp;");}
 						cell.appendTo(tableRow);
 
 						if (iplist.length>1)
@@ -647,10 +648,11 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 								}
 								var target = $(this).find(".IPAddress a").text();
 								$(this).parents("tbody").find("tr").each(function(){
-									if ($(this).find(".IPAddress a").text() == target)
+									if ($(this).find(".IPAddress a").text() == target){
 										$(this).addClass("highlight");
-									else
+									} else {
 										$(this).removeClass("highlight");
+									}
 								});
 							});
 						}
@@ -661,7 +663,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 				x.domain([d3.min(data.votes, function(d) { return d.date; }), d3.max(data.votes, function(d) { return d.date; })]);
 				var ydomain = d3.extent(data.votes, function(d) { return d.value; });
-				if (ydomain[0]>0) ydomain[0] = 0;
+				if (ydomain[0]>0){ ydomain[0] = 0;}
 				y.domain(ydomain);
 
 				rect.call(d3.behavior.zoom().x(x).on("zoom", zoom));
@@ -693,13 +695,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 				lineG.append("text")
 				.attr("text-anchor", "middle")
-				.attr('font-size', 11)
+				.attr("font-size", 11)
 				.attr("dy", ".1em")
 				.text(function(d) { return d.Username; });
 
 				lineG.append("text")
 				.attr("text-anchor", "middle")
-				.attr('font-size', 11)
+				.attr("font-size", 11)
 				.attr("dy", ".1em")
 				.attr("transform", "translate(0, 14)")
 				.text(function(d) { return d.SourceAddress; });
@@ -798,15 +800,15 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					otherText.children().remove();
 					otherText = otherText.text().split("\"");
 					var duration = otherText.shift().replace("\s+$","").toLowerCase();
-					if (duration.indexOf("permanently")!=-1 || duration.indexOf("permenantly")!=-1)
+					if (duration.indexOf("permanently")!=-1 || duration.indexOf("permenantly")!=-1){
 						duration = 0;
-					else if (duration.indexOf("hour")!=-1)
+					} else if (duration.indexOf("hour")!=-1){
 						duration = 60*60*(+duration.split(" ")[0]);
-					else if (duration.indexOf("day")!=-1)
+					} else if (duration.indexOf("day")!=-1){
 						duration = 60*60*24*(+duration.split(" ")[0]);
-					else if (duration.indexOf("week")!=-1)
+					} else if (duration.indexOf("week")!=-1){
 						duration = 60*60*24*7*(+duration.split(" ")[0]);
-					else if (duration.indexOf("month")!=-1)
+					} else if (duration.indexOf("month")!=-1){
 						duration = 60*60*24*7*4*(+duration.split(" ")[0]); // 4 weeks seems right, e.g. a ban reported on IRC as 67200 hours shows as 100 months
 					otherText.pop();
 					data.Bans.push({
@@ -858,18 +860,20 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	};
 	tptenhance.tags.TagInfoPopup.prototype.normaliseTargetElem = function(elem){
 		elem = $(elem);
-		if (elem.hasClass("TagText"))
+		if (elem.hasClass("TagText")){
 			elem = elem.parents(".Tag");
+		}
 		return elem;
 	};
 	tptenhance.tags.TagInfoPopup.prototype.handleRemoveLinkClick = function(e){
-		var tagInfo = $(e.target).parents('div.TagInfo');
+		var tagInfo = $(e.target).parents("div.TagInfo");
 		var saveId;
 		var matches = $(tagInfo).find("a.Tag-LinkRemove").attr("href").match(/ID=([0-9]+)/);
-		if (matches)
+		if (matches){
 			saveId = +matches[1];
-		else if (typeof currentSaveID!="undefined")
+		} else if (typeof currentSaveID!="undefined"){
 			saveId = currentSaveID;
+		}
 		var url = e.target.href;
 		var placeholder = $(tptenhance.deletingHtml).addClass("Tag-LinkRemove");
 		$(e.target).replaceWith(placeholder);
@@ -878,8 +882,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		$.get(url, function(){
 			placeholder.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemoved"));
 
-			if (that.targetElem.is("span.Tag.label"))
+			if (that.targetElem.is("span.Tag.label")){
 				that.targetElem.addClass("label-warning");
+			}
 			tptenhance.tags.tagRemovedCallbacks.fire(tagText, saveId);
 		});
 		return false;
@@ -904,7 +909,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 	tptenhance.tags.TagInfoPopup.prototype.handleDisableLinkClick = function(e){
 		var url = e.target.href;
-		var placeholder = $('<div class="pull-right label label-info Tag-LinkDisable Tag-placeholder-StatusChange"><i class="icon-refresh icon-white"></i> <strong>Disabling...</strong></div>');
+		var placeholder = $("<div class=\"pull-right label label-info Tag-LinkDisable Tag-placeholder-StatusChange\"><i class=\"icon-refresh icon-white\"></i> <strong>Disabling...</strong></div>");
 		placeholder.insertAfter(e.target);
 		$(e.target).addClass("hide");
 		var tagText = this.selectedTagText;
@@ -915,7 +920,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	};
 	tptenhance.tags.TagInfoPopup.prototype.handleEnableLinkClick = function(e){
 		var url = e.target.href;
-		var placeholder = $('<div class="pull-right label label-info Tag-LinkEnable Tag-placeholder-StatusChange"><i class="icon-refresh icon-white"></i> <strong>Enabling...</strong></div>');
+		var placeholder = $("<div class=\"pull-right label label-info Tag-LinkEnable Tag-placeholder-StatusChange\"><i class=\"icon-refresh icon-white\"></i> <strong>Enabling...</strong></div>");
 		placeholder.insertAfter(e.target);
 		$(e.target).addClass("hide");
 		var tagText = this.selectedTagText;
@@ -925,50 +930,56 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		return false;
 	};
 	tptenhance.tags.TagInfoPopup.prototype.onTagRemoved = function(affectedTagText, affectedSaveId){
-		if (!this.isOpen() || affectedTagText!==this.selectedTagText)
+		if (!this.isOpen() || affectedTagText!==this.selectedTagText){
 			return;
+		}
 
 		this.popupElem.find('div.TagInfo').each(function(){
 			var removeLink = $(this).find("a.Tag-LinkRemove");
-			if (!removeLink.length)
+			if (!removeLink.length){
 				return;
+			}
 			var tagSaveId;
 			var matches = removeLink.attr("href").match(/ID=([0-9]+)/);
-			if (matches)
+			if (matches){
 				tagSaveId = +matches[1];
-			else if (typeof currentSaveID!="undefined")
+			} else if (typeof currentSaveID!="undefined"){
 				tagSaveId = currentSaveID;
-			if (tagSaveId==affectedSaveId)
+			}
+			if (tagSaveId==affectedSaveId){
 				removeLink.replaceWith($(tptenhance.deletedHtml).addClass("Tag-LinkRemoved"));
+			}
 		});
 		setTimeout(this.updatePosition,1);
 	};
 	tptenhance.tags.TagInfoPopup.prototype.onTagDisabled = function(affectedTagText){
-		if (this.isOpen() && affectedTagText===this.selectedTagText)
+		if (this.isOpen() && affectedTagText===this.selectedTagText){
 			this.onDisabledStateChange(true);
+		}
 		setTimeout(this.updatePosition,1);
 	};
 	tptenhance.tags.TagInfoPopup.prototype.onTagEnabled = function(affectedTagText){
-		if (this.isOpen() && affectedTagText===this.selectedTagText)
+		if (this.isOpen() && affectedTagText===this.selectedTagText){
 			this.onDisabledStateChange(false);
+		}
 		setTimeout(this.updatePosition,1);
 	};
 
 	tptenhance.tags.TagInfoPopup.prototype.createRemoveLink = function(tagText, saveId){
-		var link = $('<a class="pull-right Tag-LinkRemove" title="Remove tag from this save">Remove</a>');
-		link.attr('href',tptenhance.tags.removeUrl(tagText,saveId));
-		link.on('click', this.handleRemoveLinkClick);
+		var link = $("<a class=\"pull-right Tag-LinkRemove\" title=\"Remove tag from this save\">Remove</a>");
+		link.attr("href",tptenhance.tags.removeUrl(tagText,saveId));
+		link.on("click", this.handleRemoveLinkClick);
 		return link;
 	};
 	tptenhance.tags.TagInfoPopup.prototype.createTagStatusLinks = function(tagText){
 		var container = $("<span></span>");
 		container.append(tptenhance.tags.createDisableLink(tagText)
 			.addClass("pull-right")
-			.on('click', this.handleDisableLinkClick)
+			.on("click", this.handleDisableLinkClick)
 		);
 		container.append(tptenhance.tags.createEnableLink(tagText)
 			.addClass("pull-right hide")
-			.on('click', this.handleEnableLinkClick)
+			.on("click", this.handleEnableLinkClick)
 		);
 		return container.children();
 	};
@@ -982,25 +993,26 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.remove();
 		this.targetElem = targetElem = this.normaliseTargetElem(targetElem);
 		this.tagDisabled = tptenhance.tags.isTagElemDisabled(this.targetElem);
-		this.popupElem = $('<div class="popover fade bottom in" style="display: block;"></div>');
+		this.popupElem = $("<div class=\"popover fade bottom in\" style=\"display: block;\"></div>");
 		this.popupElem.appendTo(document.body);
-		var inner = $('<div class="popover-inner"></div>').appendTo(this.popupElem);
-		var content = $('<div class="popover-content">Loading...</div>').appendTo(inner);
+		var inner = $("<div class=\"popover-inner\"></div>").appendTo(this.popupElem);
+		var content = $("<div class=\"popover-content"\>Loading...</div>").appendTo(inner);
 		this.updatePosition();
 		return content;
 	};
 	// Update popup position (below centre of element which generated popup)
 	tptenhance.tags.TagInfoPopup.prototype.updatePosition = function(){
-		if (!this.targetElem || !this.popupElem) return;
+		if (!this.targetElem || !this.popupElem){ return;}
 		var left = this.targetElem.offset().left - (this.popupElem.width()/2) + (this.targetElem.width()/2);
-		if (left<0) left = 0;
+		if (left<0){ left = 0;}
 		this.popupElem.css("left", left);
 		this.popupElem.css("top", this.targetElem.offset().top + this.targetElem.height());
 	};
 	// Remove the popup
 	tptenhance.tags.TagInfoPopup.prototype.remove = function(){
-		if (this.popupElem)
+		if (this.popupElem){
 			this.popupElem.remove();
+		}
 		this.popupElem = false;
 		this.targetElem = false;
 	};
@@ -1015,9 +1027,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			return;
 		}
 		// Abort any previous pending request
-		if (this.getInfoXHR)
+		if (this.getInfoXHR){
 			this.getInfoXHR.abort();
-
+		}
 		this.selectedTagText = tagText;
 		var content = this.create(targetElem);
 		var that = this;
@@ -1028,18 +1040,19 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				$(this).append(that.createRemoveLink(tagText, saveId));
 				$(this).append(that.createTagStatusLinks(tagText));
 			});
-			var showMore = $('<div class="TagPopup-showOthers"><a>Show uses on other saves</a></div>');
+			var showMore = $("<div class=\"TagPopup-showOthers\"><a>Show uses on other saves</a></div>");
 			showMore.appendTo(content);
 			showMore.find("a")
-				.attr('href',tptenhance.tags.searchUrl(tagText))
-				.on('click', function(){
+				.attr("href",tptenhance.tags.searchUrl(tagText))
+				.on("click", function(){
 					that.remove();
 					that.showAll(targetElem, tagText);
 					return false;
 				});
 			that.updatePosition();
-			if (that.tagDisabled)
+			if (that.tagDisabled){
 				that.onDisabledStateChange(true);
+			}
 		}, "html");
 	};
 
@@ -1079,7 +1092,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 				if (shouldSortUser && userName!==sortUser)
 				{
-					if (!separator) separator = $('<hr>').appendTo(content);
+					if (!separator){ separator = $('<hr>').appendTo(content);}
 					$(this).appendTo(content);// (move this tag to end - tags which don't get moved stay where they are, above the separator)
 				}
 			});
@@ -1113,16 +1126,18 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	};
 	tptenhance.tags.TagInstanceRemover.prototype._tagStart = function(){
 		if (!this.tags.length){
-			if (this.callback_finished)
+			if (this.callback_finished){
 				this.callback_finished();
+			}
 			return;
 		}
 
 		var total = this.tagsCount;
 		var done = total-this.tags.length;
 		this.currentTag = this.tags.shift();
-		if (this.callback_progress)
+		if (this.callback_progress){
 			this.callback_progress(done, total, this.currentTag);
+		}
 		this.currentXHR = $.get(tptenhance.tags.removeUrl(this.currentTag.tagText,this.currentTag.saveId), this._tagDone);
 	};
 	tptenhance.tags.TagInstanceRemover.prototype._tagDone = function(){
@@ -1196,10 +1211,11 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			var tagInfo = $(this);
 			var saveId = $(tagInfo.find("a")[0]).text();
 			var userName = $(tagInfo.find("a")[1]).text();
-			if (userName===that.targetUsername)
+			if (userName===that.targetUsername){
 				that.tagInstanceRemover.push(that.currentTagText, saveId);
-			else
+			} else {
 				that.currentTag_onlyUser = false;
+			}
 		});
 		this.tagInstanceRemover.callback_progress = this.removeTag_progress;
 		this.tagInstanceRemover.callback_finished = this.removeTag_done;
@@ -1223,7 +1239,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype.onFinished = function(){
 		this.container.empty();
-		this.container.append('<div class="alert alert-success">All tags by this user removed</span></div>');
+		this.container.append("<div class=\"alert alert-success\">All tags by this user removed</span></div>");
 		tptenhance.tags.tagInfoPopup.updatePosition();
 	};
 
@@ -1234,13 +1250,14 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.tagFetched = this.tagFetched.bind(this);
 		this.pendingRows = [];
 		this.fetchRow = false;
-		this.tableElem = $('<table cellspacing="0" cellpadding="0" class="TagsTable"><thead><tr><th>Tag</th><th>Username</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>');
+		this.tableElem = $("<table cellspacing=\"0\" cellpadding=\"0\" class=\"TagsTable\"><thead><tr><th>Tag</th><th>Username</th><th>&nbsp;</th></tr></thead><tbody></tbody></table>");
 		var tbody = this.tableElem.find("tbody");
 		var that = this;
 		tagElems.each(function(){
 			var row = new tptenhance.tags.SaveTagsTableRow(this);
-			if (!tptenhance.tags.isTagElemDisabled(this) && !tptenhance.tags.isTagElemRemoved(this))
+			if (!tptenhance.tags.isTagElemDisabled(this) && !tptenhance.tags.isTagElemRemoved(this)){
 				that.pendingRows.push(row);
+			}
 			tbody.append(row.rowElem);
 		});
 		this.tagStart();
@@ -1248,8 +1265,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	tptenhance.tags.SaveTagsTable.prototype.tagStart = function()
 	{
 		this.fetchTimeout = false;
-		if (!this.pendingRows.length)
+		if (!this.pendingRows.length){
 			return;
+		}
 		this.fetchRow = this.pendingRows.shift();
 		$.get(tptenhance.tags.infoUrl(this.fetchRow.tagText, currentSaveID), this.tagFetched, "html");
 	};
