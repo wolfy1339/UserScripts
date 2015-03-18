@@ -7,7 +7,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.50
+// @version     1.51
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -39,20 +39,21 @@ if (window.location.pathname == "/Download.html" || window.location.pathname == 
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     addCss(
     [".Meta .Author img{",
-    "background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
-    "background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
-    "background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
-    "background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "    background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "    background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+    "    background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "}",
     ".Meta .Author img {",
-    "z-index:-1; border-radius:3px;box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "-moz-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "-webkit-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "-o-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "-ms-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    z-index:-1; border-radius:3px;box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -moz-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -webkit-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -o-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -ms-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
     "}",
     ".Developer .Comment .Meta .Author {",
-    "background-image:url(/Themes/Next/Design/Images/Developer.png);}"].join("\n"));
+    "    background-image:url(/Themes/Next/Design/Images/Developer.png);",
+    "}"].join("\n"));
 
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
