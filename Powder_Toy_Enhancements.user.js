@@ -1841,8 +1841,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 												cell = $("<td></td>").appendTo(row);
 												$("<a></a>").text(s.DisplayText).attr("href", url).appendTo(cell);
 
-												cell = $("<td></td>").text(s.Type+': ').appendTo(row);
-												$("<a></a>").text(s.LinkID).attr('href', url).appendTo(cell);
+												cell = $("<td></td>").text(s.Type+": ").appendTo(row);
+												$("<a></a>").text(s.LinkID).attr("href", url).appendTo(cell);
 											}
 										}
 										else if (s.Type=="Spark sign")
@@ -1869,12 +1869,12 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					searchesTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						var container = $("<div><strong>Search for similar saves by:</strong><br></div>").css({"text-align":"center"});
-						$('<a></a>')
+						$("<a></a>")
 							.attr("href", "http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query="+encodeURIComponent("sort:id search:title "+$(".Title").attr("title").trim()))
 							.text("Title")
 							.append("<br>")
 							.appendTo(container);
-						$('<a></a>')
+						$("<a></a>")
 							.attr("href", "http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query="+encodeURIComponent("search:similartitle "+$(".Title").attr("title").trim()))
 							.text("Similar title")
 							.append("<br>")
@@ -1911,8 +1911,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	{
 		$(document).ready(function(){
 			setTimeout(function(){
-				$("span.TagText").die('click');
-				$("span.TagText").on('click', function(){
+				$("span.TagText").die("click");
+				$("span.TagText").on("click", function(){
 					tptenhance.tags.tagInfoPopup.showAll($(this), $(this).text());
 				});
 				tptenhance.tags.attachHandlers($("div.Tag"));
@@ -1972,7 +1972,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					$.get(Link, function(data){
 						$("#ActionSpinner").fadeOut("fast");
 						$(".Pagination").html(data.Pagination);
-						OLHeight = $('ul.MessageList').height();
+						OLHeight = $("ul.MessageList").height();
 						$("ul.MessageList").children().addClass("QueueRemove");
 						var newTop;
 						if(goBack){
@@ -2023,11 +2023,11 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	if (window.location.toString().indexOf("/Groups/")!=-1)
 	{
 		$(document).ready(function(){
-			$(".ButtonLink").addClass('btn');
+			$(".ButtonLink").addClass("btn");
 			$(".GroupOptions .btn").each(function(){
 				var txt = $(this).text();
-				if (txt=="New Topic") $(this).addClass("btn-primary");
-				if (txt=="Resign") $(this).addClass("btn-danger");
+				if (txt=="New Topic"){ $(this).addClass("btn-primary");}
+				if (txt=="Resign"){ $(this).addClass("btn-danger");}
 			});
 			$(".GroupInfo").append($(".GroupOptions"));
 			$(".SubmitF input[type=\"submit\"]").addClass("btn btn-primary");
@@ -2056,7 +2056,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					$(this).attr("href", $(this).attr("href").replace(/\?Name=/, "?ID="));
 				});
 				// Remove join time for pending registrations, since this seems to always be the current time. 
-				$('.NewMembers .MemberJoined').remove();
+				$(".NewMembers .MemberJoined").remove();
 			}
 			if (window.location.toString().indexOf("/Groups/Admin/MemberRemove.html")!=-1) {
 				// Prettier removal confirmation button
@@ -2075,7 +2075,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				tptenhance.wysiwygLoaded++;
 				if (tptenhance.wysiwygLoaded>=2)
 				{
-					WYSIWYG('#AddReplyMessage, textarea[name="Post_Message"], textarea[name="Thread_Message"]');
+					WYSIWYG("#AddReplyMessage, textarea[name=\"Post_Message\"], textarea[name=\"Thread_Message\"]");
 					window.GetRef = function(Username, PostID){
 						$("html, body").animate({scrollTop: $(document).height()}, 200);
 						$("#AddReplyMessage.EditPlain").insertAtCaret("@"+Username+"!"+PostID+"\n");
@@ -2112,7 +2112,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			$("form input[type=\"submit\"]").each(function(){
 				var txt = $(this).attr("value");
 				if (txt=="Stick" || txt=="Unstick"){ $(this).addClass("btn-info");}
-				if (txt=="Delete Thread"){ $(this).addClass("btn-danger');}
+				if (txt=="Delete Thread"){ $(this).addClass("btn-danger");}
 				if (txt=="Save"){ $(this).addClass("btn-primary");}
 				if (txt=="Post"){ $(this).addClass("btn-primary").css('margin-top', '5px');}
 			});
@@ -2236,8 +2236,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	}
 	
 	// Correct repository username for github button, so that number of stars displays correctly
-	if ($(".social-github iframe").length)
+	if ($(".social-github iframe").length){
 		$(".social-github iframe").attr("src", $(".social-github iframe").attr("src").replace("FacialTurd", "simtr"));
+	}
 
 });
 
