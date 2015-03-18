@@ -1093,7 +1093,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 				if (shouldSortUser && userName!==sortUser)
 				{
-					if (!separator){ separator = $('<hr>').appendTo(content);}
+					if (!separator){ separator = $("<hr>").appendTo(content);}
 					$(this).appendTo(content);// (move this tag to end - tags which don't get moved stay where they are, above the separator)
 				}
 			});
@@ -1158,7 +1158,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.removeTag_progress = this.removeTag_progress.bind(this);
 		this.removeTag_done = this.removeTag_done.bind(this);
 
-		this.progressElem = $("<div style=\"width:40%;margin-right:5%\" class=\"pull-left\"><div class=\"progresstitle\">Removing tags</div><div class="progress"><div class=\"bar\" role=\"progressbar\" style=\"width: 0%;\"></div></div></div>");
+		this.progressElem = $("<div style=\"width:40%;margin-right:5%\" class=\"pull-left\"><div class=\"progresstitle\">Removing tags</div><div class=\"progress\"><div class=\"bar\" role=\"progressbar\" style=\"width: 0%;\"></div></div></div>");
 		this.progressSubElem = $("<div style=\"width:40%;\" class=\"pull-left\"><div class=\"progresstitle\">&nbsp;</div><div class=\"progress\"><div class=\"bar\" role=\"progressbar\" style=\"width: 0%; transition:width 0s;\"></div></div>");
 		this.container = container;
 
@@ -1176,7 +1176,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	};
 
 	tptenhance.tags.RemoveAllTagsByUser.prototype._setProgress = function(elem, doneAmount, statusText){
-		elem.find(".bar").css("width", (doneAmount*100)+'%');
+		elem.find(".bar").css("width", (doneAmount*100)+"%");
 		elem.find(".progresstitle").text(statusText);
 	};
 	tptenhance.tags.RemoveAllTagsByUser.prototype.setProgress = function(doneAmount, statusText){
@@ -1323,7 +1323,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	tptenhance.tags.SaveTagsTableRow.prototype.onTagRemoved = function(affectedTagText, affectedSaveId){
 		if (affectedSaveId==currentSaveID && affectedTagText===this.tagText)
 		{
-			this.removeLink.replaceWith('<span><span class="label label-success"><i class="icon-ok icon-white" title="Removed"></i></span></span></span>');
+			this.removeLink.replaceWith("<span><span class=\"label label-success\"><i class=\"icon-ok icon-white\" title=\"Removed\"></i></span></span></span>");
 		}
 	};
 	tptenhance.tags.SaveTagsTableRow.prototype.onTagDisabled = function(affectedTagText){
@@ -1345,7 +1345,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		this.userCell.append($(data).filter("div.TagInfo").find("a").first());
 	};
 	tptenhance.tags.SaveTagsTableRow.prototype.handleRemoveLinkClick = function(e){
-		var pendingIndicator = $("<span><span class="\label label-info\" title\="Removing...\"><i class=\"icon-refresh icon-white\"></i></span></span>");
+		var pendingIndicator = $("<span><span class=\"label label-info\" title=\"Removing...\"><i class=\"icon-refresh icon-white\"></i></span></span>");
 		var url = e.target.href;
 		var that = this;
 		$.get(url,function(){
@@ -1388,7 +1388,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 		var that = this;
 		$(window).bind("popstate", function(){
-			that.changePage(''+self.location);
+			that.changePage(""+self.location);
 		});
 		this.msgList = this.container.find(".MessageList");
 		this.pagination = this.container.find(".Pagination");
@@ -1398,14 +1398,14 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	tptenhance.comments.CommentView.prototype.attachCommentHandlers = function(){
 		var that = this;
 		this.msgList.find(".Actions a").each(function(){
-			if (this.href.indexOf('DeleteComment=')!==-1)
+			if (this.href.indexOf("DeleteComment=")!==-1)
 			{
-				$(this).off('click').on("click",that.handleDeleteClick);
-				var url = $(this).attr('href');
+				$(this).off("click").on("click",that.handleDeleteClick);
+				var url = $(this).attr("href");
 				var redirectUrl = (""+self.location).replace(/^http:\/\/powdertoy.co.uk/, "");
 				if (url.match(/Redirect=[^&]*/)){
 					url = url.replace(/Redirect=[^&]*/, "Redirect="+encodeURIComponent(redirectUrl));
-				} else if (url.indexOf('?')!==-1){
+				} else if (url.indexOf("?")!==-1){
 					url += "&Redirect="+encodeURIComponent(redirectUrl);
 				} else{
 					url += "?Redirect="+encodeURIComponent(redirectUrl);
@@ -1416,7 +1416,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		tptenhance.makeSaveLinks(this.msgList.find(".Post .Message"));
 	};
 	tptenhance.comments.CommentView.prototype.attachPaginationHandlers = function(){
-		this.pagination.find("a").off('click').on('click', this.handlePaginationClick);
+		this.pagination.find("a").off("click").on("click", this.handlePaginationClick);
 	};
 	tptenhance.comments.CommentView.prototype.handleDeleteClick = function(e){
 		var deleteLink = $(e.target);
@@ -1524,7 +1524,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						return;
 					}
 					$(this).remove();//remove the button
-					var container = $('<div></div>');
+					var container = $("<div></div>");
 					$("div.Tag").first().before(container);
 					var tagRemover = new tptenhance.tags.RemoveAllTagsByUser(container, $("div.Tag"), tptenhance.getPageUsername());
 					tagRemover.start();
@@ -1568,7 +1568,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				var form = $(".BanUser form");
 				var banReason = form.find("input[name=\"BanReason\"]").val();
 				var banTimeType = form.find("select[name=\"BanTimeSpan\"]").val();
-				var banTime = form.find("input[name=\"BanTime\"]'".val();
+				var banTime = form.find("input[name=\"BanTime\"]".val();
 				if (banTimeType!="p")
 				{
 					if (banTime.toString() != (+banTime).toString() || (+banTime)<=0 || (+banTime)!=(+banTime))
@@ -1613,7 +1613,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					$(".MoreInfoForum a").each(function(){
 						if ($(this).text().indexOf("replies by")>-1)
 						{
-							elem = $('<div class="UserInfoRow"><a></a></div>');
+							elem = $("<div class=\"UserInfoRow\"><a></a></div>");
 							elem.find("a").attr("href", "/Discussions/Search/PostsByAuthor.html?Search_Query="+encodeURIComponent(username)).text("Find all posts by "+username+" (old version)");
 							elem.insertAfter($(this).closest(".UserInfoRow"));
 						}
@@ -1638,7 +1638,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				$("span.Tag").die("click");
 				if (tptenhance.isMod())
 				{
-					$("span.Tag").on('click', function(){
+					$("span.Tag").on("click", function(){
 						tptenhance.tags.tagInfoPopup.showSingle($(this), $(this).text(), currentSaveID);
 					});
 
@@ -1699,7 +1699,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 							}
 							else
 							{
-								$('<div class="alert alert-success" style="margin-top: 10px;">This save has never been reported.</div>').appendTo(tptenhance.saveDetailsTabContent);
+								$("<div class=\"alert alert-success\" style=\"margin-top: 10px;\">This save has never been reported.</div>" ).appendTo(tptenhance.saveDetailsTabContent);
 							}
 							reportsTab.find("a").text("Reports ("+reports.length+")");
 							tptenhance.tags.tagInfoPopup.updatePosition();
@@ -1719,27 +1719,29 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					bumpsTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.saves.infoJsonUrlPTT(currentSaveID), function(data){
-							if (currentTabLink.text()!==bumpsTab.find("a").text())
+							if (currentTabLink.text()!==bumpsTab.find("a").text()){
 								return;
+							}
 							tptenhance.saveDetailsTabContent.empty();
-							var bumpList = $('<div style="text-align:center;"></div>');
+							var bumpList = $("<div style=\"text-align:center;\"></div>");
 							data.BumpTimes.sort(function(a,b){return b-a;});
 							if (data.BumpTimes.length)
 							{
-								if (data.BumpTimes.length>1)
-									$('<strong>This save has been bumped at least '+data.BumpTimes.length+' times:</strong>').appendTo(bumpList);
-								else
-									$('<strong>This save has been bumped at least once:</strong>').appendTo(bumpList);
+								if (data.BumpTimes.length>1){
+									$("<strong>This save has been bumped at least "+data.BumpTimes.length+" times:</strong>").appendTo(bumpList);
+								} else {
+									$("<strong>This save has been bumped at least once:</strong>").appendTo(bumpList);
+								}
 								data.BumpTimes.forEach(function(bt) {
 									var d = new Date(+bt * 1000);
-									var timeString = [('0'+d.getHours()).slice(-2), ('0'+d.getMinutes()).slice(-2), ('0'+d.getSeconds()).slice(-2)].join(':');
-									var dateText = [('0'+d.getDate()).slice(-2), tptenhance.monthNamesShort[d.getMonth()], d.getFullYear(), timeString].join(' ');
-									$('<div></div>').text(dateText).appendTo(bumpList);
+									var timeString = [("0"+d.getHours()).slice(-2), ("0"+d.getMinutes()).slice(-2), ("0"+d.getSeconds()).slice(-2)].join(":");
+									var dateText = [("0"+d.getDate()).slice(-2), tptenhance.monthNamesShort[d.getMonth()], d.getFullYear(), timeString].join(" ");
+									$("<div></div>").text(dateText).appendTo(bumpList);
 								});
 							}
 							else
 							{
-								bumpList.text('No record found of this save ever being published');
+								bumpList.text("No record found of this save ever being published");
 							}
 							tptenhance.saveDetailsTabContent.append(bumpList);
 							tptenhance.tags.tagInfoPopup.updatePosition();
@@ -1749,8 +1751,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					detailTab.find("a").on("click", function(e){
 						tabSwitch(this);
 						$.get(tptenhance.saves.infoDetailedJsonUrlPTT(currentSaveID), function(data){
-							if (currentTabLink.text()!==detailTab.find("a").text())
+							if (currentTabLink.text()!==detailTab.find("a").text()){
 								return;
+							}
 							tptenhance.saveDetailsTabContent.empty();
 							if (typeof data.Error!="undefined")
 							{
@@ -1763,7 +1766,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 							else
 							{
 								var container;
-								container = $('<div><div class="ElemCountChart"></div></div>');
+								container = $("<div><div class=\"ElemCountChart\"></div></div>");
 								var elemsChart = d3.select(container.find(".ElemCountChart").get(0));
 								var totalCount = d3.sum(data.ElementCount, function(d) { return d.Count; });
 								elemsChart.selectAll("div.bar")
@@ -1774,20 +1777,24 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 								.style("width", function(d){return (d.Count/totalCount*100)+"%";})
 								.style("background-color", function(d){return (typeof d.Colour!="undefined") ? "#"+d.Colour : "#000"; })
 								.style("color", function(d){
-									if (typeof d.Colour=="undefined")
+									if (typeof d.Colour=="undefined"){
 										return "#FFF";
+									}
 									//2*r + 3*g + b
-									if (2*parseInt(d.Colour.substring(0,2),16) + 3*parseInt(d.Colour.substring(2,4),16) + parseInt(d.Colour.substring(4,6),16) > 544)
+									if (2*parseInt(d.Colour.substring(0,2),16) + 3*parseInt(d.Colour.substring(2,4),16) + parseInt(d.Colour.substring(4,6),16) > 544){
 										return "#000";
-									else
+									} else{
 										return "#FFF";
+									}
 								})
 								.each(function(d){
 									var nametxt;
-									if (typeof d.Name!="undefined")
+									if (typeof d.Name!="undefined"){
 										nametxt = d.Name;
-									else
+									}
+									else{
 										nametxt = d.Identifier;
+									}
 									var tooltiptxt = nametxt+": "+d.Count+" ";
 									tooltiptxt += (d.Count===1) ? "particle" : "particles";
 									$(this).tooltip({title:tooltiptxt, placement:"top"});
@@ -1796,55 +1803,57 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 								elemsChart.append("div").classed("Clear", true);
 								tptenhance.saveDetailsTabContent.append(container);
 
-								container = $('<div style="text-align:center;"><div class="SaveDetails-notifyOld">(data may be up to 5 minutes old)</div></div>');
-								var signsTbl = $('<table cellspacing="0" cellpadding="0" style="margin:0 auto;" class="SignsTbl"><thead><tr><th>Position</th><th>Displayed text</th><th>Sign type</th></tr></thead><tbody></tbody></table>');
-								var signsTblBody = signsTbl.find('tbody');
+								container = $("<div style=\"text-align:center;\"><div class=\"SaveDetails-notifyOld\">(data may be up to 5 minutes old)</div></div>");
+								var signsTbl = $("<table cellspacing=\"0\" cellpadding=\"0\" style=\"margin:0 auto;\" class=\"SignsTbl\"><thead><tr><th>Position</th><th>Displayed text</th><th>Sign type</th></tr></thead><tbody></tbody></table>");
+								var signsTblBody = signsTbl.find("tbody");
 								data.Signs.sort(function(a,b){return a.PlacementY*10000-b.PlacementY*10000+a.PlacementX-b.PlacementX;});
 								if (data.Signs.length)
 								{
 									data.Signs.forEach(function(s){
-										var row = $('<tr></tr>');
+										var row = $("<tr></tr>");
 										var count = 0;
 										for (var i=0; i<data.Signs.length; ++i)
 										{
-											if (data.Signs[i].PlacementX==s.PlacementX && data.Signs[i].PlacementY==s.PlacementY && data.Signs[i].RawText==s.RawText)
+											if (data.Signs[i].PlacementX==s.PlacementX && data.Signs[i].PlacementY==s.PlacementY && data.Signs[i].RawText==s.RawText){
 												++count;
+											}
 										}
-										if (count>1)
+										if (count>1){
 											row.addClass("DupSign");
-										$('<td></td>').text(s.PlacementX+','+s.PlacementY).appendTo(row);
+										}
+										$("<td></td>").text(s.PlacementX+","+s.PlacementY).appendTo(row);
 										if (s.Type=="Save link" || s.Type=="Thread link")
 										{
 											if (s.Type=="Save link")
 											{
 												url = tptenhance.saves.viewUrl(s.LinkID);
-												cell = $('<td></td>').appendTo(row);
-												$('<a></a>').text(s.DisplayText).attr('href', url).appendTo(cell);
+												cell = $("<td></td>").appendTo(row);
+												$("<a></a>").text(s.DisplayText).attr("href", url).appendTo(cell);
 
-												cell = $('<td></td>').text(s.Type+': ').appendTo(row);
-												$('<a></a>').text(s.LinkID).attr('href', url).appendTo(cell);
-												var thumb = $('<img>').attr('src', tptenhance.saves.smallImgUrl(s.LinkID));
-												$('<a class="SignLinkSaveThumb"></a>').append(thumb).attr('href', url).appendTo(cell);
+												cell = $("<td></td>").text(s.Type+": ").appendTo(row);
+												$("<a></a>").text(s.LinkID).attr("href", url).appendTo(cell);
+												var thumb = $("<img>").attr("src", tptenhance.saves.smallImgUrl(s.LinkID));
+												$("<a class=\"SignLinkSaveThumb\"></a>").append(thumb).attr("href", url).appendTo(cell);
 											}
 											else if (s.Type=="Thread link")
 											{
 												url = tptenhance.forums.threadUrl(s.LinkID);
-												cell = $('<td></td>').appendTo(row);
-												$('<a></a>').text(s.DisplayText).attr('href', url).appendTo(cell);
+												cell = $("<td></td>").appendTo(row);
+												$("<a></a>").text(s.DisplayText).attr("href", url).appendTo(cell);
 
-												cell = $('<td></td>').text(s.Type+': ').appendTo(row);
-												$('<a></a>').text(s.LinkID).attr('href', url).appendTo(cell);
+												cell = $("<td></td>").text(s.Type+': ').appendTo(row);
+												$("<a></a>").text(s.LinkID).attr('href', url).appendTo(cell);
 											}
 										}
 										else if (s.Type=="Spark sign")
 										{
-											$('<td></td>').text(s.DisplayText).appendTo(row);
-											$('<td></td>').text(s.Type).appendTo(row);
+											$("<td></td>").text(s.DisplayText).appendTo(row);
+											$("<td></td>").text(s.Type).appendTo(row);
 										}
 										else
 										{
-											$('<td></td>').text(s.RawText).appendTo(row);
-											$('<td></td>').text(s.Type).appendTo(row);
+											$("<td></td>").text(s.RawText).appendTo(row);
+											$("<td></td>").text(s.Type).appendTo(row);
 										}
 										row.appendTo(signsTblBody);
 									});
@@ -1859,23 +1868,23 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					
 					searchesTab.find("a").on("click", function(e){
 						tabSwitch(this);
-						var container = $('<div><strong>Search for similar saves by:</strong><br></div>').css({"text-align":"center"});
+						var container = $("<div><strong>Search for similar saves by:</strong><br></div>").css({"text-align":"center"});
 						$('<a></a>')
-							.attr('href', 'http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query='+encodeURIComponent("sort:id search:title "+$(".Title").attr('title').trim()))
+							.attr("href", "http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query="+encodeURIComponent("sort:id search:title "+$(".Title").attr("title").trim()))
 							.text("Title")
-							.append('<br>')
+							.append("<br>")
 							.appendTo(container);
 						$('<a></a>')
-							.attr('href', 'http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query='+encodeURIComponent("search:similartitle "+$(".Title").attr('title').trim()))
+							.attr("href", "http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query="+encodeURIComponent("search:similartitle "+$(".Title").attr("title").trim()))
 							.text("Similar title")
-							.append('<br>')
+							.append("<br>")
 							.appendTo(container);
 						if ($(".SaveDescription").text().trim()!="No Description provided.")
 						{
-							$('<a></a>')
-								.attr('href', 'http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query='+encodeURIComponent("sort:id search:desc "+$(".SaveDescription").text().trim()))
+							$("<a></a>")
+								.attr("href", "http://powdertoythings.co.uk/Powder/Saves/Search.html?Search_Query="+encodeURIComponent("sort:id search:desc "+$(".SaveDescription").text().trim()))
 								.text("Description")
-								.append('<br>')
+								.append("<br>")
 								.appendTo(container);
 						}
 						tptenhance.saveDetailsTabContent.append(container);
@@ -1883,13 +1892,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					});
 
 					
-					var newDetailsPane = $('<div class="SaveDetails"></div>').insertAfter("#VoteGraph");
+					var newDetailsPane = $("<div class=\"SaveDetails\"></div>").insertAfter("#VoteGraph");
 					//$("#VoteGraph").remove();
 					//newDetailsPane.append(newVoteGraph.find(".Warning"));
-					$('<div></div>').append(tabs).css({"text-align": "center"}).appendTo(newDetailsPane);
+					$("<div></div>").append(tabs).css({"text-align": "center"}).appendTo(newDetailsPane);
 					//newDetailsPane.append(newVoteGraph);
 					tptenhance.saveDetailsTabs = tabs;
-					tptenhance.saveDetailsTabContent = $('<div></div>').appendTo(newDetailsPane);
+					tptenhance.saveDetailsTabContent = $("<div></div>").appendTo(newDetailsPane);
 				}
 				$(".AddComment .OtherF textarea").attr("maxlength", 500);
 			},1);
@@ -1918,8 +1927,8 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		window.LoadForumBlocks = tptenhance.LoadForumBlocks;
 		$(document).ready(function(){
 			setTimeout(function(){
-				$(".Pagination a").die('click');
-				$(".Pagination a").live('click', function(){
+				$(".Pagination a").die("click");
+				$(".Pagination a").live("click", function(){
 					if(!window.history.pushState){
 						return true;
 					}
@@ -1927,17 +1936,18 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 					var matchesCurrent = window.location.toString().match(/PageNum=([0-9]+)/);
 					var matchesNew = this.href.match(/PageNum=([0-9]+)/);
-					if (matchesCurrent && matchesNew && (+matchesNew[1])<(+matchesCurrent[1]))
+					if (matchesCurrent && matchesNew && (+matchesNew[1])<(+matchesCurrent[1])){
 						goBack = 1;
+					}
 
 					var doScroll = function(){};
 					if (goBack)
 					{
-						if ($(window).scrollTop() >= $('.Pagefooter').offset().top-$(window).height())
+						if ($(window).scrollTop() >= $(".Pagefooter").offset().top-$(window).height())
 						{
-							var scrolloffset = $(window).scrollTop()-($('.Pagefooter').offset().top-$(window).height());
+							var scrolloffset = $(window).scrollTop()-($(".Pagefooter").offset().top-$(window).height());
 							doScroll = function(){
-								$(window).scrollTop(scrolloffset+$('.Pagefooter').offset().top-$(window).height());
+								$(window).scrollTop(scrolloffset+$(".Pagefooter").offset().top-$(window).height());
 							};
 						}
 						else
@@ -1947,7 +1957,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 							};
 						}
 					}
-					else if ($(window).scrollTop() > $('.TopicTitle').offset().top)
+					else if ($(window).scrollTop() > $(".TopicTitle").offset().top)
 					{
 						doScroll = function(){
 							$(window).scrollTop(0);
@@ -1999,13 +2009,13 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 		$(document).ready(function(){
 			// To fix the site redirecting to the first page of the thread instead of the page with the post when a post is hidden
 			// submit form via Ajax request then redirect to the correct page ourselves
-			$('.FullForm').on('submit', function(e){
+			$(".FullForm").on("submit", function(e){
 				e.preventDefault();
 				$(this).find(".btn.btn-primary").addClass("disabled").attr("value", "Hiding...");
 				var formData = $(this).serialize();
 				formData += "&Hide_Hide=Hide+Post";
-				$.post($(this).attr('action'), formData, function(){
-					window.location = '/Discussions/Thread/View.html?'+(window.location.search.match(/Post=[0-9]+/)[0]);
+				$.post($(this).attr("action"), formData, function(){
+					window.location = "/Discussions/Thread/View.html?"+(window.location.search.match(/Post=[0-9]+/)[0]);
 				});
 			});
 		});
@@ -2013,44 +2023,44 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 	if (window.location.toString().indexOf("/Groups/")!=-1)
 	{
 		$(document).ready(function(){
-			$('.ButtonLink').addClass('btn');
-			$('.GroupOptions .btn').each(function(){
+			$(".ButtonLink").addClass('btn');
+			$(".GroupOptions .btn").each(function(){
 				var txt = $(this).text();
-				if (txt=="New Topic") $(this).addClass('btn-primary');
-				if (txt=="Resign") $(this).addClass('btn-danger');
+				if (txt=="New Topic") $(this).addClass("btn-primary");
+				if (txt=="Resign") $(this).addClass("btn-danger");
 			});
-			$('.GroupInfo').append($('.GroupOptions'));
-			$('.SubmitF input[type="submit"]').addClass('btn btn-primary');
+			$(".GroupInfo").append($(".GroupOptions"));
+			$(".SubmitF input[type=\"submit\"]").addClass("btn btn-primary");
 			if (window.location.toString().indexOf("/Groups/Page/Register.html")!=-1) {
-				$('form input[type="submit"]').addClass('btn btn-primary').css('margin', '10px 0');
+				$("form input[type=\"submit\"]").addClass("btn btn-primary").css("margin", "10px 0");
 			}
 			if (window.location.toString().indexOf("/Groups/Admin/Members.html")!=-1) {
-				$('.MemberActions a.btn').each(function(){
+				$(".MemberActions a.btn").each(function(){
 					// Add icons and colours to buttons
 					$(this).addClass("btn-mini");
 					if ($(this).text()=="Accept")
 					{
-						$(this).addClass("btn-success").prepend('<i class="icon-ok icon-white"></i> ');
+						$(this).addClass("btn-success").prepend("<i class=\"icon-ok icon-white\"></i> ");
 					}
 					if ($(this).text()=="Reject")
 					{
-						$(this).addClass("btn-danger").prepend('<i class="icon-remove icon-white"></i> ');
+						$(this).addClass("btn-danger").prepend("<i class=\"icon-remove icon-white\"></i> ");
 					}
 					if ($(this).text()=="Remove")
 					{
-						$(this).addClass("btn-danger").html('<i class="icon-remove icon-white"></i>');
+						$(this).addClass("btn-danger").html("<i class=\"icon-remove icon-white\"></i>");
 					}
 				});
 				$('.NewMembers a.MemberName').each(function(){
 					// User profile link is broken for pending registrations, uses Name=1234 instead of either Name=JohnSmith or ID=1234
-					$(this).attr('href', $(this).attr('href').replace(/\?Name=/, "?ID="));
+					$(this).attr("href", $(this).attr("href").replace(/\?Name=/, "?ID="));
 				});
 				// Remove join time for pending registrations, since this seems to always be the current time. 
 				$('.NewMembers .MemberJoined').remove();
 			}
 			if (window.location.toString().indexOf("/Groups/Admin/MemberRemove.html")!=-1) {
 				// Prettier removal confirmation button
-				$('.FullForm input[type="submit"]').addClass('btn btn-danger').text('Remove');
+				$(".FullForm input[type=\"submit\"]").addClass("btn btn-danger").text("Remove");
 			}
 		});
 	}
@@ -2067,19 +2077,19 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				{
 					WYSIWYG('#AddReplyMessage, textarea[name="Post_Message"], textarea[name="Thread_Message"]');
 					window.GetRef = function(Username, PostID){
-						$('html, body').animate({scrollTop: $(document).height()}, 200);
+						$("html, body").animate({scrollTop: $(document).height()}, 200);
 						$("#AddReplyMessage.EditPlain").insertAtCaret("@"+Username+"!"+PostID+"\n");
-						$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand('mceInsertContent',false, "<p>@"+Username+"!"+PostID+"</p><p></p>");
+						$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand("mceInsertContent",false, "<p>@"+Username+"!"+PostID+"</p><p></p>");
 					};
 					window.GetQuote = function(PostID, Element, Username){
-						$('html, body').animate({scrollTop: $(document).height()}, 200);
+						$("html, body").animate({scrollTop: $(document).height()}, 200);
 						$.get("/Groups/Thread/Post.json?Type=Raw&Post="+PostID, function(data){
 							if(data.Status==1){
 								$("#AddReplyMessage.EditPlain").insertAtCaret("<p><cite>"+Username+"</cite>:</p><blockquote>"+data.Post+"</blockquote>");
-								$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand('mceInsertContent',false, "<p><cite>"+Username+"</cite>:</p><blockquote>"+data.Post+"</blockquote><p>&nbsp;</p>");
+								$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand("mceInsertContent",false, "<p><cite>"+Username+"</cite>:</p><blockquote>"+data.Post+"</blockquote><p>&nbsp;</p>");
 							} else {
 								$("#AddReplyMessage.EditPlain").insertAtCaret("<p><cite>"+Username+"</cite>:</p><blockquote>"+$("#"+Element).text()+"</blockquote>");
-								$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand('mceInsertContent',false, "<p><cite>"+Username+"</cite>:</p><blockquote>"+$("#"+Element).text()+"</blockquote><p>&nbsp;</p>");
+								$("#AddReplyMessage.EditWYSIWYG").tinymce().execCommand("mceInsertContent",false, "<p><cite>"+Username+"</cite>:</p><blockquote>"+$("#"+Element).text()+"</blockquote><p>&nbsp;</p>");
 							}
 						});	
 					};
@@ -2088,30 +2098,31 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			$.getScript("/Applications/Application.Discussions/Javascript/jQuery.TinyMCE.js", wysiwygPrepare);
 			$.getScript("/Applications/Application.Discussions/Javascript/WYSIWYG.js", wysiwygPrepare);
 			
-			$('.Banned .Comment .Information').addClass("alert alert-warning").html("This post is hidden because the user is banned");
-			$('.Pagefooter .Warning').addClass("alert alert-warning");
-			$('.Member .Comment .Information, .Administrator .Comment .Information, .Moderator .Comment .Information').addClass("alert alert-warning").html("This post has been hidden");
-			$('.Comment .Actions .ButtonLink').addClass('btn-mini');
-			$('.Comment .Actions').removeClass('Actions').addClass('Actions2');// to stop groups CSS on site from overriding bootstrap button styles
-			$('.Post.Moderator').each(function(){
-				if ($(this).find(".Meta .UserTitle").text()=="Member")
+			$(".Banned .Comment .Information").addClass("alert alert-warning").html("This post is hidden because the user is banned");
+			$(".Pagefooter .Warning").addClass("alert alert-warning");
+			$(".Member .Comment .Information, .Administrator .Comment .Information, .Moderator .Comment .Information").addClass("alert alert-warning").html("This post has been hidden");
+			$(".Comment .Actions .ButtonLink").addClass("btn-mini");
+			$(".Comment .Actions").removeClass("Actions").addClass("Actions2");// to stop groups CSS on site from overriding bootstrap button styles
+			$(".Post.Moderator").each(function(){
+				if ($(this).find(".Meta .UserTitle").text()=="Member"){
 					$(this).find(".Meta .UserTitle").text("Moderator");
+				}
 			});
-			$('form input[type="submit"]').addClass('btn');
-			$('form input[type="submit"]').each(function(){
-				var txt = $(this).attr('value');
-				if (txt=="Stick" || txt=="Unstick") $(this).addClass('btn-info');
-				if (txt=="Delete Thread") $(this).addClass('btn-danger');
-				if (txt=="Save") $(this).addClass('btn-primary');
-				if (txt=="Post") $(this).addClass('btn-primary').css('margin-top', '5px');
+			$("form input[type=\"submit\"]").addClass("btn");
+			$("form input[type=\"submit\"]").each(function(){
+				var txt = $(this).attr("value");
+				if (txt=="Stick" || txt=="Unstick"){ $(this).addClass("btn-info");}
+				if (txt=="Delete Thread"){ $(this).addClass("btn-danger');}
+				if (txt=="Save"){ $(this).addClass("btn-primary");}
+				if (txt=="Post"){ $(this).addClass("btn-primary").css('margin-top', '5px');}
 			});
-			$('.Pageheader').prepend('<a href="/Groups/Page/Groups.html">Groups</a> &raquo;');
-			$(".HidePostButton").off('click');
-			$(".HidePostButton").on('click', function(){ 
-				InformationForm = $('<div class="Information"></div>');
-				Form = $('<form class="FullForm" method="POST" action="'+$(this).attr('href').replace(/\.html/, ".json")+'"><div class="alert">Are you sure you want to hide this post?<input type="submit" name="Hide_Hide" class="btn btn-primary btn-mini" value="Hide Post" style="float:right;"><div class="Clear"></div></div></form>');
+			$('.Pageheader').prepend("<a href=\"/Groups/Page/Groups.html\">Groups</a> &raquo;");
+			$(".HidePostButton").off("click");
+			$(".HidePostButton").on("click", function(){ 
+				InformationForm = $("<div class=\"Information\"></div>");
+				Form = $("<form class=\"FullForm\" method=\"POST\" action=\""+$(this).attr("href").replace(/\.html/, ".json")+"\"><div class=\"alert\">Are you sure you want to hide this post?<input type=\"submit\" name=\"Hide_Hide\" class=\"btn btn-primary btn-mini\" value=\"Hide Post\" style=\"float:right;\"><div class=\"Clear\"></div></div></form>");
 				InformationForm.html(Form);
-				$(this).parent().parent().parent().children('.Message').html(InformationForm);
+				$(this).parent().parent().parent().children(".Message").html(InformationForm);
 				Form.submit(function(){
 					Link = $(this).attr("action").replace(/\.html/, ".json");
 					NewData = $(this).serialize();
@@ -2119,18 +2130,18 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 					$.post(Link, NewData, null, "json").always(function(){
 						location.reload(true);
 					});
-					$(this).replaceWith('Hiding...<div class="AJAXSpinner"></div>');
+					$(this).replaceWith("Hiding...<div class=\"AJAXSpinner\"></div>");
 					return false;
 				});
 				return false;
 			});
 			var groupId = tptenhance.groups.currentGroupId();
 			$(".Post a").each(function(){
-				if ($(this).text()!="(View Post)") return;
-				var matches = $(this).attr('href').match(/\/Discussions\/Thread\/View.html\?Post=([0-9]+)$/);
+				if ($(this).text()!="(View Post)"){ return;}
+				var matches = $(this).attr("href").match(/\/Discussions\/Thread\/View.html\?Post=([0-9]+)$/);
 				if (matches)
 				{
-					$(this).attr('href', "/Groups/Thread/View.html?Post="+encodeURIComponent(matches[1])+"&Group="+encodeURIComponent(groupId));
+					$(this).attr("href", "/Groups/Thread/View.html?Post="+encodeURIComponent(matches[1])+"&Group="+encodeURIComponent(groupId));
 				}
 			});
 			var threadPageNum = $(".Pagination .active a").first().attr("href").match(/PageNum=([0-9]+)/)[1];
@@ -2153,7 +2164,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			var reports = tptenhance.reports.parseReportsHtml($(".SaveReports"));
 			$("<h1>Save reports</h1>").insertAfter($(".Subpage .Pagination").first());
 			setTimeout(function(){
-				$("#PaginationContainer a").die('click');
+				$("#PaginationContainer a").die("click");
 			},1);
 			if (reports.length)
 			{
@@ -2206,7 +2217,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			}
 			else
 			{
-				$('<div class="alert alert-success" style="margin-top: 10px;">There are no unread reports.</div>').insertAfter($("#SaveReportsList"));
+				$("<div class=\"alert alert-success\" style=\"margin-top: 10px;\">There are no unread reports.</div>").insertAfter($("#SaveReportsList"));
 				$("#SaveReportsList").remove();
 			}
 		});
@@ -2217,7 +2228,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 			var usernameElem = $(".SubmenuTitle");
 			if (usernameElem.length)
 			{
-				var tabElem = $('<li class=\"item\"><a>Published</a></li>');
+				var tabElem = $("<li class=\"item\"><a>Published</a></li>");
 				tabElem.find("a").attr("href", "/Browse.html?Search_Query=user:"+encodeURIComponent(usernameElem.text()));
 				tabElem.insertAfter($(".Pageheader .nav li:nth-child(2)"));
 			}
@@ -2232,9 +2243,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 
 function addCss(cssString)
 {
-	var head = document.getElementsByTagName('head')[0];
-	if (!head) return;
-	var newCss = document.createElement('style');
+	var head = document.getElementsByTagName("head")[0];
+	if (!head){ return;}
+	var newCss = document.createElement("style");
 	newCss.type = "text/css";
 	newCss.innerHTML = cssString;
 	head.appendChild(newCss);
