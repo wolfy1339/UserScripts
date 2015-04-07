@@ -12,7 +12,6 @@
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 
-// addCss function from Powder Toy enhancements
 function addCss(cssString){
 	var style = jQuery("<style type=\"text/css\"></style>");
 	style.append(cssString);
@@ -22,14 +21,23 @@ function addCss(cssString){
 //Fixes for the rebuilt search feature
 if (window.location.pathname == "/Search.html"){
     jQuery(".search-avatar").css({"margin-right":"10px"});
-    addCss([".search-thumbnail img {border-radius:3px;border:2px solid #DDD;}",
-    ".search-result .details {margin-left:70px;margin-right:20px;}"].join("\n"));
+    addCss([".search-thumbnail img {",
+    "    border-radius:3px;",
+    "    border:2px solid #DDD;",
+    "}",
+    ".search-result .details {",
+    "    margin-left: 70px;",
+    "    margin-right:20px;",
+    "}"].join("\n"));
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
 if (window.location.pathname == "/Discussions/Categories/Index.html"){
     //Fix, if number is big it won't overflow as much
-    addCss(".TopicList li .Meta span {max-height:14px;font-size:10px;}");
+    addCss([".TopicList li .Meta span {",
+    "    max-height: 14px;",
+    "    font-size: 10px;",
+    "}"].join("\n"));
 }
 if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
     //Fix GitHub watch button
@@ -38,28 +46,30 @@ if (window.location.pathname == "/Download.html" || window.location.pathname == 
 //Make Groups system better
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     addCss(
-    [".Meta .Author img{",
+    [".Meta .Author img {",
     "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "    background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "    background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "    background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
-    "}",
-    ".Meta .Author img {",
-    "    z-index:-1; border-radius:3px;box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "    -moz-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "    -webkit-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "    -o-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
-    "    -ms-box-shadow:0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    z-index: -1;",
+    "    border-radius: 3px;",
+    "    box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -o-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
+    "    -ms-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
     "}",
     ".Developer .Comment .Meta .Author {",
-    "    background-image:url(/Themes/Next/Design/Images/Developer.png);",
+    "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
     "}"].join("\n"));
 
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
-    jQuery(".Meta .Author a:contains(\"jacob1\")").closest(".Post").removeClass("Moderator").addClass("Developer");
-    jQuery(".Developer .Comment .Meta .UserTitle").text("Developer");
+    if (jQuery(".Meta .Author a").text() == "jacob1" || jQuery(".Meta .Author a").text() == "cracker64" || jQuery(".Meta .Author a").text() == "jacksonmj"){
+        jQuery(this).closest(".Post").removeClass("Moderator").addClass("Developer");
+        jQuery(this).find(".UserTitle").text("Developer");
+    }
 
     setTimeout(function(){
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
@@ -71,9 +81,7 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
 
     //Set timeout to wait for all page content (embedded saves) to load
     setTimeout(function(){
-        jQuery(".fSaveRating").each(function(){
-            $(this).remove();
-        });
+        jQuery(".fSaveRating").remove();
         jQuery(".fSaveGameThumb").contents().unwrap();
         jQuery(".fAuthor").addClass("author").removeClass("fAuthor");
         jQuery(".fComments").addClass("comments").removeClass("fComments");
@@ -99,22 +107,26 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
             $(this).replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
         });
         jQuery(".fTitle").addClass("title").removeClass("fTitle");
-        jQuery(".SaveDownloadDo").each(function(){
-            jQuery(this).remove();
-        });
+        jQuery(".SaveDownloadDo").remove();
         jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
         jQuery(".savegame").on("mouseover", function() {
-            jQuery(this).find(".overlay").animate({ opacity: 1, top: "3px" }, 150);
+            jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
         });
         jQuery(".savegame").on("mouseleave", function() {
-            jQuery(this).find(".overlay").animate({ opacity: 0, top: "-23px" }, 150);
+            jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
         });
     }, 10000);
 }
-if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1){
-    jQuery(".Pageheader").css({"margin":"0","border-top":"none", "border-right":"none", "border-left":"none"}).addClass("breadcrumb").removeClass("Pageheader");
+if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1) {
+    addCss([".Pageheader {",
+    "    margin: 0",
+    "    border-top: none",
+    "    border-right: none",
+    "    border-left: none",
+    "}"].join("\n"));
+    jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
 }
-if (window.location.pathname.indexOf("/Groups/Admin/")!=-1){
+if (window.location.pathname == "/Groups/Admin/Members.html"){
     jQuery(".Pagination").remove();
     jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
     jQuery(".contents").css({"width":"900px"});
@@ -132,5 +144,12 @@ if (window.location.pathname == "/Groups/Page/Index.html"){
 }
 if (window.location.pathname == "/Groups/Page/Groups.html"){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
-    jQuery(".PageFooter").css({"border-left":"none","border-right":"none","border-bottom":"none","margin":0,"padding":0}).addClass("breadcrumb").removeClass("PageFooter");
+    addCss([".PageFooter {",
+    "    border-left: none;",
+    "    border-right: none;",
+    "    border-bottom: none;",
+    "    margin: 0;",
+    "    padding: 0;"
+    "}"].join("\n"));
+    jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
 }
