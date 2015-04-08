@@ -1568,7 +1568,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				var form = $(".BanUser form");
 				var banReason = form.find("input[name=\"BanReason\"]").val();
 				var banTimeType = form.find("select[name=\"BanTimeSpan\"]").val();
-				var banTime = form.find("input[name=\"BanTime\"]".val();
+				var banTime = form.find("input[name=\"BanTime\"]").val();
 				if (banTimeType!="p")
 				{
 					if (banTime.toString() != (+banTime).toString() || (+banTime)<=0 || (+banTime)!=(+banTime))
@@ -2051,7 +2051,7 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 						$(this).addClass("btn-danger").html("<i class=\"icon-remove icon-white\"></i>");
 					}
 				});
-				$('.NewMembers a.MemberName').each(function(){
+				$(".NewMembers a.MemberName").each(function(){
 					// User profile link is broken for pending registrations, uses Name=1234 instead of either Name=JohnSmith or ID=1234
 					$(this).attr("href", $(this).attr("href").replace(/\?Name=/, "?ID="));
 				});
@@ -2114,9 +2114,9 @@ by <span class="SaveAuthor">WinstonsDomain</span></div>
 				if (txt=="Stick" || txt=="Unstick"){ $(this).addClass("btn-info");}
 				if (txt=="Delete Thread"){ $(this).addClass("btn-danger");}
 				if (txt=="Save"){ $(this).addClass("btn-primary");}
-				if (txt=="Post"){ $(this).addClass("btn-primary").css('margin-top', '5px');}
+				if (txt=="Post"){ $(this).addClass("btn-primary").css("margin-top", "5px");}
 			});
-			$('.Pageheader').prepend("<a href=\"/Groups/Page/Groups.html\">Groups</a> &raquo;");
+			$(".Pageheader").prepend("<a href=\"/Groups/Page/Groups.html\">Groups</a> &raquo;");
 			$(".HidePostButton").off("click");
 			$(".HidePostButton").on("click", function(){ 
 				InformationForm = $("<div class=\"Information\"></div>");
