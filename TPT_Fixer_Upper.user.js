@@ -4,6 +4,7 @@
 // @description This Script fixes some bugs/errors on The Powder Toy's website (http://powdertoy.co.uk)
 // @icon        http://brilliant-minds.tk/img/powder.png
 // @author      wolfy1339
+// @oujs:author wolfy1339
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
@@ -66,10 +67,15 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
-    if (jQuery(".Meta .Author a").text() == "jacob1" || jQuery(".Meta .Author a").text() == "cracker64" || jQuery(".Meta .Author a").text() == "jacksonmj"){
-        jQuery(this).closest(".Post").removeClass("Moderator").addClass("Developer");
-        jQuery(this).find(".UserTitle").text("Developer");
-    }
+    var find = function(classes){
+        jQuery(this).find(classes);
+    };
+    jQuery(".Moderator").each(function(){
+        if (find(".Meta .Author a").text() == "jacob1" || find(".Meta .Author a").text() == "cracker64" || find(".Meta .Author a").text() == "jacksonmj"){
+            jQuery(this).removeClass("Moderator").addClass("Developer");
+            jQuery(this).find(".UserTitle").text("Developer");
+        }
+    });
 
     setTimeout(function(){
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
@@ -144,7 +150,7 @@ if (window.location.pathname == "/Groups/Page/Index.html"){
 }
 if (window.location.pathname == "/Groups/Page/Groups.html"){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
-    addCss([".PageFooter {",
+    addCss([".breadcrumb {",
     "    border-left: none;",
     "    border-right: none;",
     "    border-bottom: none;",
