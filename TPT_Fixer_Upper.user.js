@@ -67,11 +67,11 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
-    var find = function(classes){
-        jQuery(this).find(classes);
-    };
+    function find(classes){
+        jQuery(this).find(classes).text();
+    }
     jQuery(".Moderator").each(function(){
-        if (find(".Meta .Author a").text() == "jacob1" || find(".Meta .Author a").text() == "cracker64" || find(".Meta .Author a").text() == "jacksonmj"){
+        if (find(".Meta .Author a") == "jacob1" || find(".Meta .Author a") == "cracker64" || find(".Meta .Author a") == "jacksonmj"){
             jQuery(this).removeClass("Moderator").addClass("Developer");
             jQuery(this).find(".UserTitle").text("Developer");
         }
