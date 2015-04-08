@@ -122,7 +122,7 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     }, 10000);
 }
 if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1) {
-    addCss([".Pageheader {",
+    addCss([".breadcrumb {",
     "    margin: 0",
     "    border-top: none",
     "    border-right: none",
