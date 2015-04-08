@@ -28,7 +28,7 @@ if (window.location.pathname == "/Search.html"){
     ".search-result .details {",
     "    margin-left: 70px;",
     "    margin-right:20px;",
-    "}"].join("\n"));
+    "}"].join("\n"););
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
@@ -37,7 +37,7 @@ if (window.location.pathname == "/Discussions/Categories/Index.html"){
     addCss([".TopicList li .Meta span {",
     "    max-height: 14px;",
     "    font-size: 10px;",
-    "}"].join("\n"));
+    "}"].join("\n"););
 }
 if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
     //Fix GitHub watch button
@@ -61,7 +61,7 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     "}",
     ".Developer .Comment .Meta .Author {",
     "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
-    "}"].join("\n"));
+    "}"].join("\n"););
 
     jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
     jQuery(".Mine.Owner").addClass("Administrator");
@@ -123,7 +123,7 @@ if (window.location.pathname == "/Groups/Page/View.html" || window.location.path
     "    border-top: none",
     "    border-right: none",
     "    border-left: none",
-    "}"].join("\n"));
+    "}"].join("\n"););
     jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
 }
 if (window.location.pathname == "/Groups/Admin/Members.html"){
@@ -150,6 +150,6 @@ if (window.location.pathname == "/Groups/Page/Groups.html"){
     "    border-bottom: none;",
     "    margin: 0;",
     "    padding: 0;"
-    "}"].join("\n"));
+    "}"].join("\n"););
     jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
 }
