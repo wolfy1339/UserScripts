@@ -11,7 +11,7 @@
 // contentEval, from http://userscripts.org/scripts/source/100842.user.js :
 function contentEval(source) {
   if ("function" === typeof source) {
-    source = "(' + source + ')();";
+    source = "(" + source + ")();";
   }
   var script = document.createElement("script");
   script.setAttribute("type", "application/javascript");
