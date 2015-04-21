@@ -163,14 +163,12 @@ if (window.location.pathname == "/Groups/Page/Groups.html"){
     jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
 }
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1 || window.location.pathname == "/Groups/Admin/Members.html"){
-    jQuery(".breadcrumb").each(function(){
-        var currentGroupID = jQuery(this).first().next().attr("href").match(/[0-9]+/)[0];
-        var currentGroupName = jQuery(this).first().next().text();
-        var currentThreadName = jQuery(this).text().substring(1,99);
-        $(this).replaceWith(["<ul class=\"breadcrumb\">",
-        "       <li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-        "       <li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
-        "       <li class=\"active\"><a>" + currentThreadName + "</a></li>",
-        "</ul>"].join("\n"));
-    });
+    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").match(/[0-9]+/)[0];
+    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+    var currentThreadName = jQuery("h1.TopicTitle").text();
+    $(".breacrumb").replaceWith(["<ul class=\"breadcrumb\">",
+    "       <li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+    "       <li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+    "       <li class=\"active\"><a>" + currentThreadName + "</a></li>",
+    "</ul>"].join("\n"));
 }
