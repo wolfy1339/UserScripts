@@ -47,7 +47,7 @@ if (window.location.pathname == "/Download.html" || window.location.pathname == 
     	if ($(this).find(".Platform").text() == "Ubuntu/Debian .Deb (External: GetDeb)"){
     	    $(this).find(".Version").text("90.2");
     	}
-    }
+    });
 }
 //Make Groups system better
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
@@ -164,8 +164,8 @@ if (window.location.pathname == "/Groups/Page/Groups.html"){
 }
 if (window.location.pathname.indexOf("/Groups/Thread/")!=-1 || window.location.pathname == "/Groups/Admin/Members.html"){
     jQuery(".breadcrumb").each(function(){
-        var currentGroupID = jQuery(this:first-child).next().attr("href").match(match(/[0-9]+/)[0]);
-        var currentGroupName = jQuery(this:first-child).next().text();
+        var currentGroupID = jQuery(this).first().next().attr("href").match(/[0-9]+/)[0];
+        var currentGroupName = jQuery(this).first().next().text();
         var currentThreadName = jQuery(this).text().substring(1,99);
         $(this).replaceWith(["<ul class=\"breadcrumb\">",
         "       <li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
