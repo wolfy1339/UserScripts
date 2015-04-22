@@ -125,6 +125,20 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
             jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
         });
     }, 10000);
+    
+    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href");
+    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+    if (window.location.pathname == "/Groups/Thread/View.html"){
+    	var currentThreadName = jQuery("h1.TopicTitle").text();
+    } else {
+    	var currentThreadName = "Edit Post";
+    }
+    var breadcrumb = (["<ul class=\"breadcrumb\">",
+    "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+    "<li><a href=\"" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+    "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+    "</ul>"].join(""));
+    jQuery(".breadcrumb").replaceWith(breadcrumb);
 }
 if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1) {
     addCss([".breadcrumb {",
@@ -161,14 +175,4 @@ if (window.location.pathname == "/Groups/Page/Groups.html"){
     "    padding: 0;",
     "}"].join("\n"));
     jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
-}
-if (window.location.pathname.indexOf("/Groups/Thread/")!=-1 || window.location.pathname == "/Groups/Admin/Members.html"){
-    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").match(/[0-9]+/)[0];
-    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-    var currentThreadName = jQuery("h1.TopicTitle").text();
-    $(".breacrumb").replaceWith(["<ul class=\"breadcrumb\">",
-    "       <li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-    "       <li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
-    "       <li class=\"active\"><a>" + currentThreadName + "</a></li>",
-    "</ul>"].join("\n"));
 }
