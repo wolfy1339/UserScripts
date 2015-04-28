@@ -8,19 +8,46 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
+// @require     https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js
 // @version     1.52
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 
+var currentURL = window.location.pathname;
 function addCss(cssString){
 	var style = jQuery("<style type=\"text/css\"></style>");
 	style.append(cssString);
 	style.appendTo("head");
 }
+function replacePageHeader(){
+    jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
+    var breadcrumb = jQuery(".breadcrumb");
+    var container = jQuery("<div class=\"container\"></div>");
+    var currentGroupID = window.location.search.substring(7);
+    var currentGroupName = jQuery(breadcrumb).children(":first-child").next().text();
+    var currentThreadName;
+    if (currentURL == "/Groups/Thread/View.html"){
+        currentThreadName = jQuery(".TopicTitle").text();
+    } else if (currentURL == "/Groups/Thread/EditPost.html") {
+        currentThreadName = "Edit Post";
+    } else if(currentURL == "/Groups/Admin/Members.html") {
+        currentThreadName = "Members";
+    } else if (currentURL == "/Groups/Admin/Edit.html") {
+        currentThreadName = "Edit";
+    }
+    var breadcrumbNew = (["<ul class=\"breadcrumb\">",
+    "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+    "<li><a href=\"http://powdertoy.co.uk/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+    "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+    "</ul>"].join(""));
+    jQuery(".breadcrumb").remove();
+    container.append(breadcrumbNew);
+    container.insertBefore(".contents");
+}
 
 //Fixes for the rebuilt search feature
-if (window.location.pathname == "/Search.html"){
+if (currentURL == "/Search.html"){
     jQuery(".search-avatar").css({"margin-right":"10px"});
     addCss([".search-thumbnail img {",
     "    border-radius:3px;",
@@ -33,14 +60,14 @@ if (window.location.pathname == "/Search.html"){
     jQuery(".posts .search-thumbnail").css({"width":"63px"});
     jQuery(".threads .search-thumbnail").css({"width":"63px"});
 }
-if (window.location.pathname == "/Discussions/Categories/Index.html"){
+if (currentURL == "/Discussions/Categories/Index.html"){
     //Fix, if number is big it won't overflow as much
     addCss([".TopicList li .Meta span {",
     "    max-height: 14px;",
     "    font-size: 10px;",
     "}"].join("\n"));
 }
-if (window.location.pathname == "/Download.html" || window.location.pathname == "/"){
+if (currentURL == "/Download.html" || currentURL == "/"){
     //Fix GitHub watch button
     jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
     jQuery(".platforms").each(function(){
@@ -50,7 +77,7 @@ if (window.location.pathname == "/Download.html" || window.location.pathname == 
     });
 }
 //Make Groups system better
-if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
+if (currentURL.indexOf("/Groups/Thread/")!=-1){
     addCss(
     [".Meta .Author img {",
     "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
@@ -73,19 +100,15 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
     jQuery(".Mine.Owner").addClass("Administrator");
     jQuery(".Mine.Manager").addClass("Moderator");
     jQuery(".Moderator").each(function(){
-    	var find = jQuery(this).find(".Meta .Author a").text();
-        if (find == "jacob1" || find == "cracker64" || find == "jacksonmj"){
+    	var findDev = jQuery(this).find(".Meta .Author a").text();
+        if (findDev == "jacob1" || findDev == "cracker64" || findDev == "jacksonmj"){
             jQuery(this).removeClass("Moderator").addClass("Developer");
             jQuery(this).find(".UserTitle").text("Developer");
         }
     });
 
     setTimeout(function(){
-        jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
-        var breadcrumb = jQuery(".breadcrumb").detach();
-        var container = jQuery("<div class=\"container\"></div>");
-        breadcrumb.appendTo(container);
-        container.insertBefore(".contents");
+        jQuery(replacePageHeader);
     }, 500);
 
     //Set timeout to wait for all page content (embedded saves) to load
@@ -115,7 +138,6 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
             href = $(this).find("a").attr("href");
             $(this).replaceWith("<h5 title=\""+ title +"\"><a href=\""+ href +"\">"+ text +"</a></h5>");
         });
-        jQuery(".fTitle").addClass("title").removeClass("fTitle");
         jQuery(".SaveDownloadDo").remove();
         jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
         jQuery(".savegame").on("mouseover", function() {
@@ -125,22 +147,8 @@ if (window.location.pathname.indexOf("/Groups/Thread/")!=-1){
             jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
         });
     }, 10000);
-    
-    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href");
-    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-    if (window.location.pathname == "/Groups/Thread/View.html"){
-    	var currentThreadName = jQuery("h1.TopicTitle").text();
-    } else {
-    	var currentThreadName = "Edit Post";
-    }
-    var breadcrumb = (["<ul class=\"breadcrumb\">",
-    "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-    "<li><a href=\"" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
-    "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-    "</ul>"].join(""));
-    jQuery(".breadcrumb").replaceWith(breadcrumb);
 }
-if (window.location.pathname == "/Groups/Page/View.html" || window.location.pathname == "/Groups/Page/Register.html" || window.location.pathname.indexOf("/Groups/Admin/")!=-1) {
+if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
     addCss([".breadcrumb {",
     "    margin: 0;",
     "    border-top: none;",
@@ -149,23 +157,26 @@ if (window.location.pathname == "/Groups/Page/View.html" || window.location.path
     "}"].join("\n"));
     jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
 }
-if (window.location.pathname == "/Groups/Admin/Members.html"){
+if (currentURL.indexOf("/Groups/Admin/")!=-1){
+    jQuery(replacePageHeader);
+}
+if (currentURL == "/Groups/Admin/Members.html"){
     jQuery(".Pagination").remove();
     jQuery(".MemberRow .ButtonLink").css({"display":"inline-block"});
     jQuery(".contents").css({"width":"900px"});
     jQuery(".MemberColumn").css({"width":"417.5px"});
     jQuery(".MemberName").css({"width":"120px"});
 }
-if (window.location.pathname == "/Groups/Admin/MemberElevation.html"){
+if (currentURL == "/Groups/Admin/MemberElevation.html"){
     jQuery("input[type=\"submit\"]").addClass("btn");
 }
-if (window.location.pathname == "/Groups/Page/Index.html"){
+if (currentURL == "/Groups/Page/Index.html"){
     jQuery(".Pageheader").css({"background":"#fff","border-bottom":"0px","font-weight":"normal","padding":"0"});
     jQuery(".Page").css({"border":"none"});
     jQuery(".contents").css({"padding":"10px","background":"white", "border":"1px solid #DDD"});
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
 }
-if (window.location.pathname == "/Groups/Page/Groups.html"){
+if (currentURL == "/Groups/Page/Groups.html"){
     jQuery(".GroupItem:last-child").css({"border-bottom":"none"});
     addCss([".breadcrumb {",
     "    border-left: none;",
