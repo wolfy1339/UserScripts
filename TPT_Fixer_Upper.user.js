@@ -16,16 +16,15 @@
 
 var currentURL = window.location.pathname;
 function addCss(cssString){
-	var style = jQuery("<style type=\"text/css\"></style>");
+    var style = jQuery("<style type=\"text/css\"></style>");
 	style.append(cssString);
 	style.appendTo("head");
 }
 function replacePageHeader(){
     jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
-    var breadcrumb = jQuery(".breadcrumb");
     var container = jQuery("<div class=\"container\"></div>");
-    var currentGroupID = window.location.search.substring(7);
-    var currentGroupName = jQuery(breadcrumb).children(":first-child").next().text();
+    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
+    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
     var currentThreadName;
     if (currentURL == "/Groups/Thread/View.html"){
         currentThreadName = jQuery(".TopicTitle").text();
@@ -36,13 +35,13 @@ function replacePageHeader(){
     } else if (currentURL == "/Groups/Admin/Edit.html") {
         currentThreadName = "Edit";
     }
-    var breadcrumbNew = (["<ul class=\"breadcrumb\">",
+    var breadcrumb = (["<ul class=\"breadcrumb\">",
     "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-    "<li><a href=\"http://powdertoy.co.uk/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+    "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
     "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
     "</ul>"].join(""));
     jQuery(".breadcrumb").remove();
-    container.append(breadcrumbNew);
+    container.append(breadcrumb);
     container.insertBefore(".contents");
 }
 
@@ -108,7 +107,7 @@ if (currentURL.indexOf("/Groups/Thread/")!=-1){
     });
 
     setTimeout(function(){
-        jQuery(replacePageHeader);
+        replacePageHeader();
     }, 500);
 
     //Set timeout to wait for all page content (embedded saves) to load
@@ -158,7 +157,7 @@ if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Regist
     jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
 }
 if (currentURL.indexOf("/Groups/Admin/")!=-1){
-    jQuery(replacePageHeader);
+    replacePageHeader();
 }
 if (currentURL == "/Groups/Admin/Members.html"){
     jQuery(".Pagination").remove();
