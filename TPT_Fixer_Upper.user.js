@@ -33,7 +33,7 @@ if (typeof tptenhance == "undefined") {
         } else {
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         }
-        var currentThreadName, currentGroupName, breadcrumb;
+        var currentThreadName, currentGroupName, currentUserName, breadcrumb;
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
@@ -45,7 +45,7 @@ if (typeof tptenhance == "undefined") {
             currentGroupName = jQuery(".breadcrumb").find("a").text();
         } else if (currentURL == "/Groups/Admin/MemberElevation.html") {
             currentThreadName = "Edit";
-            var currentUserName = jQuery(".OtherF a").text();
+            currentUserName = jQuery(".OtherF a").text();
         }
 
         if (currentURL == "/Groups/Admin/MemberElevation.html") {
@@ -55,8 +55,7 @@ if (typeof tptenhance == "undefined") {
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"
-            ].join(""));
+                "</ul>"].join(""));
         } else {
             if (currentURL.indexOf("/Groups/Thread/") != -1) {
                 currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
@@ -65,8 +64,7 @@ if (typeof tptenhance == "undefined") {
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"
-            ].join(""));
+                "</ul>"].join(""));
         }
 
         jQuery(".breadcrumb").remove();
@@ -86,8 +84,7 @@ if (typeof tptenhance == "undefined") {
             ".search-result .details {",
             "    margin-left: 70px;",
             "    margin-right:20px;",
-            "}"
-        ].join("\n"));
+            "}"].join("\n"));
         jQuery(".posts .search-thumbnail").css({
             "width": "63px"
         });
@@ -100,8 +97,7 @@ if (typeof tptenhance == "undefined") {
         addCss([".TopicList li .Meta span {",
             "    max-height: 14px;",
             "    font-size: 10px;",
-            "}"
-        ].join("\n"));
+            "}"].join("\n"));
     }
     if (currentURL == "/Download.html" || currentURL == "/") {
         //Fix GitHub watch button
@@ -129,8 +125,7 @@ if (typeof tptenhance == "undefined") {
             "}",
             ".Developer .Comment .Meta .Author {",
             "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
-            "}"
-        ].join("\n"));
+            "}"].join("\n"));
 
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
@@ -164,9 +159,7 @@ if (typeof tptenhance == "undefined") {
 
                 overlay.append("<a class=\"btn btn-primary\" href=\"" + href + "\">View</a>");
                 overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:" + pthref + "#" + title + "\">Open</a>");
-                overlay.css({
-                    "opacity": 0
-                });
+                overlay.css({"opacity": 0});
                 overlay.appendTo(this);
             });
 
@@ -179,16 +172,10 @@ if (typeof tptenhance == "undefined") {
             jQuery(".SaveDownloadDo").remove();
             jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
             jQuery(".savegame").on("mouseover", function () {
-                jQuery(this).find(".overlay").animate({
-                    opacity: 1,
-                    top: "3px"
-                }, 150);
+                jQuery(this).find(".overlay").animate({opacity: 1,top: "3px"}, 150);
             });
             jQuery(".savegame").on("mouseleave", function () {
-                jQuery(this).find(".overlay").animate({
-                    opacity: 0,
-                    top: "-23px"
-                }, 150);
+                jQuery(this).find(".overlay").animate({opacity: 0,top: "-23px"}, 150);
             });
         }, 10000);
     }
@@ -198,8 +185,7 @@ if (typeof tptenhance == "undefined") {
             "    border-top: none;",
             "    border-right: none;",
             "    border-left: none;",
-            "}"
-        ].join("\n"));
+            "}"].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
     }
     if (currentURL.indexOf("/Groups/Admin/") != -1) {
@@ -207,18 +193,10 @@ if (typeof tptenhance == "undefined") {
     }
     if (currentURL == "/Groups/Admin/Members.html") {
         jQuery(".Pagination").remove();
-        jQuery(".MemberRow .ButtonLink").css({
-            "display": "inline-block"
-        });
-        jQuery(".contents").css({
-            "width": "900px"
-        });
-        jQuery(".MemberColumn").css({
-            "width": "417.5px"
-        });
-        jQuery(".MemberName").css({
-            "width": "120px"
-        });
+        jQuery(".MemberRow .ButtonLink").css({"display": "inline-block"});
+        jQuery(".contents").css({"width": "900px"});
+        jQuery(".MemberColumn").css({"width": "417.5px"});
+        jQuery(".MemberName").css({"width": "120px"});
     }
     if (currentURL == "/Groups/Admin/MemberElevation.html") {
         jQuery("input[type=\"submit\"]").addClass("btn");
@@ -230,30 +208,23 @@ if (typeof tptenhance == "undefined") {
             "font-weight": "normal",
             "padding": "0"
         });
-        jQuery(".Page").css({
-            "border": "none"
-        });
+        jQuery(".Page").css({"border": "none"});
         jQuery(".contents").css({
             "padding": "10px",
             "background": "white",
             "border": "1px solid #DDD"
         });
-        jQuery(".GroupItem:last-child").css({
-            "border-bottom": "none"
-        });
+        jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
     }
     if (currentURL == "/Groups/Page/Groups.html") {
-        jQuery(".GroupItem:last-child").css({
-            "border-bottom": "none"
-        });
+        jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
         addCss([".breadcrumb {",
             "    border-left: none;",
             "    border-right: none;",
             "    border-bottom: none;",
             "    margin: 0;",
             "    padding: 0;",
-            "}"
-        ].join("\n"));
+            "}"].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
 }
