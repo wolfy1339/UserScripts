@@ -8,12 +8,15 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @require     https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js
 // @version     1.52
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 
+if (typeof tptenhance == "undefined"){
+    var script = "<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>";
+    jQuery("head").append(script);
+} else {
 var currentURL = window.location.pathname;
 function addCss(cssString){
     var style = jQuery("<style type=\"text/css\"></style>");
@@ -23,9 +26,13 @@ function addCss(cssString){
 function replacePageHeader(){
     jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
     var container = jQuery("<div class=\"container\"></div>");
-    var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
-    var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-    var currentThreadName;
+    var currentGroupID;
+    if (currentURL == "/Groups/Thread/View.html"){
+        currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
+    } else {
+        currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
+    }
+    var currentThreadName, currentGroupName, breadcrumb;
     if (currentURL == "/Groups/Thread/View.html"){
         currentThreadName = jQuery(".TopicTitle").text();
     } else if (currentURL == "/Groups/Thread/EditPost.html") {
@@ -34,12 +41,31 @@ function replacePageHeader(){
         currentThreadName = "Members";
     } else if (currentURL == "/Groups/Admin/Edit.html") {
         currentThreadName = "Edit";
+        currentGroupName = jQuery(".breadcrumb").find("a").text();
+    } else if (currentURL == "/Groups/Admin/MemberElevation.html"){
+        currentThreadName = "Edit";
+        var currentUserName = jQuery(".OtherF a").text();
     }
-    var breadcrumb = (["<ul class=\"breadcrumb\">",
-    "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-    "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
-    "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-    "</ul>"].join(""));
+
+    if (currentURL == "/Groups/Admin/MemberElevation.html"){
+        currentGroupName = jQuery(".breadcrumb").find("a").text();
+        breadcrumb = (["<ul class=\"breadcrumb\">",
+        "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+        "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+        "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
+        "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+        "</ul>"].join(""));
+    } else {
+        if (currentURL.indexOf("/Groups/Thread/")!=-1){
+            currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+        }
+        breadcrumb = (["<ul class=\"breadcrumb\">",
+        "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+        "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName +"</a><span class=\"divider\">/</span></li>",
+        "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+        "</ul>"].join(""));
+    }
+
     jQuery(".breadcrumb").remove();
     container.append(breadcrumb);
     container.insertBefore(".contents");
@@ -77,8 +103,7 @@ if (currentURL == "/Download.html" || currentURL == "/"){
 }
 //Make Groups system better
 if (currentURL.indexOf("/Groups/Thread/")!=-1){
-    addCss(
-    [".Meta .Author img {",
+    addCss([".Meta .Author img {",
     "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "    background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
     "    background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
@@ -108,7 +133,7 @@ if (currentURL.indexOf("/Groups/Thread/")!=-1){
 
     setTimeout(function(){
         replacePageHeader();
-    }, 500);
+    }, 1000);
 
     //Set timeout to wait for all page content (embedded saves) to load
     setTimeout(function(){
@@ -185,4 +210,5 @@ if (currentURL == "/Groups/Page/Groups.html"){
     "    padding: 0;",
     "}"].join("\n"));
     jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
+}
 }
