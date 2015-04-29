@@ -27,29 +27,28 @@ if (typeof tptenhance == "undefined") {
     function replacePageHeader() {
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
         var container = jQuery("<div class=\"container\"></div>");
-        var currentGroupID;
-        if (currentURL == "/Groups/Thread/View.html") {
-            currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
-        } else {
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
-        }
-        var currentThreadName, currentGroupName, currentUserName, breadcrumb;
+        var currentGroupID, currentThreadName, currentGroupName, currentUserName, breadcrumb;
+        currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
+            currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
             currentThreadName = "Edit Post";
+            currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
+            currentGroupName = jQuery(".breadcrumb").find("a").text();
+            container.css({"width":"900px"});
         } else if (currentURL == "/Groups/Admin/Edit.html") {
             currentThreadName = "Edit";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
         } else if (currentURL == "/Groups/Admin/MemberElevation.html") {
             currentThreadName = "Edit";
             currentUserName = jQuery(".OtherF a").text();
+            currentGroupName = jQuery(".breadcrumb").find("a").text();
         }
 
-        if (currentURL == "/Groups/Admin/MemberElevation.html") {
-            currentGroupName = jQuery(".breadcrumb").find("a").text();
+        if (currentURL == "/Groups/Admin/MemberElevation.html"){
             breadcrumb = (["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
@@ -57,9 +56,6 @@ if (typeof tptenhance == "undefined") {
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
                 "</ul>"].join(""));
         } else {
-            if (currentURL.indexOf("/Groups/Thread/") != -1) {
-                currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-            }
             breadcrumb = (["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
