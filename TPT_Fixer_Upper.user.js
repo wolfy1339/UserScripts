@@ -12,10 +12,7 @@
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
-if (typeof tptenhance == "undefined") {
-    var script = "<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>";
-    jQuery("head").append(script);
-} else {
+var TPTFixerUpper = function(){
     var currentURL = window.location.pathname;
 
     function addCss(cssString) {
@@ -212,4 +209,14 @@ if (typeof tptenhance == "undefined") {
             "}"].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
+};
+
+if (typeof tptenhance == "undefined") {
+    var script = jQery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
+    jQuery("head").append(script);
+    setTimeout(function(){
+        TPTFixerUpper();
+    }, 10000)
+} else {
+    TPTFixerUpper();
 }
