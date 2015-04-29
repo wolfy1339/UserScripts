@@ -39,6 +39,7 @@ if (typeof tptenhance == "undefined") {
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
+            // Why is this returning undefined???
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             container.css({"width":"900px"});
         } else if (currentURL == "/Groups/Admin/Edit.html") {
