@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.52
+// @version     1.53
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -40,7 +40,7 @@ if (typeof tptenhance == "undefined") {
             currentThreadName = "Members";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
-            container.css({"width":"900px"});
+            container.css({"width": "900px"});
         } else if (currentURL == "/Groups/Admin/Edit.html") {
             currentThreadName = "Edit";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
@@ -52,7 +52,7 @@ if (typeof tptenhance == "undefined") {
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         }
 
-        if (currentURL == "/Groups/Admin/MemberElevation.html"){
+        if (currentURL == "/Groups/Admin/MemberElevation.html") {
             breadcrumb = (["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
@@ -74,9 +74,7 @@ if (typeof tptenhance == "undefined") {
 
     //Fixes for the rebuilt search feature
     if (currentURL == "/Search.html") {
-        jQuery(".search-avatar").css({
-            "margin-right": "10px"
-        });
+        jQuery(".search-avatar").css({"margin-right": "10px"});
         addCss([".search-thumbnail img {",
             "    border-radius:3px;",
             "    border:2px solid #DDD;",
@@ -85,12 +83,8 @@ if (typeof tptenhance == "undefined") {
             "    margin-left: 70px;",
             "    margin-right:20px;",
             "}"].join("\n"));
-        jQuery(".posts .search-thumbnail").css({
-            "width": "63px"
-        });
-        jQuery(".threads .search-thumbnail").css({
-            "width": "63px"
-        });
+        jQuery(".posts .search-thumbnail").css({"width": "63px"});
+        jQuery(".threads .search-thumbnail").css({"width": "63px"});
     }
     if (currentURL == "/Discussions/Categories/Index.html") {
         //Fix, if number is big it won't overflow as much
@@ -172,10 +166,10 @@ if (typeof tptenhance == "undefined") {
             jQuery(".SaveDownloadDo").remove();
             jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
             jQuery(".savegame").on("mouseover", function () {
-                jQuery(this).find(".overlay").animate({opacity: 1,top: "3px"}, 150);
+                jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
             });
             jQuery(".savegame").on("mouseleave", function () {
-                jQuery(this).find(".overlay").animate({opacity: 0,top: "-23px"}, 150);
+                jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
             });
         }, 10000);
     }
@@ -202,18 +196,9 @@ if (typeof tptenhance == "undefined") {
         jQuery("input[type=\"submit\"]").addClass("btn");
     }
     if (currentURL == "/Groups/Page/Index.html") {
-        jQuery(".Pageheader").css({
-            "background": "#fff",
-            "border-bottom": "0px",
-            "font-weight": "normal",
-            "padding": "0"
-        });
+        jQuery(".Pageheader").css({"background": "#fff","border-bottom": "0px","font-weight": "normal","padding": "0"});
         jQuery(".Page").css({"border": "none"});
-        jQuery(".contents").css({
-            "padding": "10px",
-            "background": "white",
-            "border": "1px solid #DDD"
-        });
+        jQuery(".contents").css({"padding": "10px","background": "white","border": "1px solid #DDD"});
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
     }
     if (currentURL == "/Groups/Page/Groups.html") {
