@@ -28,16 +28,18 @@ if (typeof tptenhance == "undefined") {
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
         var container = jQuery("<div class=\"container\"></div>");
         var currentGroupID, currentThreadName, currentGroupName, currentUserName, breadcrumb;
-        currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
             currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
+            currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
             currentThreadName = "Edit Post";
             currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
+            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             container.css({"width":"900px"});
         } else if (currentURL == "/Groups/Admin/Edit.html") {
             currentThreadName = "Edit";
@@ -46,6 +48,7 @@ if (typeof tptenhance == "undefined") {
             currentThreadName = "Edit";
             currentUserName = jQuery(".OtherF a").text();
             currentGroupName = jQuery(".breadcrumb").find("a").text();
+            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         }
 
         if (currentURL == "/Groups/Admin/MemberElevation.html"){
