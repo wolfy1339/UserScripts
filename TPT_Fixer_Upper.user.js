@@ -216,7 +216,7 @@ if (typeof tptenhance == "undefined") {
     jQuery("head").append(script);
     setTimeout(function(){
         TPTFixerUpper();
-    }, 10000)
+    }, 10000);
 } else {
     TPTFixerUpper();
 }
