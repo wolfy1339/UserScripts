@@ -100,7 +100,7 @@ var TPTFixerUpper = function(){
         });
     }
     //Make Groups system better
-    if (currentURL.indexOf("/Groups/Thread/") != -1) {
+    if (currentURL == "/Groups/Thread/View.html") {
         addCss([".Meta .Author img {",
             "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
             "    background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
@@ -169,6 +169,13 @@ var TPTFixerUpper = function(){
                 jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
             });
         }, 10000);
+    }
+    if (currentURL == "/Groups/Thread/EditPost.html"){
+        var user = jQuery("li.dropdown").children(":first-child").text();
+        var dt = new Date();
+        var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
+        // mce.insertContent
+        replaceHeader();
     }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
         addCss([".breadcrumb {",
