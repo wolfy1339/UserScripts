@@ -175,7 +175,7 @@ var TPTFixerUpper = function(){
         var dt = new Date();
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
         // mce.insertContent
-        replaceHeader();
+        replacePageHeader();
     }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
         addCss([".breadcrumb {",
