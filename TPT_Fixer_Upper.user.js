@@ -174,9 +174,11 @@ var TPTFixerUpper = function(){
         var user = jQuery("li.dropdown").children(":first-child").text();
         var dt = new Date();
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
-        var content = "Last Edited by " + user + " " + time;
+        var lastEdited = "Last Edited by " + user + " " + time;
         setTimeout(function(){
-            tinymce.activeEditor.execCommand('mceInsertContent',false,content)
+            var content = tinyMCE.activeEditor.getContent({format:"text"});
+            var text = content + lastEdited;
+            tinymce.activeEditor.setContent(text);
         }, 1000);
         replacePageHeader();
     }
