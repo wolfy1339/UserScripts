@@ -174,7 +174,8 @@ var TPTFixerUpper = function(){
         var user = jQuery("li.dropdown").children(":first-child").text();
         var dt = new Date();
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
-        // mce.insertContent
+        var content = "Last Edited by " + user + " " + time;
+        tinymce.activeEditor.execCommand('mceInsertContent',false,content)
         replacePageHeader();
     }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
