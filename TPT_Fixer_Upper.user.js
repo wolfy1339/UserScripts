@@ -174,7 +174,7 @@ var TPTFixerUpper = function(){
         var user = jQuery("li.dropdown").children(":first-child").text();
         var dt = new Date();
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
-        var lastEdited = "Last Edited by " + user + " " + time;
+        var lastEdited = "<p><small>Last Edited by " + user + " " + time + "</small></p>";
         setTimeout(function(){
             var content = tinyMCE.activeEditor.getContent({format:"text"});
             var text = content + lastEdited;
