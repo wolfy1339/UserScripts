@@ -176,7 +176,7 @@ var TPTFixerUpper = function(){
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
         var lastEdited = "<p><small>Last Edited by " + user + " " + time + "</small></p>";
         setTimeout(function(){
-            var content = tinyMCE.activeEditor.getContent({format:"text"});
+            var content = tinymce.activeEditor.getContent({format:"text"});
             var text = content + lastEdited;
             tinymce.activeEditor.setContent(text);
         }, 1000);
