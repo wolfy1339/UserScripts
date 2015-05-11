@@ -32,7 +32,7 @@ var TPTFixerUpper = function(){
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
             currentThreadName = "Edit Post";
             currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
+            currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
             currentGroupName = jQuery(".breadcrumb").find("a").text();
@@ -47,9 +47,14 @@ var TPTFixerUpper = function(){
             currentUserName = jQuery(".OtherF a").text();
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
+        } else if (currentURL == "/Groups/Admin/MemberRemove.html") {
+            currentThreadName = "Remove";
+            currentUserName = jQuery(".OtherF a").text();
+            currentGroupName = jQuery(".breadcrumb").find("a").text();
+            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         }
 
-        if (currentURL == "/Groups/Admin/MemberElevation.html") {
+        if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
             breadcrumb = (["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
