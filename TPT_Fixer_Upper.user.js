@@ -24,27 +24,27 @@ var TPTFixerUpper = function(){
     function replacePageHeader() {
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
         var container = jQuery("<div class=\"container\"></div>");
-        var currentThreadName, breadcrumb;
-        var currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
-        var currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-        var currentUserName = jQuery(".OtherF a").text();
+        var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
+
+        if (currentURL.indexOf("/Admin/")!=-1) {
+            currentGroupName = jQuery(".breadcrumb").find("a").text();
+            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
+            currentUserName = jQuery(".OtherF a").text();
+        } else {
+            currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
+            currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+        } 
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
             currentThreadName = "Edit Post";
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
-            currentGroupName = jQuery(".breadcrumb").find("a").text();
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             container.css({"width": "900px"});
         } else if (currentURL == "/Groups/Admin/Edit.html" || currentURL == "/Groups/Admin/MemberElevation.html") {
             currentThreadName = "Edit";
-            currentGroupName = jQuery(".breadcrumb").find("a").text();
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         } else if (currentURL == "/Groups/Admin/MemberRemove.html") {
             currentThreadName = "Remove";
-            currentGroupName = jQuery(".breadcrumb").find("a").text();
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
         }
 
         if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
