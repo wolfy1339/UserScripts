@@ -131,19 +131,27 @@ var TPTFixerUpper = function(){
         });
         
         jQuery(".Author").each(function() {
-            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a href=\"" + jQuery(this).children(":first-child").attr("href") + "\">" + jQuery(this).find("img").html() + "</a></div>");
+            jQuery(this).children(":first-child").replaceWith(["<div class=\"Gravatar\"><a href=\"" + jQuery(this).children(":first-child").attr("href") + "\">",
+            "<img src=\"" + jQuery(this).find("img").attr("src") + "\"></a></div>"].join(""));
         });
         jQuery(".Author .Gravatar").live('click', function(){
             var InformationForm = jQuery('<div class="UserInformation">Loading…</div>');
-            jQuery(document.body).append(InformationForm);
+            jQuery("body").append(InformationForm);
             var Pos = jQuery(this).offset();
             var Link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
             InformationForm.css("top", Pos.top-3);
             InformationForm.css("left", Pos.left-3);
-            jQuery.getJson(Link, function(data){
-                var Form = jQuery("<span class=\"Author\"><div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"/></div><a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username +
-                                  "</a></span><div class=\"Clear\"></div><div class=\"UserInfoForum\"><h1>Forum</h1><div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation+
-                                  "</div><div class=\"UserInfoRow\"><label>Posts:</label>"+data.User.Forum.Replies+"</div><div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>");
+            jQuery.getJson(Link).done(function(data){
+                var Form = jQuery(["<span class=\"Author\">",
+                "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>
+                "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
+                "</span>",
+                "<div class=\"Clear\"></div>",
+                "<div class=\"UserInfoForum\">",
+                "<h1>Forum</h1>",
+                "<div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation + "</div>",
+                "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
+                "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"].join(""));
                 InformationForm.html(Form);
             });
             InformationForm.mouseleave(function(){
