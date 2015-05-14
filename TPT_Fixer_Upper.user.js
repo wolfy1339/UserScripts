@@ -116,18 +116,19 @@ var TPTFixerUpper = function(){
             "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
             "}"].join("\n"));
 
-
-        if (jQuery(".pagination .active").text() == "11") {
+        if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine") === false) {
             var posteeData = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
             localStorage.setItem("postee",posteeData);
         }
-        jQuery(".Post").each(function() {
-            var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
-            var postee = localStorage.getItem("postee");
-            if (Postee == postee) {
-                $(this).addClass("Op");
-            }
-        });
+        if (jQuery(".MessageList").children(":first-child").hasClass("Mine") === false) {
+            jQuery(".Post").each(function() {
+                var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+                var postee = localStorage.getItem("postee");
+                if (Postee == postee) {
+                    $(this).addClass("Op");
+                }
+            });
+        }
 
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
