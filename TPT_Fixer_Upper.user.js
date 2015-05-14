@@ -116,6 +116,20 @@ var TPTFixerUpper = function(){
             "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
             "}"].join("\n"));
 
+
+        window.tptfixerupper = {};
+        // This code needs to get & store the Original Poster of a Thread but it only works if the Pagination is at 1
+        if (jQuery(".pagination .active").text() == "11") {
+            window.tptfixerupper.postee = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+        }
+        jQuery(".Post").each(function() {
+            var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+            var postee = window.tptfixerupper.postee;
+            if (Postee == postee) {
+                $(this).addClass("Op");
+            }
+        });
+
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
         jQuery(".Mine.Manager").addClass("Moderator");
