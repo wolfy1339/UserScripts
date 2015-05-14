@@ -116,10 +116,10 @@ var TPTFixerUpper = function(){
             "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
             "}"].join("\n"));
 
-        if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine") === false) {
+        if (jQuery(".pagination .active").text() == "11" && !jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
             var posteeData = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
             localStorage.setItem("postee",posteeData);
-        } else if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine") === true) {
+        } else if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
             localStorage.clear("postee");
         }
         jQuery(".Post").each(function() {
@@ -131,17 +131,16 @@ var TPTFixerUpper = function(){
         });
         
         jQuery(".Author").each(function() {
-            jQuery(this).children(":first-child").replaceWith(["<div class=\"Gravatar\"><a href=\"" + jQuery(this).children(":first-child").attr("href") + "\">",
-            "<img src=\"" + jQuery(this).find("img").attr("src") + "\"></a></div>"].join(""));
+            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><img src=\"" + jQuery(this).find("img").attr("src") + "\"></div>");
         });
-        jQuery(".Author .Gravatar").live('click', function(){
-            var InformationForm = jQuery('<div class="UserInformation">Loading…</div>');
+        jQuery(".Author .Gravatar").on("click", function() {
+            var InformationForm = jQuery("<div class=\"UserInformation\">Loading…</div>");
             jQuery("body").append(InformationForm);
             var Pos = jQuery(this).offset();
             var Link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
             InformationForm.css("top", Pos.top-3);
             InformationForm.css("left", Pos.left-3);
-            jQuery.getJson(Link).done(function(data){
+            jQuery.getJSON(Link).done(function(data) {
                 var Form = jQuery(["<span class=\"Author\">",
                 "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>
                 "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
