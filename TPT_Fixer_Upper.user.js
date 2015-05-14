@@ -142,7 +142,7 @@ var TPTFixerUpper = function(){
             InformationForm.css("left", Pos.left-3);
             jQuery.getJSON(Link).done(function(data) {
                 var Form = jQuery(["<span class=\"Author\">",
-                "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>
+                "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
                 "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
                 "</span>",
                 "<div class=\"Clear\"></div>",
@@ -266,7 +266,7 @@ var TPTFixerUpper = function(){
 };
 
 if (typeof tptenhance == "undefined") {
-    var script = jQery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
+    var script = jQuery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
     jQuery("head").append(script);
     setTimeout(function(){
         TPTFixerUpper();
