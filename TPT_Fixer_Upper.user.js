@@ -119,16 +119,39 @@ var TPTFixerUpper = function(){
         if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine") === false) {
             var posteeData = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
             localStorage.setItem("postee",posteeData);
+        } else if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine") === true) {
+            localStorage.clear("postee");
         }
-        if (jQuery(".MessageList").children(":first-child").hasClass("Mine") === false) {
-            jQuery(".Post").each(function() {
-                var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
-                var postee = localStorage.getItem("postee");
-                if (Postee == postee) {
-                    $(this).addClass("Op");
-                }
+        jQuery(".Post").each(function() {
+            var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+            var postee = localStorage.getItem("postee");
+            if (Postee == postee) {
+                $(this).addClass("Op");
+            }
+        });
+        
+        jQuery(".Author").each(function() {
+            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a href=\"" + jQuery(this).children(":first-child").attr("href") + "\">" + jQuery(this).find("img").html() + "</a></div>");
+        });
+        jQuery(".Author .Gravatar").live('click', function(){
+            var InformationForm = jQuery('<div class="UserInformation">Loading…</div>');
+            jQuery(document.body).append(InformationForm);
+            var Pos = jQuery(this).offset();
+            var Link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
+            InformationForm.css("top", Pos.top-3);
+            InformationForm.css("left", Pos.left-3);
+            jQuery.getJson(Link, function(data){
+                var Form = jQuery("<span class=\"Author\"><div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"/></div><a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username +
+                                  "</a></span><div class=\"Clear\"></div><div class=\"UserInfoForum\"><h1>Forum</h1><div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation+
+                                  "</div><div class=\"UserInfoRow\"><label>Posts:</label>"+data.User.Forum.Replies+"</div><div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>");
+                InformationForm.html(Form);
             });
-        }
+            InformationForm.mouseleave(function(){
+                InformationForm.remove();
+            });
+            return false;
+        });
+
 
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
