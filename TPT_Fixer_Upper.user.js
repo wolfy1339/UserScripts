@@ -117,14 +117,13 @@ var TPTFixerUpper = function(){
             "}"].join("\n"));
 
 
-        window.tptfixerupper = {};
-        // This code needs to get & store the Original Poster of a Thread but it only works if the Pagination is at 1
         if (jQuery(".pagination .active").text() == "11") {
-            window.tptfixerupper.postee = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+            var posteeData = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+            localStorage.setItem("postee",posteeData);
         }
         jQuery(".Post").each(function() {
             var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
-            var postee = window.tptfixerupper.postee;
+            var postee = localStorage.getItem("postee");
             if (Postee == postee) {
                 $(this).addClass("Op");
             }
