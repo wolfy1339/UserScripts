@@ -12,7 +12,7 @@
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
-var TPTFixerUpper = function(){
+var TPTFixerUpper = function() {
     var currentURL = window.location.pathname;
 
     function addCss(cssString) {
@@ -130,7 +130,7 @@ var TPTFixerUpper = function(){
             }
         });
         
-        jQuery(".Author").each(function() {
+        /*jQuery(".Author").each(function() {
             jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><img src=\"" + jQuery(this).find("img").attr("src") + "\"></div>");
         });
         jQuery(".Author .Gravatar").on("click", function() {
@@ -157,8 +157,7 @@ var TPTFixerUpper = function(){
                 InformationForm.remove();
             });
             return false;
-        });
-
+        });*/
 
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
