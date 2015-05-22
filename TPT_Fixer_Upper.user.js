@@ -153,7 +153,7 @@ var TPTFixerUpper = function() {
                 "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"].join(""));
                 InformationForm.html(Form);
             });
-            InformationForm.mouseleave(function(){
+            InformationForm.mouseleave(function() {
                 InformationForm.remove();
             });
             return false;
@@ -162,7 +162,7 @@ var TPTFixerUpper = function() {
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
         jQuery(".Mine.Manager").addClass("Moderator");
-        jQuery(".Moderator").each(function () {
+        jQuery(".Moderator").each(function() {
             var findDev = jQuery(this).find(".Meta .Author a").text();
             if (findDev == "jacob1" || findDev == "cracker64" || findDev == "jacksonmj") {
                 jQuery(this).removeClass("Moderator").addClass("Developer");
@@ -170,12 +170,12 @@ var TPTFixerUpper = function() {
             }
         });
 
-        setTimeout(function () {
+        setTimeout(function() {
             replacePageHeader();
-        }, 1000);
+        }, 2500);
 
         //Set timeout to wait for all page content (embedded saves) to load
-        setTimeout(function () {
+        setTimeout(function() {
             jQuery(".fSaveRating").remove();
             jQuery(".fSaveGameThumb").contents().unwrap();
             jQuery(".fAuthor").addClass("author").removeClass("fAuthor");
@@ -211,12 +211,12 @@ var TPTFixerUpper = function() {
             });
         }, 10000);
     }
-    if (currentURL == "/Groups/Thread/EditPost.html"){
+    if (currentURL == "/Groups/Thread/EditPost.html") {
         var user = jQuery("li.dropdown").children(":first-child").text();
         var dt = new Date();
         var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
         var lastEdited = "<p><small>Last Edited by " + user + " " + time + "</small></p>";
-        setTimeout(function(){
+        setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
             var text = content + lastEdited;
             tinymce.activeEditor.setContent(text);
@@ -267,7 +267,7 @@ var TPTFixerUpper = function() {
 if (typeof tptenhance == "undefined") {
     var script = jQuery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
     jQuery("head").append(script);
-    setTimeout(function(){
+    setTimeout(function() {
         TPTFixerUpper();
     }, 10000);
 } else {
