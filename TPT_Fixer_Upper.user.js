@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.55
+// @version     1.56
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -26,14 +26,14 @@ var TPTFixerUpper = function() {
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
-        if (currentURL.indexOf("/Admin/")!=-1) {
+        if (currentURL.indexOf("/Admin/")!=-1 || curentURL == "/Groups/Thread/EditPost.html") {
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             currentUserName = jQuery(".OtherF a").text();
         } else {
             currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
             currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
-        } 
+        }
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
