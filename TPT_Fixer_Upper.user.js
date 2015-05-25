@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.56
+// @version     1.57
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -26,7 +26,7 @@ var TPTFixerUpper = function() {
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
-        if (currentURL.indexOf("/Admin/")!=-1 || curentURL == "/Groups/Thread/EditPost.html") {
+        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Thread/EditPost.html") {
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             currentUserName = jQuery(".OtherF a").text();
