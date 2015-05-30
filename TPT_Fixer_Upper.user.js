@@ -98,6 +98,12 @@ var TPTFixerUpper = function() {
         });
     }
     //Make Groups system better
+    if (currentURL.indexIOf("/Groups")!=-1) {
+        // Overide the currentGroupId function to work with the breadcrumbs
+        tptenhance.groups.currentGroupId = function() {
+            return +($(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
+        };
+    }
     if (currentURL == "/Groups/Thread/View.html") {
         addCss([".Meta .Author img {",
             "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
