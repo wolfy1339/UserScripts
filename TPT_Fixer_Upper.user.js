@@ -91,18 +91,18 @@ var TPTFixerUpper = function() {
     if (currentURL == "/Download.html" || currentURL == "/") {
         //Fix GitHub watch button
         jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
-        jQuery(".platforms").each(function () {
-            if ($(this).find(".Platform").text() == "Ubuntu/Debian .Deb (External: GetDeb)") {
-                $(this).find(".Version").text("90.2");
-            }
+        jQuery(".modal .modal-body ul.platforms li").eq(-2).each(function() {
+            jQuery(this).find(".Version").text("90.2");
         });
     }
     //Make Groups system better
-    if (currentURL.indexIOf("/Groups")!=-1) {
+    if (currentURL.indexOf("/Groups")!=-1) {
         // Overide the currentGroupId function to work with the breadcrumbs
-        tptenhance.groups.currentGroupId = function() {
-            return +($(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
-        };
+        setTimeout(function() {
+            tptenhance.groups.currentGroupId = function() {
+                return +($(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
+            };
+        }, 5000);
     }
     if (currentURL == "/Groups/Thread/View.html") {
         addCss([".Meta .Author img {",
