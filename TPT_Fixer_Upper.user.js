@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.57
+// @version     1.58
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -100,7 +100,7 @@ var TPTFixerUpper = function() {
         // Overide the currentGroupId function to work with the breadcrumbs
         setTimeout(function() {
             tptenhance.groups.currentGroupId = function() {
-                return +($(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
+                return +(jQuery(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
             };
         }, 5000);
     }
