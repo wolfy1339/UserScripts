@@ -120,6 +120,10 @@ var TPTFixerUpper = function() {
             "}",
             ".Developer .Comment .Meta .Author {",
             "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
+            "}",
+            ".savegame {",
+            "    vertical-align: top;",
+            "    display: inline-block;",
             "}"].join("\n"));
 
         if (jQuery(".pagination .active").text() == "11" && !jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
@@ -209,6 +213,7 @@ var TPTFixerUpper = function() {
             });
             jQuery(".SaveDownloadDo").remove();
             jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
+            jQuery(".savegame a img").attr("width","153").attr("height","96");
             jQuery(".savegame").on("mouseover", function () {
                 jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
             });
