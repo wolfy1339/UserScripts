@@ -275,12 +275,14 @@ var TPTFixerUpper = function() {
     }
 };
 
-if (typeof tptenhance == "undefined") {
-    var script = jQuery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
-    jQuery("head").append(script);
-    setTimeout(function() {
+setTimeout(function() {
+    if (typeof tptenhance == "undefined") {
+        var script = jQuery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
+        jQuery("head").append(script);
+        setTimeout(function() {
+            TPTFixerUpper();
+        }, 10000);
+    } else {
         TPTFixerUpper();
-    }, 10000);
-} else {
-    TPTFixerUpper();
-}
+    }
+}, 1000);
