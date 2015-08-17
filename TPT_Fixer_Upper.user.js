@@ -124,16 +124,56 @@ var TPTFixerUpper = function() {
             ".savegame {",
             "    vertical-align: top;",
             "    display: inline-block;",
+            "}",
+            ".UserInformation {",
+            "    border: 1px solid #CCC;",
+            "    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);",
+            "    background: white;",
+            "    width: 300px;",
+            "    padding: 7px;",
+            "    border-radius: 3px;",
+            "    position: absolute;",
+            "    z-index: 99;",
+            "}",
+            ".UserInformation .UserInfoRow label {",
+            "    display: inline;",
+            "    margin-right: 4px;",
+            "}",
+            ".UserInformation span.Author {",
+            "    font-size: 17px;",
+            "    padding-left: 0;",
+            "    font-weight: bold;",
+            "    line-height: 3.5;",
+            "    padding-left: 10px;",
+            "}",
+            ".UserInformation span.Author .Gravatar {",
+            "    border: 0 none;",
+            "    float: left;",
+            "    height: 64px;",
+            "    margin: 0 10px 0 0;",
+            "    overflow: hidden;",
+            "    width: 64px;",
+            "    box-shadow: 0 0 5px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);",
+            "    border-radius: 3px;",
+            "    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);",
+            "    background: linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
+            "}",
+            ".UserInformation span.Author .Gravatar img {",
+            "    border-radius: 3px;",
+            "    position: relative;",
+            "    z-index: -1;",
+            "    height: 64px;",
+            "    width: 64px;",
             "}"].join("\n"));
 
         if (jQuery(".pagination .active").text() == "11" && !jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
-            var posteeData = jQuery(".MessageList").children(":first-child").find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
-            localStorage.setItem("postee",posteeData);
+            var posteeData = jQuery(".MessageList").children(":first-child").find(".Author a").text();
+            localStorage.setItem("postee", posteeData);
         } else if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
             localStorage.clear("postee");
         }
         jQuery(".Post").each(function() {
-            var Postee = $(this).find(".Author").text().split("\n")[2].split(" ")[0].split("				")[1];
+            var Postee = $(this).find(".Author a").text();
             var postee = localStorage.getItem("postee");
             if (Postee == postee) {
                 $(this).addClass("Op");
@@ -167,7 +207,7 @@ var TPTFixerUpper = function() {
                 InformationForm.remove();
             });
             return false;
-        });*/
+        });
 
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
         jQuery(".Mine.Owner").addClass("Administrator");
