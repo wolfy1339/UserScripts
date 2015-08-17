@@ -140,7 +140,7 @@ var TPTFixerUpper = function() {
             }
         });
         
-        /*jQuery(".Author").each(function() {
+        jQuery(".Author").each(function() {
             jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><img src=\"" + jQuery(this).find("img").attr("src") + "\"></div>");
         });
         jQuery(".Author .Gravatar").on("click", function() {
@@ -225,11 +225,17 @@ var TPTFixerUpper = function() {
     if (currentURL == "/Groups/Thread/EditPost.html") {
         var user = jQuery("li.dropdown").children(":first-child").text();
         var dt = new Date();
-        var time = dt.getUTCHours() + ":" +dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
+        var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
         var lastEdited = "<p><small>Last Edited by " + user + " " + time + "</small></p>";
         setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
-            var text = content + lastEdited;
+            var text;
+            if (!content.indexOf("Last Edited by")) {
+                text = content + lastEdited;
+            } else {
+                text = content.split("Last Edited by")[0] + lastEdited;
+            }
+            
             tinymce.activeEditor.setContent(text);
         }, 1000);
         replacePageHeader();
