@@ -105,7 +105,13 @@ var TPTFixerUpper = function() {
         }, 5000);
     }
     if (currentURL == "/Groups/Thread/View.html") {
-        addCss([".Meta .Author img {",
+        addCss([".MessageList .Post .Meta .Author .Gravatar {",
+            "    border: 0 none;",
+            "    float: left;",
+            "    height: 40px;",
+            "    margin: 0 10px 0 0;",
+            "    overflow: hidden;",
+            "    width: 40px;",
             "    background: linear-gradient(to top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
             "    background: -webkit-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
             "    background: -o-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.1) 100%);",
@@ -118,12 +124,12 @@ var TPTFixerUpper = function() {
             "    -o-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
             "    -ms-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);",
             "}",
-            ".Developer .Comment .Meta .Author {",
-            "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
-            "}",
-            ".savegame {",
-            "    vertical-align: top;",
-            "    display: inline-block;",
+            ".MessageList .Post .Meta .Author .Gravatar img {",
+            "    border-radius: 3px;",
+            "    position: relative;",
+            "    z-index: -1;",
+            "    height: 40px;",
+            "    width: 40px;",
             "}",
             ".UserInformation {",
             "    border: 1px solid #CCC;",
@@ -164,6 +170,13 @@ var TPTFixerUpper = function() {
             "    z-index: -1;",
             "    height: 64px;",
             "    width: 64px;",
+            "}",
+            ".Developer .Comment .Meta .Author {",
+            "    background-image: url(/Themes/Next/Design/Images/Developer.png);",
+            "}",
+            ".savegame {",
+            "    vertical-align: top;",
+            "    display: inline-block;",
             "}"].join("\n"));
 
         if (jQuery(".pagination .active").text() == "11" && !jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
