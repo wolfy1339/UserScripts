@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.60
+// @version     1.61
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -195,7 +195,7 @@ var TPTFixerUpper = function() {
         jQuery(".Author").each(function() {
             var href = jQuery(this).children(":first-child").attr("href");
             var src = jQuery(this).find("img").attr("src");
-            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a hre=\"" + href + "><img src=\"" + src + "\"></a></div>");
+            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a hre=\"" + href + "\"><img src=\"" + src + "\"></a></div>");
         });
         jQuery(".Author .Gravatar").on("click", function() {
             var InformationForm = jQuery("<div class=\"UserInformation\">Loading…</div>");
