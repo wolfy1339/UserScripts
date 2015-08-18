@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     1.61
+// @version     1.62
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -126,7 +126,6 @@ var TPTFixerUpper = function() {
             ".MessageList .Post .Meta .Author .Gravatar img {",
             "    border-radius: 3px;",
             "    position: relative;",
-            "    z-index: -1;",
             "    height: 40px;",
             "    width: 40px;",
             "}",
