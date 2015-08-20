@@ -26,10 +26,12 @@ var TPTFixerUpper = function() {
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
-        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Thread/EditPost.html") {
+        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Thread/EditPost.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
-            currentUserName = jQuery(".OtherF a").text();
+            if (currentURL.indexOf("/Admin/")!=-1) {
+                currentUserName = jQuery(".OtherF a").text();
+            }
         } else {
             currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
             currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
@@ -45,6 +47,10 @@ var TPTFixerUpper = function() {
             currentThreadName = "Edit";
         } else if (currentURL == "/Groups/Admin/MemberRemove.html") {
             currentThreadName = "Remove";
+        } else if (currentURL == "/Groups/Page/Resign.html")  {
+            currentThreadName = "Resign";
+        } else if (currentURL == "/Groups/Page/Register.html") {
+            currentThreadName = "Register";
         }
 
         if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
@@ -312,7 +318,7 @@ var TPTFixerUpper = function() {
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
     }
-    if (currentURL == "/Groups/Admin/MemberElevation.html") {
+    if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html") {
         jQuery("input[type=\"submit\"]").addClass("btn");
     }
     if (currentURL == "/Groups/Page/Index.html") {
@@ -331,6 +337,12 @@ var TPTFixerUpper = function() {
             "    padding: 0;",
             "}"].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
+    }
+    if (currentURL == "/Groups/Page/Register.html") {
+        jQuery("h1:eq(1)").remove();
+        jQuery("textarea").remove()l
+        jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
+        replacePageHeader();
     }
 };
 
