@@ -54,23 +54,28 @@ var TPTFixerUpper = function() {
         }
 
         if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
-            breadcrumb = (["<ul class=\"breadcrumb\">",
+            breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
                 "</ul>"].join(""));
         } else {
-            breadcrumb = (["<ul class=\"breadcrumb\">",
+            breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
                 "</ul>"].join(""));
         }
 
-        jQuery(".breadcrumb").remove();
-        container.append(breadcrumb);
-        container.insertBefore(".contents");
+        if (currentURL != "/Groups/Page/Register.html") {
+            jQuery(".breadcrumb").remove();
+            container.append(breadcrumb);
+            container.insertBefore(".contents");
+        } else {
+            jQuery(".breadcrumb").remove();
+            breadcrumb.insertBefore(".Page");
+        }
     }
 
     //Fixes for the rebuilt search feature
@@ -339,8 +344,9 @@ var TPTFixerUpper = function() {
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
     if (currentURL == "/Groups/Page/Register.html") {
-        jQuery("h1:eq(1)").remove();
-        jQuery("textarea").remove();
+        jQuery("h1:eq(2)").remove();
+        jQuery("textarea").hide();
+        jQuery(".OtherF label").remove();
         jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
         replacePageHeader();
     }
