@@ -340,7 +340,7 @@ var TPTFixerUpper = function() {
     }
     if (currentURL == "/Groups/Page/Register.html") {
         jQuery("h1:eq(1)").remove();
-        jQuery("textarea").remove()l
+        jQuery("textarea").remove();
         jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
         replacePageHeader();
     }
