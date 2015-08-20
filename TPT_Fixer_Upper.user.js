@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.00
+// @version     2.01
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -354,7 +354,7 @@ var TPTFixerUpper = function() {
 
 setTimeout(function() {
     if (typeof tptenhance == "undefined") {
-        var script = jQuery("<script src=\"https://openuserjs.org/install/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
+        var script = jQuery("<script src=\"https://openuserjs.org/src/scripts/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
         jQuery("head").append(script);
         setTimeout(function() {
             TPTFixerUpper();
