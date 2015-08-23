@@ -350,6 +350,9 @@ var TPTFixerUpper = function() {
         jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
         replacePageHeader();
     }
+    //Upgrade bootstrap version because why not?
+    jQuery("head").prepend("<link rel=\"stylesheet\" href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css\"/>");
+    jQuery("script[src=\"/Themes/Next/Javascript/bootstrap.min.js\"]").attr("src", "//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js");
 };
 
 setTimeout(function() {
