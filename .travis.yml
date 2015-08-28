@@ -1,4 +1,5 @@
 language: node
+sudo: true
 install:
   - sudo apt-get -qq update
   - sudo apt-get -q install python
