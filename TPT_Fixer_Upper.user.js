@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.02
+// @version     2.03
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -33,8 +33,8 @@ var TPTFixerUpper = function() {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = tptenhance.groups.currentGroupId();
-            currentGroupName = jQuery(".breadcrumb").find("a:eq(1)").text();
+            currentGroupID = jQuery(".breadcrumb a:eq(1)").attr("href").substring(29)
+            currentGroupName = jQuery(".breadcrumb a:eq(1)").text();
         }
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
