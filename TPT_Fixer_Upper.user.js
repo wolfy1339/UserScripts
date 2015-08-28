@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.01
+// @version     2.02
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -26,15 +26,15 @@ var TPTFixerUpper = function() {
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
-        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Thread/EditPost.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
+        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
             currentGroupName = jQuery(".breadcrumb").find("a").text();
             currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
             if (currentURL.indexOf("/Admin/")!=-1) {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = jQuery(".breadcrumb").children(":first-child").next().attr("href").substring(29);
-            currentGroupName = jQuery(".breadcrumb").children(":first-child").next().text();
+            currentGroupID = tptenhance.groups.currentGroupId();
+            currentGroupName = jQuery(".breadcrumb").find("a:eq(1)").text();
         }
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
@@ -68,13 +68,11 @@ var TPTFixerUpper = function() {
                 "</ul>"].join(""));
         }
 
-        if (currentURL != "/Groups/Page/Register.html") {
-            jQuery(".breadcrumb").remove();
-            container.append(breadcrumb);
-            container.insertBefore(".contents");
-        } else {
-            jQuery(".breadcrumb").remove();
-            breadcrumb.insertBefore(".Page");
+        jQuery(".breadcrumb").remove();
+        container.append(breadcrumb);
+        container.insertBefore(".contents");
+        if (currentURL == "/Groups/Page/Register.html") {
+            jQuery(".contents").css({padding:"10px"});
         }
     }
 
@@ -111,7 +109,7 @@ var TPTFixerUpper = function() {
         // Overide the currentGroupId function to work with the breadcrumbs
         setTimeout(function() {
             tptenhance.groups.currentGroupId = function() {
-                return +(jQuery(".breadcrumb a:eq(1)").attr("href").match(/[0-9]+/)[0]);
+                return +(jQuery(".breadcrumb a:eq(1)").attr("href").substring(29));
             };
         }, 5000);
     }
@@ -350,9 +348,6 @@ var TPTFixerUpper = function() {
         jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
         replacePageHeader();
     }
-    //Upgrade bootstrap version because why not?
-    jQuery("head").prepend("<link rel=\"stylesheet\" href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css\"/>");
-    jQuery("script[src=\"/Themes/Next/Javascript/bootstrap.min.js\"]").attr("src", "//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js");
 };
 
 setTimeout(function() {
