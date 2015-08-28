@@ -33,7 +33,7 @@ var TPTFixerUpper = function() {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = jQuery(".breadcrumb a:eq(1)").attr("href").substring(29)
+            currentGroupID = jQuery(".breadcrumb a:eq(1)").attr("href").substring(29);
             currentGroupName = jQuery(".breadcrumb a:eq(1)").text();
         }
         if (currentURL == "/Groups/Thread/View.html") {
