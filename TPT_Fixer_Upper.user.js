@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.03
+// @version     2.04
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -103,6 +103,9 @@ var TPTFixerUpper = function() {
         jQuery(".modal .modal-body ul.platforms li").eq(-2).each(function() {
             jQuery(this).find(".Version").text("90.2");
         });
+    }
+    if (currentURL == "/Profile/Password.html") {
+        jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
     }
     //Make Groups system better
     if (currentURL.indexOf("/Groups")!=-1) {
