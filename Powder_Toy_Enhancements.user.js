@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name        Powder Toy Enhancements
 // @description Fix and improve some things (mainly moderation tools) on powdertoy.co.uk
-// @match	 	*://powdertoy.co.uk/*
-// @version		2.41
-// @license		GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
+// @match       *://powdertoy.co.uk/*
+// @version     2.41
+// @license     GPL version 3 or any later version; http://www.gnu.org/copyleft/gpl.html
 // @grant       none
 // @downloadURL https://openuserjs.org/install/wolfy1339/Powder_Toy_Enhancements.user.js
 // ==/UserScript==
@@ -33,7 +33,7 @@ function contentEval(source) {
 }
 
 function addScript(url) {
-  if (document.body.id==="tinymce")
+  if (document.body.id === "tinymce")
     return;
   var script = document.createElement('script');
   script.setAttribute("type", "application/javascript");
