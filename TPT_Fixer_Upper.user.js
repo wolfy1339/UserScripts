@@ -107,6 +107,34 @@ var TPTFixerUpper = function() {
     if (currentURL == "/Profile/Password.html") {
         jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
     }
+    if (currentURL == "/Profile/Avatar.html") {
+        jQuery(".OtherF").removeClass("OtherF");
+        jQuery("form div input").css({"width":"255px"});
+        jQuery("form div input").replaceWith(['<div class="input-prepend">\
+                          <span class="btn btn-file">Browse...<input type="file" name="Avatar"></span>\
+              <input class="span8" id="path" type="text" readonly="">\
+            </div>']);
+        jQuery(document).on("change", '.btn-file :file', function() {
+            var input = jQuery(this);
+            var numFiles = input.get(0).files ? input.get(0).files.length : 1;
+            var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        jQuery('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+            var input = jQuery(this).parents('.input-group').find(':text');
+            var log = numFiles > 1 ? numFiles + ' files selected' : label;
+    
+            if (input.length) {
+                input.val(log);
+            } else {
+                if(log) {
+                    alert(log);
+                }
+            }
+    
+        });
+    }
     //Make Groups system better
     if (currentURL.indexOf("/Groups")!=-1) {
         // Overide the currentGroupId function to work with the breadcrumbs
