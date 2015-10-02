@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.04
+// @version     2.05
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -108,31 +108,46 @@ var TPTFixerUpper = function() {
         jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
     }
     if (currentURL == "/Profile/Avatar.html") {
+        addCss([".btn-file {",
+            "   position: relative;",
+            "   overflow: hidden;",
+            "}",
+            ".btn-file input[type=file] {",
+            "    position: absolute;",
+            "    top: 0;",
+            "    right: 0;",
+            "    min-width: 100%;",
+            "    min-height: 100%;",
+            "    font-size: 100px;",
+            "    text-align: right;",
+            "    filter: alpha(opacity=0);",
+            "    opacity: 0;",
+            "    outline: none;",
+            "    background: white;",
+            "    cursor: inherit;",
+            "    display: block;",
+            "}"].join("\n"));
         jQuery(".OtherF").removeClass("OtherF");
         jQuery("form div input").css({"width":"255px"});
-        jQuery("form div input").replaceWith(['<div class="input-prepend">\
-                          <span class="btn btn-file">Browse...<input type="file" name="Avatar"></span>\
-              <input class="span8" id="path" type="text" readonly="">\
-            </div>']);
-        jQuery(document).on("change", '.btn-file :file', function() {
+        jQuery("form div input").replaceWith(["<div class=\"input-prepend\">",
+            "  <span class=\"btn btn-file\">Browse...<input type=\"file\" name=\"Avatar\"></span>",
+            "  <input class=\"span8\" id=\"path\" type=\"text\" readonly=\"\">",
+            "</div>"].join("\n"));
+
+        jQuery(document).on("change", ".btn-file :file", function() {
             var input = jQuery(this);
             var numFiles = input.get(0).files ? input.get(0).files.length : 1;
-            var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
+            var label = input.val().replace(/\\/g, "/").replace(/.*\//, "");
+            input.trigger("fileselect", [numFiles, label]);
         });
 
-        jQuery('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-            var input = jQuery(this).parents('.input-group').find(':text');
-            var log = numFiles > 1 ? numFiles + ' files selected' : label;
-    
+        jQuery(".btn-file :file").on("fileselect", function(event, numFiles, label) {
+            var input = jQuery(this).parents(".input-prepend").find(":text");
+            var log = numFiles > 1 ? numFiles + " files selected" : label;
+
             if (input.length) {
                 input.val(log);
-            } else {
-                if(log) {
-                    alert(log);
-                }
             }
-    
         });
     }
     //Make Groups system better
@@ -217,10 +232,12 @@ var TPTFixerUpper = function() {
             "    display: inline-block;",
             "}"].join("\n"));
 
-        if (jQuery(".pagination .active").text() == "11" && !jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
+        var pagination = jQuery(".pagination .active").text();
+        var post = jQuery(".MessageList").children(":first-child");
+        if (pagination == "11" && !post.hasClass("Mine")) {
             var posteeData = jQuery(".MessageList").children(":first-child").find(".Author a").text();
             localStorage.setItem("postee", posteeData);
-        } else if (jQuery(".pagination .active").text() == "11" && jQuery(".MessageList").children(":first-child").hasClass("Mine")) {
+        } else if (pagination == "11" && post.hasClass("Mine")) {
             localStorage.clear("postee");
         }
         jQuery(".Post").each(function() {
@@ -230,7 +247,7 @@ var TPTFixerUpper = function() {
                 $(this).addClass("Op");
             }
         });
-        
+
         jQuery(".Author").each(function() {
             var href = jQuery(this).children(":first-child").attr("href");
             var src = jQuery(this).find("img").attr("src");
@@ -245,15 +262,15 @@ var TPTFixerUpper = function() {
             InformationForm.css("left", Pos.left-3);
             jQuery.getJSON(Link).done(function(data) {
                 var Form = jQuery(["<span class=\"Author\">",
-                "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
-                "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
-                "</span>",
-                "<div class=\"Clear\"></div>",
-                "<div class=\"UserInfoForum\">",
-                "<h1>Forum</h1>",
-                "<div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation + "</div>",
-                "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
-                "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"].join(""));
+                    "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
+                    "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
+                    "</span>",
+                    "<div class=\"Clear\"></div>",
+                    "<div class=\"UserInfoForum\">",
+                    "<h1>Forum</h1>",
+                    "<div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation + "</div>",
+                    "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
+                    "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"].join(""));
                 InformationForm.html(Form);
             });
             InformationForm.mouseleave(function() {
@@ -328,7 +345,7 @@ var TPTFixerUpper = function() {
             } else {
                 text = content.split("Last Edited by")[0] + lastEdited;
             }
-            
+
             tinymce.activeEditor.setContent(text);
         }, 1000);
         replacePageHeader();
