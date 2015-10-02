@@ -40,6 +40,8 @@ var TPTFixerUpper = function() {
             currentThreadName = jQuery(".TopicTitle").text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
             currentThreadName = "Edit Post";
+        } else if (currentURL == "/Groups/Thread/Create.html") {
+            currentThreadName = "New Thread";
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
             container.css({"width": "900px"});
