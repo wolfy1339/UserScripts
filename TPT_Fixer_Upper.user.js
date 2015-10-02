@@ -358,6 +358,9 @@ var TPTFixerUpper = function() {
         }, 1000);
         replacePageHeader();
     }
+    if (curentURL == "/Groups/Thread/Create.html") {
+        replacePageHeader();
+    }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
         addCss([".breadcrumb {",
             "    margin: 0;",
