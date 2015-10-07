@@ -358,7 +358,7 @@ var TPTFixerUpper = function() {
         }, 1000);
         replacePageHeader();
     }
-    if (curentURL == "/Groups/Thread/Create.html") {
+    if (currentURL == "/Groups/Thread/Create.html") {
         replacePageHeader();
     }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
