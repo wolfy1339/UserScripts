@@ -411,7 +411,7 @@ var TPTFixerUpper = function() {
 
 setTimeout(function() {
     if (typeof tptenhance == "undefined") {
-        var script = jQuery("<script src=\"https://openuserjs.org/src/scripts/jacksonmj/Powder_Toy_enhancements.user.js\"></script>");
+        var script = jQuery("<script src=\"https://cdn.rawgit.com/jacksonmj/Userscript-TPT-Enhancements/master/Powder_Toy_enhancements.user.js\"></script>");
         jQuery("head").append(script);
         setTimeout(function() {
             TPTFixerUpper();
