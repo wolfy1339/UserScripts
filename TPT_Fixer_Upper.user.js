@@ -28,14 +28,14 @@ var TPTFixerUpper = function() {
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
         if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
-            currentGroupName = jQuery(".breadcrumb").find("a").text();
-            currentGroupID = jQuery(".breadcrumb").find("a").attr("href").substring(29);
+            currentGroupName = jQuery(".Pageheader").find("a").text();
+            currentGroupID = jQuery(".Pageheader").find("a").attr("href").substring(29);
             if (currentURL.indexOf("/Admin/")!=-1) {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = jQuery(".breadcrumb a:eq(1)").attr("href").substring(29);
-            currentGroupName = jQuery(".breadcrumb a:eq(1)").text();
+            currentGroupID = tptenhance.groups.currentGroupId;
+            currentGroupName = jQuery(".Pageheader a:eq(1)").text();
         }
 
         // Set the page name or thread name depending on the current URL
