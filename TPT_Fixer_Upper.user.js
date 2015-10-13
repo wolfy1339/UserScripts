@@ -34,7 +34,7 @@ var TPTFixerUpper = function() {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = tptenhance.groups.currentGroupId;
+            currentGroupID = tptenhance.groups.currentGroupId();
             currentGroupName = jQuery(".Pageheader a:eq(1)").text();
         }
 
