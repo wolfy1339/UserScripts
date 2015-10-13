@@ -1,0 +1,6 @@
+{
+  "browser" : true,
+  "es3"     : true,
+  "esnext"  : true,
+  "jquery"    : true
+}
