@@ -7,4 +7,6 @@ addons:
 script:
   - python ${TRAVIS_BUILD_DIR}/check_trailing_whitespaces.py $TRAVIS_BUILD_DIR
   - npm install jshint
+  - npm install jscs
   - jshint TPT_Fixer_Upper.user.js
+  - jscs TPT_Fixer_Upper.user.js
