@@ -7,7 +7,6 @@
   "disallowMultipleLineStrings": true,
   "disallowSpaceBeforeSemicolon": true,
   "disallowMultipleLineBreaks": true,
-  "disallowMultipleVarDecl": true,
   "disallowKeywordsOnNewLine": ["else"],
   "disallowNewlineBeforeBlockStatements": true,
   "disallowSpaceBeforeComma": true,
