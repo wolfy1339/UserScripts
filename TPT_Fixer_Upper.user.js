@@ -16,13 +16,14 @@ var TPTFixerUpper = function() {
     var currentURL = window.location.pathname;
 
     function addCss(cssString) {
+        // Helper function to add CSS
         var style = jQuery("<style type=\"text/css\"></style>");
         style.append(cssString);
         style.appendTo("head");
     }
 
     function replacePageHeader() {
-        jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
+        // Helper function to replace the old page headers with breadcrumbs as used everywhere else.
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
@@ -36,6 +37,8 @@ var TPTFixerUpper = function() {
             currentGroupID = jQuery(".breadcrumb a:eq(1)").attr("href").substring(29);
             currentGroupName = jQuery(".breadcrumb a:eq(1)").text();
         }
+
+        // Set the page name or thread name depending on the current URL
         if (currentURL == "/Groups/Thread/View.html") {
             currentThreadName = jQuery(".TopicTitle").text();
         } else if (currentURL == "/Groups/Thread/EditPost.html") {
@@ -55,6 +58,7 @@ var TPTFixerUpper = function() {
             currentThreadName = "Register";
         }
 
+        // Use different formats depending on the curent URL
         if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
             breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
@@ -70,16 +74,16 @@ var TPTFixerUpper = function() {
                 "</ul>"].join(""));
         }
 
-        jQuery(".breadcrumb").remove();
         container.append(breadcrumb);
+        jQuery(".Pageheader").remove();
         container.insertBefore(".contents");
         if (currentURL == "/Groups/Page/Register.html") {
             jQuery(".contents").css({padding:"10px"});
         }
     }
 
-    //Fixes for the rebuilt search feature
     if (currentURL == "/Search.html") {
+        // Enhancements for the rebuilt search feature
         jQuery(".search-avatar").css({"margin-right": "10px"});
         addCss([".search-thumbnail img {",
             "    border-radius:3px;",
@@ -93,20 +97,22 @@ var TPTFixerUpper = function() {
         jQuery(".threads .search-thumbnail").css({"width": "63px"});
     }
     if (currentURL == "/Discussions/Categories/Index.html") {
-        //Fix, if number is big it won't overflow as much
+        // Fix thread view and post count, if the number is big it won't overflow as much
         addCss([".TopicList li .Meta span {",
             "    max-height: 14px;",
             "    font-size: 10px;",
             "}"].join("\n"));
     }
     if (currentURL == "/Download.html" || currentURL == "/") {
-        //Fix GitHub watch button
+        // Fix GitHub watch button
         jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
+        // Change the 'GetDeb' vesion to the latest version
         jQuery(".modal .modal-body ul.platforms li").eq(-2).each(function() {
             jQuery(this).find(".Version").text("90.2");
         });
     }
     if (currentURL == "/Profile/Password.html") {
+        // Stylize submit input
         jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
     }
     if (currentURL == "/Profile/Avatar.html") {
@@ -135,6 +141,8 @@ var TPTFixerUpper = function() {
             "    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);",
             "    border-color: #ddd;",
             "}"].join("\n"));
+
+        // Stylize file input
         jQuery(".OtherF").removeClass("OtherF");
         jQuery("form div input").css({"width":"255px"});
         jQuery("form div input").replaceWith(["<div class=\"input-prepend\">",
@@ -158,7 +166,7 @@ var TPTFixerUpper = function() {
             }
         });
     }
-    //Make Groups system better
+    // Make Groups system better
     if (currentURL.indexOf("/Groups")!=-1) {
         // Overide the currentGroupId function to work with the breadcrumbs
         setTimeout(function() {
@@ -240,6 +248,7 @@ var TPTFixerUpper = function() {
             "    display: inline-block;",
             "}"].join("\n"));
 
+        // Add the Op class to all of a users posts if they are the author of the topic
         var pagination = jQuery(".pagination .active").text();
         var post = jQuery(".MessageList").children(":first-child");
         if (pagination == "11" && !post.hasClass("Mine")) {
@@ -256,6 +265,7 @@ var TPTFixerUpper = function() {
             }
         });
 
+        // Fixes to add the overlay when you click on the profile picture, just like in the forums
         jQuery(".Author").each(function() {
             var href = jQuery(this).children(":first-child").attr("href");
             var src = jQuery(this).find("img").attr("src");
@@ -287,7 +297,9 @@ var TPTFixerUpper = function() {
             return false;
         });
 
+        // Prevent ghost talk
         jQuery(".Message span[style=\"color: white;\"]").removeAttr("style");
+
         jQuery(".Mine.Owner").addClass("Administrator");
         jQuery(".Mine.Manager").addClass("Moderator");
         jQuery(".Moderator").each(function() {
@@ -302,7 +314,8 @@ var TPTFixerUpper = function() {
             replacePageHeader();
         }, 2500);
 
-        //Set timeout to wait for all page content (embedded saves) to load
+        // Replace the embedded savegames with a version that uses the same format as the forums
+        // Set timeout to wait for all page content (embedded saves) to load
         setTimeout(function() {
             jQuery(".fSaveRating").remove();
             jQuery(".fSaveGameThumb").contents().unwrap();
@@ -341,17 +354,29 @@ var TPTFixerUpper = function() {
         }, 10000);
     }
     if (currentURL == "/Groups/Thread/EditPost.html") {
-        var user = jQuery("li.dropdown").children(":first-child").text();
+        // Add last edited count to the post itself
+        var user = jQuery("li.dropdown").children(":first-child").text().trim();
         var dt = new Date();
         var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
-        var lastEdited = "<p><small>Last Edited by " + user + " " + time + "</small></p>";
+        var lastEdited;
         setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
             var text;
-            if (!content.indexOf("Last Edited by")) {
+            if (!content.indexOf("Edited") && !content.indexOf(user)) {
+                lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
                 text = content + lastEdited;
             } else {
-                text = content.split("Last Edited by")[0] + lastEdited;
+                var edits;
+                if (content.split("Edited")[1].indexOf("once")!=-1) {
+                    edits = 2;
+                } else {
+                    edits = parseInt(content.split("Edited")[1].split(" ")[1], 10) + 1;
+                }
+                if (!content.split("Edited")[1].split("by")[1].split("Last:")[0].indexOf(user)) {
+                    user = content.split("Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
+                }
+                lastEdited = "<p><small>Edited " + edits + " times by " + user + ". Last: " + time + "</small></p>";
+                text = content.split("<p><small>")[0] + lastEdited;
             }
 
             tinymce.activeEditor.setContent(text);
@@ -374,6 +399,7 @@ var TPTFixerUpper = function() {
         replacePageHeader();
     }
     if (currentURL == "/Groups/Admin/Members.html") {
+        // Make the Admin management page work better by changing it's looks a little bit
         jQuery(".Pagination").remove();
         jQuery(".MemberRow .ButtonLink").css({"display": "inline-block"});
         jQuery(".contents").css({"width": "900px"});
@@ -381,15 +407,18 @@ var TPTFixerUpper = function() {
         jQuery(".MemberName").css({"width": "120px"});
     }
     if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html") {
+        // Stylize submit input
         jQuery("input[type=\"submit\"]").addClass("btn");
     }
     if (currentURL == "/Groups/Page/Index.html") {
+        // Make the page look like the rest of the website
         jQuery(".Pageheader").css({"background": "#fff","border-bottom": "0px","font-weight": "normal","padding": "0"});
         jQuery(".Page").css({"border": "none"});
         jQuery(".contents").css({"padding": "10px","background": "white","border": "1px solid #DDD"});
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
     }
     if (currentURL == "/Groups/Page/Groups.html") {
+        // Remove bottom border on the last child of .GroupItem
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
         addCss([".breadcrumb {",
             "    border-left: none;",
@@ -401,6 +430,7 @@ var TPTFixerUpper = function() {
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
     if (currentURL == "/Groups/Page/Register.html") {
+        // Reduce the group registration page to the basics that are needed
         jQuery("h1:eq(2)").remove();
         jQuery("textarea").hide();
         jQuery(".OtherF label").remove();
@@ -409,6 +439,8 @@ var TPTFixerUpper = function() {
     }
 };
 
+// Check if the Powder Toy enhancements script is loaded
+// My script functions only work if they are ran after that specific script
 setTimeout(function() {
     if (typeof tptenhance == "undefined") {
         var script = jQuery("<script src=\"https://cdn.rawgit.com/jacksonmj/Userscript-TPT-Enhancements/master/Powder_Toy_enhancements.user.js\"></script>");
