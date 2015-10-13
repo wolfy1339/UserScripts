@@ -1,0 +1,15 @@
+{
+  "disallowMixedSpacesAndTabs": true,
+  "disallowTrailingWhitespace": true,
+  "requireCurlyBraces": true,
+  "requireSemicolons": true,
+  "validateQuoteMarks": "\"",
+  "disallowMultipleLineStrings": true,
+  "disallowSpaceBeforeSemicolon": true,
+  "disallowMultipleLineBreaks": true,
+  "disallowMultipleVarDecl": true,
+  "disallowKeywordsOnNewLine": ["else"],
+  "disallowNewlineBeforeBlockStatements": true,
+  "disallowSpaceBeforeComma": true,
+  "requireSpaceBetweenArguments": true
+}
