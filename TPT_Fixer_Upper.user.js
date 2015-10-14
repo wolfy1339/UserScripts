@@ -27,10 +27,10 @@ var TPTFixerUpper = function() {
         var container = jQuery("<div class=\"container\"></div>");
         var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
-        if (currentURL.indexOf("/Admin/")!=-1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
+        if (currentURL.indexOf("/Admin/") !== -1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
             currentGroupName = jQuery(".Pageheader").find("a").text();
             currentGroupID = jQuery(".Pageheader").find("a").attr("href").substring(29);
-            if (currentURL.indexOf("/Admin/")!=-1) {
+            if (currentURL.indexOf("/Admin/") !== -1) {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
@@ -167,7 +167,7 @@ var TPTFixerUpper = function() {
         });
     }
     // Make Groups system better
-    if (currentURL.indexOf("/Groups")!=-1) {
+    if (currentURL.indexOf("/Groups") !== -1) {
         // Overide the currentGroupId function to work with the breadcrumbs
         setTimeout(function() {
             tptenhance.groups.currentGroupId = function() {
@@ -362,18 +362,18 @@ var TPTFixerUpper = function() {
         setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
             var text;
-            if (!content.indexOf("<p><small>Edited")) {
+            if (content.indexOf("<p><small>Edited") === -1) {
                 lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
                 text = content + lastEdited;
             } else {
                 var edits;
-                if (content.indexOf("<p><small>Edited once")!=-1) {
+                if (content.indexOf("<p><small>Edited once") !== -1) {
                     edits = 2;
                 } else {
-                    edits = parseInt(content.split("Edited")[1].split(" ")[1], 10) + 1;
+                    edits = parseInt(content.split("<p><small>Edited")[1].split(" ")[1], 10) + 1;
                 }
-                if (!content.split("Edited")[1].split("by")[1].split("Last:")[0].indexOf(user)) {
-                    user = content.split("Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
+                if (content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].indexOf(user) === -1) {
+                    user = content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
                 }
                 lastEdited = "<p><small>Edited " + edits + " times by " + user + ". Last: " + time + "</small></p>";
                 text = content.split("<p><small>")[0] + lastEdited;
@@ -395,7 +395,7 @@ var TPTFixerUpper = function() {
             "}"].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
     }
-    if (currentURL.indexOf("/Groups/Admin/") != -1) {
+    if (currentURL.indexOf("/Groups/Admin/") !== -1) {
         replacePageHeader();
     }
     if (currentURL == "/Groups/Admin/Members.html") {
