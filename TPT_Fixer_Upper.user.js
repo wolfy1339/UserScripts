@@ -362,12 +362,12 @@ var TPTFixerUpper = function() {
         setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
             var text;
-            if (!content.indexOf("Edited") && !content.indexOf(user)) {
+            if (!content.indexOf("<p><small>Edited")) {
                 lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
                 text = content + lastEdited;
             } else {
                 var edits;
-                if (content.split("Edited")[1].indexOf("once")!=-1) {
+                if (content.indexOf("<p><small>Edited once")!=-1) {
                     edits = 2;
                 } else {
                     edits = parseInt(content.split("Edited")[1].split(" ")[1], 10) + 1;
