@@ -12,6 +12,7 @@
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
+/* global tptenhance, tinymce */
 var TPTFixerUpper = function() {
     var currentURL = window.location.pathname;
 
