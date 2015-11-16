@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.08
+// @version     2.09
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -46,6 +46,8 @@ var TPTFixerUpper = function() {
             currentThreadName = "Edit Post";
         } else if (currentURL == "/Groups/Thread/Create.html") {
             currentThreadName = "New Thread";
+        } else if (currentURL == "/Groups/Thread/Moderation.html") {
+            currentThreadName = "Delete";
         } else if (currentURL == "/Groups/Admin/Members.html") {
             currentThreadName = "Members";
             container.css({"width": "900px"});
@@ -168,12 +170,14 @@ var TPTFixerUpper = function() {
     }
     // Make Groups system better
     if (currentURL.indexOf("/Groups") !== -1) {
-        // Overide the currentGroupId function to work with the breadcrumbs
-        setTimeout(function() {
-            tptenhance.groups.currentGroupId = function() {
+        // Overide the currentGroupId function to work with the breadcrumbs and the old page header
+        tptenhance.groups.currentGroupId = function() {
+            if (jQuery(".breadcrumb").length > 0) {
                 return +(jQuery(".breadcrumb a:eq(1)").attr("href").substring(29));
-            };
-        }, 5000);
+            } else {
+                return +(jQuery(".Pageheader a:eq(1)").attr("href").substring(29));
+            }
+        };
     }
     if (currentURL == "/Groups/Thread/View.html") {
         addCss([".MessageList .Post .Meta .Author .Gravatar {",
@@ -383,7 +387,7 @@ var TPTFixerUpper = function() {
         }, 1000);
         replacePageHeader();
     }
-    if (currentURL == "/Groups/Thread/Create.html") {
+    if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html") {
         replacePageHeader();
     }
     if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
