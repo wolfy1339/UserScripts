@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        TPT Fixer Upper
 // @namespace   https://github.com/wolfy1339/UserScripts
-// @description This Script fixes some bugs/errors on The Powder Toy's website (http://powdertoy.co.uk)
+// @description This script fixes some bugs/errors on The Powder Toy's website (http://powdertoy.co.uk)
 // @icon        http://brilliant-minds.tk/img/powder.png
 // @author      wolfy1339
 // @oujs:author wolfy1339
