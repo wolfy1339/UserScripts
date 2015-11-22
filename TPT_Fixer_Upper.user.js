@@ -250,6 +250,9 @@ var TPTFixerUpper = function() {
             ".savegame {",
             "    vertical-align: top;",
             "    display: inline-block;",
+            "}",
+            "p code {",
+            "    display: inline;",
             "}"].join("\n"));
 
         // Add the Op class to all of a users posts if they are the author of the topic
