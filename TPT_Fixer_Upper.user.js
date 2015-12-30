@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.09
+// @version     2.10
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
@@ -108,7 +108,7 @@ var TPTFixerUpper = function() {
     }
     if (currentURL == "/Download.html" || currentURL == "/") {
         // Fix GitHub watch button
-        jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true");
+        jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true&v=2");
         // Change the 'GetDeb' vesion to the latest version
         jQuery(".modal .modal-body ul.platforms li").eq(-2).each(function() {
             jQuery(this).find(".Version").text("90.2");
