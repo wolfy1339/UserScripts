@@ -364,7 +364,7 @@ var TPTFixerUpper = function() {
         // Add last edited count to the post itself
         var user = jQuery("li.dropdown").children(":first-child").text().trim();
         var dt = new Date();
-        var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + dt.getUTCMonth() + "/" +dt.getUTCFullYear();
+        var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + (dt.getUTCMonth() + 1) + "/" + dt.getUTCFullYear();
         var lastEdited;
         setTimeout(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
