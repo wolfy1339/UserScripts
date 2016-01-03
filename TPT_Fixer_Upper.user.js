@@ -35,8 +35,13 @@ var TPTFixerUpper = function() {
                 currentUserName = jQuery(".OtherF a").text();
             }
         } else {
-            currentGroupID = tptenhance.groups.currentGroupId();
-            currentGroupName = jQuery(".Pageheader a:eq(1)").text();
+            if (jQuery(".Pageheader a:eq(1)").text() != "Groups")
+                currentGroupName = jQuery(".Pageheader a:eq(1)").text();
+                currentGroupID = tptenhance.groups.currentGroupId();
+            } else {
+                currentGroupName = jQuery(".Pageheader a:eq(2)").text();
+                currentGroupID = jQuery(".Pageheader a:eq(2)").attr("href").split("Group=")[1].split("&")[0];
+            }
         }
 
         // Set the page name or thread name depending on the current URL
@@ -173,9 +178,9 @@ var TPTFixerUpper = function() {
         // Overide the currentGroupId function to work with the breadcrumbs and the old page header
         tptenhance.groups.currentGroupId = function() {
             if (jQuery(".breadcrumb").length > 0) {
-                return +(jQuery(".breadcrumb a:eq(1)").attr("href").substring(29));
+                return +(jQuery(".breadcrumb a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
             } else {
-                return +(jQuery(".Pageheader a:eq(1)").attr("href").substring(29));
+                return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
             }
         };
     }
