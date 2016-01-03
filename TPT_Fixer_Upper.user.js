@@ -390,10 +390,6 @@ var TPTFixerUpper = function() {
         }, 1000);
         replacePageHeader();
     }
-    if (currentURL.indexOf("/Groups/Threads") !== -1) {
-        var error = "<div class=\"Error\" id=\"AddReplyError\">Your message was too short.</div>";
-        jQuery(error).appendTo(".PostFForm");
-    }
     if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html") {
         replacePageHeader();
     }
