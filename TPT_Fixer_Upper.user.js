@@ -73,13 +73,15 @@ var TPTFixerUpper = function() {
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"].join(""));
+                "</ul>"
+            ].join(""));
         } else {
             breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
                 "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
                 "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
                 "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"].join(""));
+                "</ul>"
+            ].join(""));
         }
 
         container.append(breadcrumb);
@@ -100,7 +102,8 @@ var TPTFixerUpper = function() {
             ".search-result .details {",
             "    margin-left: 70px;",
             "    margin-right:20px;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
         jQuery(".posts .search-thumbnail").css({"width": "63px"});
         jQuery(".threads .search-thumbnail").css({"width": "63px"});
     }
@@ -109,7 +112,8 @@ var TPTFixerUpper = function() {
         addCss([".TopicList li .Meta span {",
             "    max-height: 14px;",
             "    font-size: 10px;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
     }
     if (currentURL == "/Download.html" || currentURL == "/") {
         // Fix GitHub watch button
@@ -148,7 +152,8 @@ var TPTFixerUpper = function() {
             "    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);",
             "    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);",
             "    border-color: #ddd;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
 
         // Stylize file input
         jQuery(".OtherF").removeClass("OtherF");
@@ -156,7 +161,8 @@ var TPTFixerUpper = function() {
         jQuery("form div input").replaceWith(["<div class=\"input-prepend\">",
             "  <span class=\"btn btn-file\">Browse...<input type=\"file\" name=\"Avatar\"></span>",
             "  <input class=\"span8\" id=\"path\" type=\"text\" readonly=\"\">",
-            "</div>"].join("\n"));
+            "</div>"
+        ].join("\n"));
 
         jQuery(document).on("change", ".btn-file :file", function() {
             var input = jQuery(this);
@@ -258,7 +264,8 @@ var TPTFixerUpper = function() {
             "}",
             "p code {",
             "    display: inline;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
 
         // Add the Op class to all of a users posts if they are the author of the topic
         var pagination = jQuery(".pagination .active").text();
@@ -300,7 +307,8 @@ var TPTFixerUpper = function() {
                     "<h1>Forum</h1>",
                     "<div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation + "</div>",
                     "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
-                    "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"].join(""));
+                    "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"
+                ].join(""));
                 InformationForm.html(Form);
             });
             InformationForm.mouseleave(function() {
@@ -329,34 +337,31 @@ var TPTFixerUpper = function() {
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Set timeout to wait for all page content (embedded saves) to load
         setTimeout(function() {
-            jQuery(".fSaveRating").remove();
-            jQuery(".fSaveGameThumb").contents().unwrap();
-            jQuery(".fAuthor").addClass("author").removeClass("fAuthor");
-            jQuery(".fComments").addClass("comments").removeClass("fComments");
-            jQuery(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
-
-            var title, href;
             jQuery(".fSaveGame").each(function () {
+                jQuery(this).find(".fSaveRating").remove();
+                jQuery(this).find(".fSaveGameThumb").contents().unwrap();
+                jQuery(this).find(".fAuthor").addClass("author").removeClass("fAuthor");
+                jQuery(this).find(".fComments").addClass("comments").removeClass("fComments");
+                jQuery(this).find(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
+
                 var overlay = jQuery("<div class=\"overlay\"></div>");
-                title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
-                href = jQuery(this).find(".fTitle a").attr("href");
+                var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
+                var href = jQuery(this).find(".fTitle a").attr("href");
                 var pthref = href.substring(21, 28);
 
                 overlay.append("<a class=\"btn btn-primary\" href=\"" + href + "\">View</a>");
                 overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:" + pthref + "#" + title + "\">Open</a>");
                 overlay.css({"opacity": 0});
                 overlay.appendTo(this);
-            });
 
-            jQuery(".fTitle").each(function () {
-                title = $(this).attr("title");
-                var text = $(this).find("a").text();
-                href = $(this).find("a").attr("href");
-                $(this).replaceWith("<h5 title=\"" + title + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
+                var title2 = jQuery(this).find(".fTitle").attr("title");
+                var text = jQuery(this).find(".fTitle a").text();
+                jQuery(this).find(".fTitle").replaceWith("<h5 title=\"" + title2 + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
+
+                jQuery(this).find(".SaveDownloadDo").remove();
+                jQuery(this).addClass("savegame").removeClass("fSaveGame");
+                jQuery(this).find("a img").attr("width", "153").attr("height", "96");
             });
-            jQuery(".SaveDownloadDo").remove();
-            jQuery(".fSaveGame").addClass("savegame").removeClass("fSaveGame");
-            jQuery(".savegame a img").attr("width", "153").attr("height", "96");
             jQuery(".savegame").on("mouseover", function () {
                 jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
             });
@@ -404,7 +409,8 @@ var TPTFixerUpper = function() {
             "    border-top: none;",
             "    border-right: none;",
             "    border-left: none;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
     }
     if (currentURL.indexOf("/Groups/Admin/") !== -1) {
@@ -418,9 +424,14 @@ var TPTFixerUpper = function() {
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
     }
-    if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html") {
+    if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/PasswordReset.html") {
         // Stylize submit input
         jQuery("input[type=\"submit\"]").addClass("btn");
+        if (currentURL == "/Groups/Page/Resign.html") {
+            jQuery("input[type=\"submit\"]").addClass("btn-danger");
+        } else {
+            jQuery("input[type=\"submit\"]").addClass("btn-primary");
+        }
     }
     if (currentURL == "/Groups/Page/Index.html") {
         // Make the page look like the rest of the website
@@ -438,7 +449,8 @@ var TPTFixerUpper = function() {
             "    border-bottom: none;",
             "    margin: 0;",
             "    padding: 0;",
-            "}"].join("\n"));
+            "}"
+        ].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
     if (currentURL == "/Groups/Page/Register.html") {
