@@ -376,7 +376,7 @@ var TPTFixerUpper = function() {
         var dt = new Date();
         var month;
         // Only prepend a zero if the month is lower than 10 (dt.getUTCMonth() + 1)
-        if (dt.getUTCMonth().toString().length === 2 && dt.getUTCMonth() < 9) {
+        if (dt.getUTCMonth() < 9) {
             month = "0" + (dt.getUTCMonth() + 1);
         } else {
             month = dt.getUTCMonth() + 1;
