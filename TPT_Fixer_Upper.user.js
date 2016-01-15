@@ -373,11 +373,14 @@ var TPTFixerUpper = function() {
     if (currentURL == "/Groups/Thread/EditPost.html") {
         // Add last edited count to the post itself
 
-        // Remove new conversations icon
+        // Fetch the username properly if the conversation notification icon is present¸
+        var user;
         if (jQuery(".dropdown-toggle").find(".badge.badge-info").length) {
-            jQuery(".dropdown-toggle .badge.badge-info").remove()
+            user = jQuery(".dropdown-toggle").clone().children().remove().end().text().trim()
+        } else {
+            user = jQuery(".dropdown-toggle").text().trim();
         }
-        var user = jQuery(".dropdown-toggle").text().trim();
+
         var dt = new Date();
         var month;
         // Only prepend a zero if the month is lower than 10 (dt.getUTCMonth() + 1)
