@@ -376,7 +376,7 @@ var TPTFixerUpper = function() {
         // Fetch the username properly if the conversation notification icon is present¸
         var user;
         if (jQuery(".dropdown-toggle").find(".badge.badge-info").length) {
-            user = jQuery(".dropdown-toggle").clone().children().remove().end().text().trim()
+            user = jQuery(".dropdown-toggle").clone().children().remove().end().text().trim();
         } else {
             user = jQuery(".dropdown-toggle").text().trim();
         }
