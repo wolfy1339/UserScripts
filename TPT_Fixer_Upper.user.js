@@ -88,7 +88,7 @@ var TPTFixerUpper = function() {
         jQuery(".Pageheader").remove();
         container.insertBefore(".contents");
         if (currentURL == "/Groups/Page/Register.html") {
-            jQuery(".contents").css({padding:"10px"});
+            jQuery(".breadcrumb").css({"margin-bottom":"7px"});
         }
     }
 
@@ -418,10 +418,10 @@ var TPTFixerUpper = function() {
         }, 1000);
         replacePageHeader();
     }
-    if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html") {
+    if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
         replacePageHeader();
     }
-    if (currentURL == "/Groups/Page/View.html" || currentURL == "/Groups/Page/Register.html") {
+    if (currentURL == "/Groups/Page/View.html") {
         addCss([".breadcrumb {",
             "    margin: 0;",
             "    border-top: none;",
@@ -430,9 +430,6 @@ var TPTFixerUpper = function() {
             "}"
         ].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
-    }
-    if (currentURL.indexOf("/Groups/Admin/") !== -1) {
-        replacePageHeader();
     }
     if (currentURL == "/Groups/Admin/Members.html") {
         // Make the Admin management page work better by changing it's looks a little bit
