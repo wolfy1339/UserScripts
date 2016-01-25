@@ -18,9 +18,11 @@ var TPTFixerUpper = function() {
 
     function addCss(cssString) {
         // Helper function to add CSS
-        var style = jQuery("<style type=\"text/css\"></style>");
-        style.append(cssString);
-        style.appendTo("head");
+        if (!jQuery("style").length) {
+            jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
+        } else {
+            jQuery("style").append(cssString);
+        }
     }
 
     function replacePageHeader() {
@@ -96,14 +98,18 @@ var TPTFixerUpper = function() {
         // Enhancements for the rebuilt search feature
         jQuery(".search-avatar").css({"margin-right": "10px"});
         addCss([".search-thumbnail img {",
-            "    border-radius:3px;",
-            "    border:2px solid #DDD;",
+            "    border-radius: 3px;",
+            "    border: 2px solid #DDD;",
             "}",
             ".search-result .details {",
             "    margin-left: 70px;",
             "    margin-right:20px;",
+            "}",
+            ".input-prepend.input-append input:first-child {",
+            "    border-radius: 3px 0 0 3px;",
             "}"
         ].join("\n"));
+        jQuery(".input-append").attr("class", "input-prepend input-append");
         jQuery(".posts .search-thumbnail").css({"width": "63px"});
         jQuery(".threads .search-thumbnail").css({"width": "63px"});
     }
@@ -434,7 +440,6 @@ var TPTFixerUpper = function() {
     if (currentURL == "/Groups/Admin/Members.html") {
         // Make the Admin management page work better by changing it's looks a little bit
         jQuery(".Pagination").remove();
-        jQuery(".MemberRow .ButtonLink").css({"display": "inline-block"});
         jQuery(".contents").css({"width": "900px"});
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
