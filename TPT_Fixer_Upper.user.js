@@ -323,10 +323,13 @@ var TPTFixerUpper = function() {
         jQuery(".Mine.Owner").addClass("Administrator");
         jQuery(".Mine.Manager").addClass("Moderator");
         jQuery(".Moderator").each(function() {
-            var findDev = jQuery(this).find(".Meta .Author a").text();
-            if (findDev == "jacob1" || findDev == "cracker64" || findDev == "jacksonmj") {
+            var a = jQuery(this).find(".Meta .Author a").text();
+            if (a == "jacob1" || a == "cracker64" || a == "jacksonmj" || a == "AntB" || a == "Xenocide" || a == "savask" || a == "triclops200") {
                 jQuery(this).removeClass("Moderator").addClass("Developer");
                 jQuery(this).find(".UserTitle").text("Developer");
+            } else if (a == "Simon") {
+                jQuery(this).removeClass("Moderator").addClass("Administrator");
+                jQuery(this).find(".UserTitle").text("Administrator");
             }
         });
 
