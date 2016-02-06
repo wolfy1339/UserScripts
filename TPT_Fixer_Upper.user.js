@@ -13,87 +13,87 @@
 // @match       *://powdertoy.co.uk/*
 // ==/UserScript==
 /* global tptenhance, tinymce */
+var currentURL = window.location.pathname;
+
+function addCss(cssString) {
+    // Helper function to add CSS
+    if (!jQuery("style").length) {
+        jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
+    } else {
+        jQuery("style").append(cssString);
+    }
+}
+
+function replacePageHeader() {
+    // Helper function to replace the old page headers with breadcrumbs as used everywhere else.
+    var container = jQuery("<div class=\"container\"></div>");
+    var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
+
+    if (currentURL.indexOf("/Admin/") !== -1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
+        currentGroupName = jQuery(".Pageheader").find("a").text();
+        currentGroupID = jQuery(".Pageheader").find("a").attr("href").substring(29);
+        if (currentURL.indexOf("/Admin/") !== -1) {
+            currentUserName = jQuery(".OtherF a").text();
+        }
+    } else {
+        if (jQuery(".Pageheader a:eq(1)").text() != "Groups") {
+            currentGroupName = jQuery(".Pageheader a:eq(1)").text();
+            currentGroupID = tptenhance.groups.currentGroupId();
+        } else {
+            currentGroupName = jQuery(".Pageheader a:eq(2)").text();
+            currentGroupID = jQuery(".Pageheader a:eq(2)").attr("href").split("Group=")[1].split("&")[0];
+        }
+    }
+
+    // Set the page name or thread name depending on the current URL
+    if (currentURL == "/Groups/Thread/View.html") {
+        currentThreadName = jQuery(".TopicTitle").text();
+    } else if (currentURL == "/Groups/Thread/EditPost.html") {
+        currentThreadName = "Edit Post";
+    } else if (currentURL == "/Groups/Thread/Create.html") {
+        currentThreadName = "New Thread";
+    } else if (currentURL == "/Groups/Thread/Moderation.html") {
+        currentThreadName = "Delete";
+    } else if (currentURL == "/Groups/Admin/Members.html") {
+        currentThreadName = "Members";
+        container.css({"width": "900px"});
+    } else if (currentURL == "/Groups/Admin/Edit.html" || currentURL == "/Groups/Admin/MemberElevation.html") {
+        currentThreadName = "Edit";
+    } else if (currentURL == "/Groups/Admin/MemberRemove.html") {
+        currentThreadName = "Remove";
+    } else if (currentURL == "/Groups/Page/Resign.html") {
+        currentThreadName = "Resign";
+    } else if (currentURL == "/Groups/Page/Register.html") {
+        currentThreadName = "Register";
+    }
+
+    // Use different formats depending on the curent URL
+    if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
+        breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
+            "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+            "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
+            "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
+            "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+            "</ul>"
+        ].join(""));
+    } else {
+        breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
+            "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
+            "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
+            "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
+            "</ul>"
+        ].join(""));
+    }
+
+    container.append(breadcrumb);
+    jQuery(".Pageheader").remove();
+    container.insertBefore(".contents");
+    if (currentURL == "/Groups/Page/Register.html") {
+        jQuery(".breadcrumb").css({"margin-bottom": "7px"});
+    }
+}
+
 var TPTFixerUpper = function() {
-    var currentURL = window.location.pathname;
-
-    function addCss(cssString) {
-        // Helper function to add CSS
-        if (!jQuery("style").length) {
-            jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
-        } else {
-            jQuery("style").append(cssString);
-        }
-    }
-
-    function replacePageHeader() {
-        // Helper function to replace the old page headers with breadcrumbs as used everywhere else.
-        var container = jQuery("<div class=\"container\"></div>");
-        var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
-
-        if (currentURL.indexOf("/Admin/") !== -1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
-            currentGroupName = jQuery(".Pageheader").find("a").text();
-            currentGroupID = jQuery(".Pageheader").find("a").attr("href").substring(29);
-            if (currentURL.indexOf("/Admin/") !== -1) {
-                currentUserName = jQuery(".OtherF a").text();
-            }
-        } else {
-            if (jQuery(".Pageheader a:eq(1)").text() != "Groups") {
-                currentGroupName = jQuery(".Pageheader a:eq(1)").text();
-                currentGroupID = tptenhance.groups.currentGroupId();
-            } else {
-                currentGroupName = jQuery(".Pageheader a:eq(2)").text();
-                currentGroupID = jQuery(".Pageheader a:eq(2)").attr("href").split("Group=")[1].split("&")[0];
-            }
-        }
-
-        // Set the page name or thread name depending on the current URL
-        if (currentURL == "/Groups/Thread/View.html") {
-            currentThreadName = jQuery(".TopicTitle").text();
-        } else if (currentURL == "/Groups/Thread/EditPost.html") {
-            currentThreadName = "Edit Post";
-        } else if (currentURL == "/Groups/Thread/Create.html") {
-            currentThreadName = "New Thread";
-        } else if (currentURL == "/Groups/Thread/Moderation.html") {
-            currentThreadName = "Delete";
-        } else if (currentURL == "/Groups/Admin/Members.html") {
-            currentThreadName = "Members";
-            container.css({"width": "900px"});
-        } else if (currentURL == "/Groups/Admin/Edit.html" || currentURL == "/Groups/Admin/MemberElevation.html") {
-            currentThreadName = "Edit";
-        } else if (currentURL == "/Groups/Admin/MemberRemove.html") {
-            currentThreadName = "Remove";
-        } else if (currentURL == "/Groups/Page/Resign.html")  {
-            currentThreadName = "Resign";
-        } else if (currentURL == "/Groups/Page/Register.html") {
-            currentThreadName = "Register";
-        }
-
-        // Use different formats depending on the curent URL
-        if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Admin/MemberRemove.html") {
-            breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
-                "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-                "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
-                "<li class=\"active\"><a>" + currentUserName + "</a><span class=\"divider\">/</span></li>",
-                "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"
-            ].join(""));
-        } else {
-            breadcrumb = jQuery(["<ul class=\"breadcrumb\">",
-                "<li><a href=\"/Groups/Page/Groups.html\">Groups</a><span class=\"divider\">/</span></li>",
-                "<li><a href=\"/Groups/Page/View.html?Group=" + currentGroupID + "\">" + currentGroupName + "</a><span class=\"divider\">/</span></li>",
-                "<li class=\"active\"><a>" + currentThreadName + "</a></li>",
-                "</ul>"
-            ].join(""));
-        }
-
-        container.append(breadcrumb);
-        jQuery(".Pageheader").remove();
-        container.insertBefore(".contents");
-        if (currentURL == "/Groups/Page/Register.html") {
-            jQuery(".breadcrumb").css({"margin-bottom":"7px"});
-        }
-    }
-
     if (currentURL == "/Search.html") {
         // Enhancements for the rebuilt search feature
         jQuery(".search-avatar").css({"margin-right": "10px"});
