@@ -346,7 +346,7 @@ var TPTFixerUpper = function() {
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Set timeout to wait for all page content (embedded saves) to load
         setTimeout(function() {
-            jQuery(".fSaveGame").each(function () {
+            jQuery(".fSaveGame").each(function() {
                 jQuery(this).find(".fSaveRating").remove();
                 jQuery(this).find(".fSaveGameThumb").contents().unwrap();
                 jQuery(this).find(".fAuthor").addClass("author").removeClass("fAuthor");
@@ -371,10 +371,10 @@ var TPTFixerUpper = function() {
                 jQuery(this).addClass("savegame").removeClass("fSaveGame");
                 jQuery(this).find("a img").attr("width", "153").attr("height", "96");
             });
-            jQuery(".savegame").on("mouseover", function () {
+            jQuery(".savegame").on("mouseover", function() {
                 jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
             });
-            jQuery(".savegame").on("mouseleave", function () {
+            jQuery(".savegame").on("mouseleave", function() {
                 jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
             });
         }, 10000);
