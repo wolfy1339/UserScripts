@@ -290,6 +290,12 @@ var TPTFixerUpper = function() {
             }
         });
 
+        // Fix the permalink on each post
+        $(".Permalink a").each(function() {
+            var href = $(this).attr("href").replace("Message=", "Message-");
+            $(this).attr("href", href);
+        });
+
         // Fixes to add the overlay when you click on the profile picture, just like in the forums
         jQuery(".Author").each(function() {
             var href = jQuery(this).children(":first-child").attr("href");
