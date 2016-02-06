@@ -383,7 +383,7 @@ var TPTFixerUpper = function() {
             jQuery(".savegame").on("mouseleave", function() {
                 jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
             });
-        }, 10000);
+        }, 13500);
     }
     if (currentURL == "/Groups/Thread/EditPost.html") {
         // Add last edited count to the post itself
