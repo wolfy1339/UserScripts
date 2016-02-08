@@ -8,7 +8,7 @@
 // @copyright   2014-2015, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.12
+// @version     2.13
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
