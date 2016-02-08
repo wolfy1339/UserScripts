@@ -11,6 +11,7 @@
 // @version     2.12
 // @grant       none
 // @match       *://powdertoy.co.uk/*
+// @run-at      document-idle
 // ==/UserScript==
 /* global tptenhance, tinymce */
 var currentURL = window.location.pathname;
@@ -20,7 +21,7 @@ function addCss(cssString) {
     if (!jQuery("style").length) {
         jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
     } else {
-        jQuery("style").append(cssString);
+        jQuery("style:eq(0)").append(cssString);
     }
 }
 
@@ -178,10 +179,9 @@ var TPTFixerUpper = function() {
 
         jQuery(".btn-file :file").on("fileselect", function(event, label) {
             var input = jQuery(this).parents(".input-prepend").find(":text");
-            var log = label;
 
             if (input.length) {
-                input.val(log);
+                input.val(label);
             }
         });
     }
@@ -347,12 +347,12 @@ var TPTFixerUpper = function() {
             }
         });
 
-        setTimeout(function() {
+        jQuery(window).load(function() {
             replacePageHeader();
-        }, 2500);
+        });
 
         // Replace the embedded savegames with a version that uses the same format as the forums
-        // Set timeout to wait for all page content (embedded saves) to load
+        // Wait for all page content (embedded saves) to load
         jQuery(window).load(function() {
             jQuery(".fSaveGame").each(function() {
                 jQuery(this).find(".fSaveRating").remove();
@@ -408,7 +408,7 @@ var TPTFixerUpper = function() {
         }
         var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + month + "/" + dt.getUTCFullYear();
         var lastEdited;
-        setTimeout(function() {
+        jQuery(window).load(function() {
             var content = tinymce.activeEditor.getContent({format:"text"});
             var text;
             if (content.indexOf("<p><small>Edited") === -1) {
@@ -429,7 +429,7 @@ var TPTFixerUpper = function() {
             }
 
             tinymce.activeEditor.setContent(text);
-        }, 1000);
+        });
         replacePageHeader();
     }
     if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
@@ -503,4 +503,4 @@ setTimeout(function() {
     } else {
         TPTFixerUpper();
     }
-}, 1000);
+}, 2500);
