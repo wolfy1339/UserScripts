@@ -300,17 +300,19 @@ var TPTFixerUpper = function() {
         jQuery(".Author").each(function() {
             var href = jQuery(this).children(":first-child").attr("href");
             var src = jQuery(this).find("img").attr("src");
-            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a hre=\"" + href + "\"><img src=\"" + src + "\"></a></div>");
+            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a href=\"" + href + "\"><img src=\"" + src + "\"></a></div>");
         });
+        /* Taken from the website's javascript (http://powdertoy.co.uk/Applications/Application.Discussions/Javascript/Thread.js),
+        Modified slightly to fit my coding styles */
         jQuery(".Author .Gravatar").on("click", function() {
-            var InformationForm = jQuery("<div class=\"UserInformation\">Loading…</div>");
-            jQuery("body").append(InformationForm);
-            var Pos = jQuery(this).offset();
-            var Link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
-            InformationForm.css("top", Pos.top-3);
-            InformationForm.css("left", Pos.left-3);
+            var informationForm = jQuery("<div class=\"UserInformation\">Loading…</div>");
+            jQuery("body").append(informationForm);
+            var pos = jQuery(this).offset();
+            var link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
+            InformationForm.css("top", pos.top-3);
+            InformationForm.css("left", pos.left-3);
             jQuery.getJSON(Link).done(function(data) {
-                var Form = jQuery(["<span class=\"Author\">",
+                var form = jQuery(["<span class=\"Author\">",
                     "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
                     "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
                     "</span>",
@@ -321,10 +323,10 @@ var TPTFixerUpper = function() {
                     "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
                     "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"
                 ].join(""));
-                InformationForm.html(Form);
+                informationForm.html(form);
             });
-            InformationForm.mouseleave(function() {
-                InformationForm.remove();
+            informationForm.mouseleave(function() {
+                informationForm.remove();
             });
             return false;
         });
