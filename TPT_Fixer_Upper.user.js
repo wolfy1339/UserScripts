@@ -311,7 +311,7 @@ var TPTFixerUpper = function() {
             var link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
             InformationForm.css("top", pos.top-3);
             InformationForm.css("left", pos.left-3);
-            jQuery.getJSON(Link).done(function(data) {
+            jQuery.getJSON(link).done(function(data) {
                 var form = jQuery(["<span class=\"Author\">",
                     "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
                     "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
