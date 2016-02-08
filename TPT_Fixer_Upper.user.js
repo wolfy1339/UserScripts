@@ -351,7 +351,7 @@ var TPTFixerUpper = function() {
 
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Set timeout to wait for all page content (embedded saves) to load
-        setTimeout(function() {
+        jQuery(window).load(function() {
             jQuery(".fSaveGame").each(function() {
                 jQuery(this).find(".fSaveRating").remove();
                 jQuery(this).find(".fSaveGameThumb").contents().unwrap();
@@ -383,7 +383,7 @@ var TPTFixerUpper = function() {
             jQuery(".savegame").on("mouseleave", function() {
                 jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
             });
-        }, 13500);
+        });
     }
     if (currentURL == "/Groups/Thread/EditPost.html") {
         // Add last edited count to the post itself
