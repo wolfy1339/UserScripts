@@ -5,10 +5,10 @@
 // @icon        http://brilliant-minds.tk/img/powder.png
 // @author      wolfy1339
 // @oujs:author wolfy1339
-// @copyright   2014-2015, wolfy1339
+// @copyright   2014-2016, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.13
+// @version     2.14
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
