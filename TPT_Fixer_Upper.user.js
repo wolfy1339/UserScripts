@@ -309,8 +309,8 @@ var TPTFixerUpper = function() {
             jQuery("body").append(informationForm);
             var pos = jQuery(this).offset();
             var link = jQuery(this).parent().children("a").attr("href").replace(/\.html/, ".json");
-            InformationForm.css("top", pos.top-3);
-            InformationForm.css("left", pos.left-3);
+            informationForm.css("top", pos.top-3);
+            informationForm.css("left", pos.left-3);
             jQuery.getJSON(link).done(function(data) {
                 var form = jQuery(["<span class=\"Author\">",
                     "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
@@ -347,44 +347,40 @@ var TPTFixerUpper = function() {
             }
         });
 
-        jQuery(window).load(function() {
-            replacePageHeader();
-        });
+        replacePageHeader();
 
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Wait for all page content (embedded saves) to load
-        jQuery(window).load(function() {
-            jQuery(".fSaveGame").each(function() {
-                jQuery(this).find(".fSaveRating").remove();
-                jQuery(this).find(".fSaveGameThumb").contents().unwrap();
-                jQuery(this).find(".fAuthor").addClass("author").removeClass("fAuthor");
-                jQuery(this).find(".fComments").addClass("comments").removeClass("fComments");
-                jQuery(this).find(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
+        jQuery(".fSaveGame").each(function() {
+            jQuery(this).find(".fSaveRating").remove();
+            jQuery(this).find(".fSaveGameThumb").contents().unwrap();
+            jQuery(this).find(".fAuthor").addClass("author").removeClass("fAuthor");
+            jQuery(this).find(".fComments").addClass("comments").removeClass("fComments");
+            jQuery(this).find(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
 
-                var overlay = jQuery("<div class=\"overlay\"></div>");
-                var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
-                var href = jQuery(this).find(".fTitle a").attr("href");
-                var pthref = href.substring(21, 28);
+            var overlay = jQuery("<div class=\"overlay\"></div>");
+            var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
+            var href = jQuery(this).find(".fTitle a").attr("href");
+            var pthref = href.substring(21, 28);
 
-                overlay.append("<a class=\"btn btn-primary\" href=\"" + href + "\">View</a>");
-                overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:" + pthref + "#" + title + "\">Open</a>");
-                overlay.css({"opacity": 0});
-                overlay.appendTo(this);
+            overlay.append("<a class=\"btn btn-primary\" href=\"" + href + "\">View</a>");
+            overlay.append("<a class=\"btn btn-inverse\" href=\"ptsave:" + pthref + "#" + title + "\">Open</a>");
+            overlay.css({"opacity": 0});
+            overlay.appendTo(this);
 
-                var title2 = jQuery(this).find(".fTitle").attr("title");
-                var text = jQuery(this).find(".fTitle a").text();
-                jQuery(this).find(".fTitle").replaceWith("<h5 title=\"" + title2 + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
+            var title2 = jQuery(this).find(".fTitle").attr("title");
+            var text = jQuery(this).find(".fTitle a").text();
+            jQuery(this).find(".fTitle").replaceWith("<h5 title=\"" + title2 + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
 
-                jQuery(this).find(".SaveDownloadDo").remove();
-                jQuery(this).addClass("savegame").removeClass("fSaveGame");
-                jQuery(this).find("a img").attr("width", "153").attr("height", "96");
-            });
-            jQuery(".savegame").on("mouseover", function() {
-                jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
-            });
-            jQuery(".savegame").on("mouseleave", function() {
-                jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
-            });
+            jQuery(this).find(".SaveDownloadDo").remove();
+            jQuery(this).addClass("savegame").removeClass("fSaveGame");
+            jQuery(this).find("a img").attr("width", "153").attr("height", "96");
+        });
+        jQuery(".savegame").on("mouseover", function() {
+            jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
+        });
+        jQuery(".savegame").on("mouseleave", function() {
+            jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
         });
     }
     if (currentURL == "/Groups/Thread/EditPost.html") {
@@ -408,28 +404,27 @@ var TPTFixerUpper = function() {
         }
         var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + month + "/" + dt.getUTCFullYear();
         var lastEdited;
-        jQuery(window).load(function() {
-            var content = tinymce.activeEditor.getContent({format:"text"});
-            var text;
-            if (content.indexOf("<p><small>Edited") === -1) {
-                lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
-                text = content + lastEdited;
+        var content = tinymce.activeEditor.getContent({format:"text"});
+        var text;
+        if (content.indexOf("<p><small>Edited") === -1) {
+            lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
+            text = content + lastEdited;
+        } else {
+            var edits;
+            if (content.indexOf("<p><small>Edited once") !== -1) {
+                edits = 2;
             } else {
-                var edits;
-                if (content.indexOf("<p><small>Edited once") !== -1) {
-                    edits = 2;
-                } else {
-                    edits = parseInt(content.split("<p><small>Edited")[1].split(" ")[1], 10) + 1;
-                }
-                if (content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].indexOf(user) === -1) {
-                    user = content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
-                }
-                lastEdited = "<p><small>Edited " + edits + " times by " + user + ". Last: " + time + "</small></p>";
-                text = content.split("<p><small>")[0] + lastEdited;
+                edits = parseInt(content.split("<p><small>Edited")[1].split(" ")[1], 10) + 1;
             }
+            if (content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].indexOf(user) === -1) {
+                user = content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
+            }
+            lastEdited = "<p><small>Edited " + edits + " times by " + user + ". Last: " + time + "</small></p>";
+            text = content.split("<p><small>")[0] + lastEdited;
+        }
 
-            tinymce.activeEditor.setContent(text);
-        });
+        tinymce.activeEditor.setContent(text);
+
         replacePageHeader();
     }
     if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
@@ -503,4 +498,4 @@ setTimeout(function() {
     } else {
         TPTFixerUpper();
     }
-}, 2500);
+}, 2000);
