@@ -122,14 +122,6 @@ var TPTFixerUpper = function() {
             "}"
         ].join("\n"));
     }
-    if (currentURL == "/Download.html" || currentURL == "/") {
-        // Fix GitHub watch button
-        jQuery(".social-github iframe").attr("src", "http://ghbtns.com/github-btn.html?user=simtr&repo=The-Powder-Toy&type=watch&count=true&v=2");
-        // Change the 'GetDeb' vesion to the latest version
-        jQuery(".modal .modal-body ul.platforms li").eq(-2).each(function() {
-            jQuery(this).find(".Version").text("90.2");
-        });
-    }
     if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
         jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
