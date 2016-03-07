@@ -1,6 +1,7 @@
 {
-  "browser" : true,
-  "es3"     : true,
-  "esnext"  : true,
-  "jquery"    : true
+  "browser": true,
+  "es3": true,
+  "esnext": true,
+  "jquery": true,
+  "devel": true
 }
