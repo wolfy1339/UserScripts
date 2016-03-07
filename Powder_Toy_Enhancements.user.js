@@ -181,7 +181,7 @@ contentEval(function() {
                     else
                         return null;
                 },
-                tabs: {},
+                tabs: {}
             },
             users: {
                 profileUrlById: function(id) {
@@ -195,8 +195,8 @@ contentEval(function() {
                 },
                 savesUrlByName: function(n) {
                     return "/User/Saves.html?Name=" + encodeURIComponent(n);
-                },
-            },
+                }
+            }
         };
 
         // Class to manage pagination and deletion+refreshing for a comments section (e.g. Browse/View.html or user moderation page)
