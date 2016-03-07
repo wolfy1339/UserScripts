@@ -10,3 +10,4 @@ script:
   - npm install jscs
   - jshint TPT_Fixer_Upper.user.js
   - jscs TPT_Fixer_Upper.user.js
+  - jshint Powder_Toy_Enhancements.user.js
