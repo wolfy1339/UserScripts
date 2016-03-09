@@ -196,7 +196,8 @@ contentEval(function() {
                 savesUrlByName: function(n) {
                     return "/User/Saves.html?Name=" + encodeURIComponent(n);
                 }
-            }
+            },
+            comments: {}
         };
 
         // Class to manage pagination and deletion+refreshing for a comments section (e.g. Browse/View.html or user moderation page)
@@ -215,7 +216,6 @@ contentEval(function() {
             });
             this.msgList = this.container.find(".MessageList");
             this.pagination = this.container.find(".Pagination");
-            this.attachCommentHandlers();
             this.attachPaginationHandlers();
             this.makeSaveLinks();
         };
@@ -382,7 +382,6 @@ contentEval(function() {
             newTabInfo.container.appendTo(this.container);
             this.activeTab = newTabInfo;
             newTabInfo.obj.activate();
-            setTimeout(tptenhance.tags.tagInfoPopup.updatePosition, 1);
             return false;
         };
 
@@ -629,17 +628,7 @@ contentEval(function() {
                 }
             });
         }
-        if (window.location.pathname == "/Browse/Tags.html") {
-            $(document).ready(function() {
-                setTimeout(function() {
-                    $("span.TagText").die('click');
-                    $("span.TagText").on('click', function() {
-                        tptenhance.tags.tagInfoPopup.showAll($(this), $(this).text());
-                    });
-                    tptenhance.tags.attachHandlers($("div.Tag"));
-                }, 1);
-            });
-        }
+
         if (window.location.pathname == "/Discussions/Thread/View.html") {
             // Extend LoadForumBlocks to add a click callback to the Unhide post buttons, to fix the site redirecting to the first page of the thread instead of the page with the post when a post is unhidden
             // Also scroll to top/bottom of page when changing to next/previous page in a thread
@@ -936,8 +925,6 @@ addCss('\
 .Post { word-wrap: break-word; }\
 .savegame { width:153px; }\
 .savegame .caption a { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\
-.TagInfo { clear:right; }\
-.TagInfo .label { margin-bottom:1px; }\
 .SaveDetails ul.MessageList li.Post { border-top:1px solid #DCDCDC; border-bottom:0 none; }\
 .new-topic-button .btn { white-space:nowrap; }\
 .tag-removedcurrent { text-decoration: line-through; background-color:#ffd; }\
@@ -956,8 +943,6 @@ addCss('\
 .ElemCountChart .bar { flex:1 1 auto; min-width:2px; box-sizing:border-box; overflow:hidden; text-align:center; }\
 .ElemCountChart .barlabel { padding:2px; }\
 .SaveDetails-notifyOld { text-align:center; margin:10px 0;}\
-.TagInfo .Tag-LinkDisable, .TagInfo .Tag-LinkEnable { margin:0 10px; }\
-.TagPopup-showOthers { text-align:right; clear:right; }\
 .Post.Deleting { }\
 .Post.Deleted { opacity:0.7;text-decoration:line-through; }\
 .SaveGamePicture { position:relative; }\
