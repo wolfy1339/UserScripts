@@ -396,26 +396,28 @@ var TPTFixerUpper = function() {
         }
         var time = dt.getUTCHours() + ":" + dt.getUTCMinutes() + " " + dt.getUTCDate() + "/" + month + "/" + dt.getUTCFullYear();
         var lastEdited;
-        var content = tinymce.activeEditor.getContent({format:"text"});
-        var text;
-        if (content.indexOf("<p><small>Edited") === -1) {
-            lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
-            text = content + lastEdited;
-        } else {
-            var edits;
-            if (content.indexOf("<p><small>Edited once") !== -1) {
-                edits = 2;
+        setTimeout(function() {
+            var content = tinymce.activeEditor.getContent({format:"text"});
+            var text;
+            if (content.indexOf("<p><small>Edited") === -1) {
+                lastEdited = "<p><small>Edited once by " + user + ". Last: " + time + "</small></p>";
+                text = content + lastEdited;
             } else {
-                edits = parseInt(content.split("<p><small>Edited")[1].split(" ")[1], 10) + 1;
+                var edits;
+                if (content.indexOf("<p><small>Edited once") !== -1) {
+                    edits = 2;
+                } else {
+                    edits = parseInt(content.split("<p><small>Edited")[1].split(" ")[1], 10) + 1;
+                }
+                if (content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].indexOf(user) === -1) {
+                    user = content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
+                }
+                lastEdited = "<p><small>Edited " + edits.toString() + " times by " + user + ". Last: " + time + "</small></p>";
+                text = content.split("<p><small>")[0] + lastEdited;
             }
-            if (content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].indexOf(user) === -1) {
-                user = content.split("<p><small>Edited")[1].split("by")[1].split("Last:")[0].trim() + ", " + user;
-            }
-            lastEdited = "<p><small>Edited " + edits + " times by " + user + ". Last: " + time + "</small></p>";
-            text = content.split("<p><small>")[0] + lastEdited;
-        }
 
-        tinymce.activeEditor.setContent(text);
+            tinymce.activeEditor.setContent(text);
+        }, 1000);
 
         replacePageHeader();
     }
