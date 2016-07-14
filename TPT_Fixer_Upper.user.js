@@ -8,7 +8,7 @@
 // @copyright   2014-2016, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/install/wolfy1339/TPT_Fixer_Upper.user.js
-// @version     2.14
+// @version     2.15
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -158,7 +158,7 @@ var TPTFixerUpper = function() {
         jQuery(".OtherF").removeClass("OtherF");
         jQuery("form div input").css({"width":"255px"});
         jQuery("form div input").replaceWith(["<div class=\"input-prepend\">",
-            "  <span class=\"btn btn-file\">Browse...<input type=\"file\" name=\"Avatar\"></span>",
+            "  <span class=\"btn btn-file\">Browse...<input type=\"file\" name=\"Avatar\" accept=\"image/*\"></span>",
             "  <input class=\"span8\" id=\"path\" type=\"text\" readonly=\"\">",
             "</div>"
         ].join("\n"));
