@@ -125,7 +125,7 @@ var TPTFixerUpper = function() {
     }
     if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
-        jQuery(".Subpage input:eq(3)").addClass("btn").addClass("btn-primary");
+        jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
     }
     if (currentURL == "/Profile/Avatar.html") {
         addCss([".btn-file {",
