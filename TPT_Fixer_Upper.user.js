@@ -111,7 +111,7 @@ var TPTFixerUpper = function() {
             "    border-radius: 3px 0 0 3px;",
             "}",
             ".description {",
-            "    word-wrap: break-word;"
+            "    word-wrap: break-word;",
             "}"
         ].join("\n"));
         jQuery(".input-append").attr("class", "input-prepend input-append");
