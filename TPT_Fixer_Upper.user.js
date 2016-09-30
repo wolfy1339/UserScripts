@@ -266,6 +266,10 @@ var TPTFixerUpper = function() {
             "}",
             "p code {",
             "    display: inline;",
+            "}",
+            ".Message pre {"
+            "   padding: 8.5px;",
+            "   display: block;",
             "}"
         ].join("\n"));
 
