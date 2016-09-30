@@ -126,6 +126,13 @@ var TPTFixerUpper = function() {
             "}"
         ].join("\n"));
     }
+    if (currentURL == "Discussions/Thread/View.html") {
+        addCss([".Message pre {",
+            "   padding: 8.5px;",
+            "   display: block;",
+            "}"
+        ].join("\n");
+    }
     if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
         jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
@@ -266,10 +273,6 @@ var TPTFixerUpper = function() {
             "}",
             "p code {",
             "    display: inline;",
-            "}",
-            ".Message pre {"
-            "   padding: 8.5px;",
-            "   display: block;",
             "}"
         ].join("\n"));
 
