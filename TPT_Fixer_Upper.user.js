@@ -118,7 +118,7 @@ var TPTFixerUpper = function() {
         jQuery(".posts .search-thumbnail").css({"width": "63px"});
         jQuery(".threads .search-thumbnail").css({"width": "63px"});
     }
-    if (currentURL == "/Discussions/Categories/Index.html") {
+    else if (currentURL == "/Discussions/Categories/Index.html") {
         // Fix thread view and post count, if the number is big it won't overflow as much
         addCss([".TopicList li .Meta span {",
             "    max-height: 14px;",
@@ -126,18 +126,18 @@ var TPTFixerUpper = function() {
             "}"
         ].join("\n"));
     }
-    if (currentURL == "Discussions/Thread/View.html") {
+    else if (currentURL == "/Discussions/Thread/View.html") {
         addCss([".Message pre {",
             "   padding: 8.5px;",
             "   display: block;",
             "}"
         ].join("\n");
     }
-    if (currentURL == "/Profile/Password.html") {
+    else if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
         jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
     }
-    if (currentURL == "/Profile/Avatar.html") {
+    else if (currentURL == "/Profile/Avatar.html") {
         addCss([".btn-file {",
             "    position: relative;",
             "    overflow: hidden;",
@@ -189,7 +189,7 @@ var TPTFixerUpper = function() {
         });
     }
     // Make Groups system better
-    if (currentURL.indexOf("/Groups") !== -1) {
+    else if (currentURL.indexOf("/Groups") !== -1) {
         // Overide the currentGroupId function to work with the breadcrumbs and the old page header
         tptenhance.groups.currentGroupId = function() {
             if (jQuery(".breadcrumb").length > 0) {
@@ -199,7 +199,7 @@ var TPTFixerUpper = function() {
             }
         };
     }
-    if (currentURL == "/Groups/Thread/View.html") {
+    else if (currentURL == "/Groups/Thread/View.html") {
         addCss([".MessageList .Post .Meta .Author .Gravatar {",
             "    border: 0 none;",
             "    float: left;",
@@ -386,7 +386,7 @@ var TPTFixerUpper = function() {
             jQuery(this).find(".overlay").animate({opacity: 0, top: "-23px"}, 150);
         });
     }
-    if (currentURL == "/Groups/Thread/EditPost.html") {
+    else if (currentURL == "/Groups/Thread/EditPost.html") {
         // Add last edited count to the post itself
 
         // Fetch the username properly if the conversation notification icon is present¸
@@ -432,10 +432,10 @@ var TPTFixerUpper = function() {
 
         replacePageHeader();
     }
-    if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
+    else if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
         replacePageHeader();
     }
-    if (currentURL == "/Groups/Page/View.html") {
+    else if (currentURL == "/Groups/Page/View.html") {
         addCss([".breadcrumb {",
             "    margin: 0;",
             "    border-top: none;",
@@ -445,14 +445,14 @@ var TPTFixerUpper = function() {
         ].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
     }
-    if (currentURL == "/Groups/Admin/Members.html") {
+    else if (currentURL == "/Groups/Admin/Members.html") {
         // Make the Admin management page work better by changing it's looks a little bit
         jQuery(".Pagination").remove();
         jQuery(".contents").css({"width": "900px"});
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
     }
-    if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/PasswordReset.html") {
+    else if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/PasswordReset.html") {
         // Stylize submit input
         jQuery("input[type=\"submit\"]").addClass("btn");
         if (currentURL == "/Groups/Page/Resign.html") {
@@ -461,14 +461,14 @@ var TPTFixerUpper = function() {
             jQuery("input[type=\"submit\"]").addClass("btn-primary");
         }
     }
-    if (currentURL == "/Groups/Page/Index.html") {
+    else if (currentURL == "/Groups/Page/Index.html") {
         // Make the page look like the rest of the website
         jQuery(".Pageheader").css({"background": "#fff","border-bottom": "0px","font-weight": "normal","padding": "0"});
         jQuery(".Page").css({"border": "none"});
         jQuery(".contents").css({"padding": "10px","background": "white","border": "1px solid #DDD"});
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
     }
-    if (currentURL == "/Groups/Page/Groups.html") {
+    else if (currentURL == "/Groups/Page/Groups.html") {
         // Remove bottom border on the last child of .GroupItem
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
         addCss([".breadcrumb {",
@@ -481,7 +481,7 @@ var TPTFixerUpper = function() {
         ].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     }
-    if (currentURL == "/Groups/Page/Register.html") {
+    else if (currentURL == "/Groups/Page/Register.html") {
         // Reduce the group registration page to the basics that are needed
         jQuery("h1:eq(2)").remove();
         jQuery("textarea").hide();
