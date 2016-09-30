@@ -131,7 +131,7 @@ var TPTFixerUpper = function() {
             "   padding: 8.5px;",
             "   display: block;",
             "}"
-        ].join("\n");
+        ].join("\n"));
     }
     else if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
