@@ -9,7 +9,7 @@
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.17
+// @version     2.18
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -96,6 +96,18 @@ function replacePageHeader() {
 }
 
 var TPTFixerUpper = function() {
+    if (currentURL.indexOf("/Groups") !== -1) {
+    // Make Groups system better
+        // Overide the currentGroupId function to work with the breadcrumbs and the old page header
+        tptenhance.groups.currentGroupId = function() {
+            if (jQuery(".breadcrumb").length > 0) {
+                return +(jQuery(".breadcrumb a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
+            } else {
+                return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
+            }
+        };
+    }
+ 
     if (currentURL == "/Search.html") {
         // Enhancements for the rebuilt search feature
         jQuery(".search-avatar").css({"margin-right": "10px"});
@@ -183,16 +195,6 @@ var TPTFixerUpper = function() {
                 input.val(label);
             }
         });
-    } else if (currentURL.indexOf("/Groups") !== -1) {
-    // Make Groups system better
-        // Overide the currentGroupId function to work with the breadcrumbs and the old page header
-        tptenhance.groups.currentGroupId = function() {
-            if (jQuery(".breadcrumb").length > 0) {
-                return +(jQuery(".breadcrumb a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
-            } else {
-                return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
-            }
-        };
     } else if (currentURL == "/Groups/Thread/View.html") {
         addCss([".MessageList .Post .Meta .Author .Gravatar {",
             "    border: 0 none;",
