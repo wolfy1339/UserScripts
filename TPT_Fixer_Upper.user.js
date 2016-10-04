@@ -106,6 +106,10 @@ var TPTFixerUpper = function() {
                 return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
             }
         };
+    } else if (currentURL.indexOf("/Groups/Admin/") !== -1) {
+        replacePageHeader();
+    } else if (currentURL.indexOf("/Groups/Thread/") !== -1) {
+        replacePageHeader();
     }
  
     if (currentURL == "/Search.html") {
@@ -142,7 +146,7 @@ var TPTFixerUpper = function() {
             "   display: block;",
             "}"
         ].join("\n"));
-    } else if (currentURL == "/Profile/Password.html") {
+    } else if (currentURL == "/Profile/Password.html" || currentURL == "/PasswordReset.html") {
         // Stylize submit input
         jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
     } else if (currentURL == "/Profile/Avatar.html") {
@@ -195,6 +199,15 @@ var TPTFixerUpper = function() {
                 input.val(label);
             }
         });
+    } else if (currentURL == "/Groups/Admin/Members.html") {
+        // Make the Admin management page work better by changing it's looks a little bit
+        jQuery(".Pagination").remove();
+        jQuery(".contents").css({"width": "900px"});
+        jQuery(".MemberColumn").css({"width": "417.5px"});
+        jQuery(".MemberName").css({"width": "120px"});
+    } else if (currentURL == "/Groups/Admin/MemberElevation.html") {
+        // Stylize submit input
+        jQuery("input[type=\"submit\"]").addClass("btn btn-primary");
     } else if (currentURL == "/Groups/Thread/View.html") {
         addCss([".MessageList .Post .Meta .Author .Gravatar {",
             "    border: 0 none;",
@@ -346,8 +359,6 @@ var TPTFixerUpper = function() {
             }
         });
 
-        replacePageHeader();
-
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Wait for all page content (embedded saves) to load
         jQuery(".fSaveGame").each(function() {
@@ -424,10 +435,6 @@ var TPTFixerUpper = function() {
 
             tinymce.activeEditor.setContent(text);
         }, 1000);
-
-        replacePageHeader();
-    } else if (currentURL == "/Groups/Thread/Create.html" || currentURL == "/Groups/Thread/Moderation.html"  || currentURL == "/Groups/Page/Register.html" || currentURL.indexOf("/Groups/Admin/") !== -1) {
-        replacePageHeader();
     } else if (currentURL == "/Groups/Page/View.html") {
         addCss([".breadcrumb {",
             "    margin: 0;",
@@ -437,23 +444,12 @@ var TPTFixerUpper = function() {
             "}"
         ].join("\n"));
         jQuery(".Pageheader").addClass("breadcrumb").removeClass("Pageheader");
-    } else if (currentURL == "/Groups/Admin/Members.html") {
-        // Make the Admin management page work better by changing it's looks a little bit
-        jQuery(".Pagination").remove();
-        jQuery(".contents").css({"width": "900px"});
-        jQuery(".MemberColumn").css({"width": "417.5px"});
-        jQuery(".MemberName").css({"width": "120px"});
-    } else if (currentURL == "/Groups/Admin/MemberElevation.html" || currentURL == "/Groups/Page/Resign.html" || currentURL == "/PasswordReset.html") {
-        // Stylize submit input
-        jQuery("input[type=\"submit\"]").addClass("btn");
-        if (currentURL == "/Groups/Page/Resign.html") {
-            jQuery("input[type=\"submit\"]").addClass("btn-danger");
-        } else {
-            jQuery("input[type=\"submit\"]").addClass("btn-primary");
-        }
+    } else if (currentURL == "/Groups/Page/Resign.html") {
+        replacePageHeader();
+        jQuery("input[type=\"submit\"]").addClass("btn btn-danger");
     } else if (currentURL == "/Groups/Page/Index.html") {
         // Make the page look like the rest of the website
-        jQuery(".Pageheader").css({"background": "#fff","border-bottom": "0px","font-weight": "normal","padding": "0"});
+        jQuery(".Pageheader").css({"background": "#fff", "border-bottom": "0px", "font-weight": "normal", "padding": "0"});
         jQuery(".Page").css({"border": "none"});
         jQuery(".contents").css({"padding": "10px","background": "white","border": "1px solid #DDD"});
         jQuery(".GroupItem:last-child").css({"border-bottom": "none"});
@@ -470,6 +466,7 @@ var TPTFixerUpper = function() {
         ].join("\n"));
         jQuery(".PageFooter").addClass("breadcrumb").removeClass("PageFooter");
     } else if (currentURL == "/Groups/Page/Register.html") {
+        replacePageHeader();
         // Reduce the group registration page to the basics that are needed
         jQuery("h1:eq(2)").remove();
         jQuery("textarea").hide();
