@@ -9,7 +9,7 @@
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.18
+// @version     2.19
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -106,12 +106,11 @@ var TPTFixerUpper = function() {
                 return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
             }
         };
-    } else if (currentURL.indexOf("/Groups/Admin/") !== -1) {
-        replacePageHeader();
-    } else if (currentURL.indexOf("/Groups/Thread/") !== -1) {
+    }
+    if (currentURL.indexOf("/Groups/Admin/") !== -1 || currentURL.indexOf("/Groups/Thread/") !== -1) {
         replacePageHeader();
     }
- 
+
     if (currentURL == "/Search.html") {
         // Enhancements for the rebuilt search feature
         jQuery(".search-avatar").css({"margin-right": "10px"});
@@ -146,7 +145,10 @@ var TPTFixerUpper = function() {
             "   display: block;",
             "}"
         ].join("\n"));
-    } else if (currentURL == "/Profile/Password.html" || currentURL == "/PasswordReset.html") {
+    } else if (currentURL == "/Profile/Password.html") {
+        // Stylize submit input
+        jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
+    } else if (currentURL == "/PasswordReset.html") {
         // Stylize submit input
         jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
     } else if (currentURL == "/Profile/Avatar.html") {
@@ -303,9 +305,9 @@ var TPTFixerUpper = function() {
         });
 
         // Fix the permalink on each post
-        $(".Permalink a").each(function() {
-            var href = $(this).attr("href").replace("Message=", "Message-");
-            $(this).attr("href", href);
+        jQuery(".Permalink a").each(function() {
+            var href = jQuery(this).attr("href").replace("Message=", "Message-");
+            jQuery(this).attr("href", href);
         });
 
         // Fixes to add the overlay when you click on the profile picture, just like in the forums
