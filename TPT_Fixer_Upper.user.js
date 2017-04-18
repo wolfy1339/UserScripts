@@ -9,7 +9,7 @@
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.20
+// @version     2.21
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -212,7 +212,7 @@ var TPTFixerUpper = function() {
         btns.text("").append('<i class="icon icon-white icon-remove"></i>');
         btns.each(function() {
             var that = $(this);
-            var user = that.closest(".MemberName").text();
+            var user = that.parent().parent().find(".MemberName").text();
             that.attr("title", "Remove " + user);
         });
     } else if (currentURL == "/Groups/Admin/MemberElevation.html") {
