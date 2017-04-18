@@ -2,14 +2,14 @@
 // @name        TPT Fixer Upper
 // @namespace   https://github.com/wolfy1339/UserScripts
 // @description This script fixes some bugs/errors on The Powder Toy's website (http://powdertoy.co.uk)
-// @icon        http://brilliant-minds.tk/img/powder.png
+// @icon        https://brilliant-minds.github.io/img/powder.png
 // @author      wolfy1339
 // @oujs:author wolfy1339
-// @copyright   2014-2016, wolfy1339
+// @copyright   2014-2017, wolfy1339
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.19
+// @version     2.20
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -22,7 +22,7 @@ function addCss(cssString) {
     if (!jQuery("style").length) {
         jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
     } else {
-        jQuery("style:eq(0)").append(cssString);
+        jQuery("style").eq(0)   .append(cssString);
     }
 }
 
@@ -32,18 +32,20 @@ function replacePageHeader() {
     var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
 
     if (currentURL.indexOf("/Admin/") !== -1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
-        currentGroupName = jQuery(".Pageheader").find("a").text();
-        currentGroupID = jQuery(".Pageheader").find("a").attr("href").substring(29);
+        var header = jQuery(".Pageheader").find("a");
+        currentGroupName = header.text();
+        currentGroupID = header.attr("href").substring(29);
         if (currentURL.indexOf("/Admin/") !== -1) {
             currentUserName = jQuery(".OtherF a").text();
         }
     } else {
         if (jQuery(".Pageheader a:eq(1)").text() != "Groups") {
-            currentGroupName = jQuery(".Pageheader a:eq(1)").text();
+            currentGroupName = jQuery(".Pageheader a").eq(1).text();
             currentGroupID = tptenhance.groups.currentGroupId();
         } else {
-            currentGroupName = jQuery(".Pageheader a:eq(2)").text();
-            currentGroupID = jQuery(".Pageheader a:eq(2)").attr("href").split("Group=")[1].split("&")[0];
+            var header = jQuery(".Pageheader a").eq(2)
+            currentGroupName = header.text();
+            currentGroupID = header.attr("href").split("Group=")[1].split("&")[0];
         }
     }
 
@@ -100,10 +102,10 @@ var TPTFixerUpper = function() {
     // Make Groups system better
         // Overide the currentGroupId function to work with the breadcrumbs and the old page header
         tptenhance.groups.currentGroupId = function() {
-            if (jQuery(".breadcrumb").length > 0) {
-                return +(jQuery(".breadcrumb a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
+            if (jQuery(".breadcrumb").length) {
+                return +(jQuery(".breadcrumb a").eq(1).attr("href").split("Group=")[1].split("&")[0]);
             } else {
-                return +(jQuery(".Pageheader a:eq(1)").attr("href").split("Group=")[1].split("&")[0]);
+                return +(jQuery(".Pageheader a").eq(1).attr("href").split("Group=")[1].split("&")[0]);
             }
         };
     }
@@ -181,12 +183,11 @@ var TPTFixerUpper = function() {
 
         // Stylize file input
         jQuery(".OtherF").removeClass("OtherF");
-        jQuery("form div input").css({"width":"255px"});
         jQuery("form div input").replaceWith(["<div class=\"input-prepend\">",
             "  <span class=\"btn btn-file\">Browse...<input type=\"file\" name=\"Avatar\" accept=\"image/*\"></span>",
             "  <input class=\"span8\" id=\"path\" type=\"text\" readonly=\"\">",
             "</div>"
-        ].join("\n"));
+        ].join("\n")).css({"width":"255px"});
 
         jQuery(document).on("change", ".btn-file :file", function() {
             var input = jQuery(this);
@@ -207,6 +208,13 @@ var TPTFixerUpper = function() {
         jQuery(".contents").css({"width": "900px"});
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
+        var btns = jQuery(".btn-mini.btn-danger");
+        btns.text("").append('<i class="icon icon-white icon-remove"></i>');
+        btns.each(function() {
+            var that = $(this);
+            var user = that.closest(".MemberName").text();
+            that.attr("title", "Remove " + user);
+        });
     } else if (currentURL == "/Groups/Admin/MemberElevation.html") {
         // Stylize submit input
         jQuery("input[type=\"submit\"]").addClass("btn btn-primary");
@@ -306,15 +314,18 @@ var TPTFixerUpper = function() {
 
         // Fix the permalink on each post
         jQuery(".Permalink a").each(function() {
-            var href = jQuery(this).attr("href").replace("Message=", "Message-");
-            jQuery(this).attr("href", href);
+            var that = jQuer(this);
+            var href = that.attr("href").replace("Message=", "Message-");
+            that.attr("href", href);
         });
 
         // Fixes to add the overlay when you click on the profile picture, just like in the forums
         jQuery(".Author").each(function() {
-            var href = jQuery(this).children(":first-child").attr("href");
-            var src = jQuery(this).find("img").attr("src");
-            jQuery(this).children(":first-child").replaceWith("<div class=\"Gravatar\"><a href=\"" + href + "\"><img src=\"" + src + "\"></a></div>");
+            var that = jQuery(this);
+            var firstChild = that.children(":first-child");
+            var href = firstChild.attr("href");
+            var src = that.find("img").attr("src");
+            firstChild.replaceWith("<div class=\"Gravatar\"><a href=\"" + href + "\"><img src=\"" + src + "\"></a></div>");
         });
         /* Taken from the website's javascript (http://powdertoy.co.uk/Applications/Application.Discussions/Javascript/Thread.js),
         Modified slightly to fit my coding styles */
@@ -326,16 +337,18 @@ var TPTFixerUpper = function() {
             informationForm.css("top", pos.top-3);
             informationForm.css("left", pos.left-3);
             jQuery.getJSON(link).done(function(data) {
+                var user = data.User;
+                var forum = user.Forum;
                 var form = jQuery(["<span class=\"Author\">",
-                    "<div class=\"Gravatar\"><img src=\"" + data.User.Avatar + "\"></div>",
-                    "<a href=\"/User.html?Name=" + data.User.Username + "\">" + data.User.Username + "</a>",
+                    "<div class=\"Gravatar\"><img src=\"" + user.Avatar + "\"></div>",
+                    "<a href=\"/User.html?Name=" + user.Username + "\">" + user.Username + "</a>",
                     "</span>",
                     "<div class=\"Clear\"></div>",
                     "<div class=\"UserInfoForum\">",
                     "<h1>Forum</h1>",
-                    "<div class=\"UserInfoRow\"><label>Reputation:</label>" + data.User.Forum.Reputation + "</div>",
-                    "<div class=\"UserInfoRow\"><label>Posts:</label>" + data.User.Forum.Replies + "</div>",
-                    "<div class=\"UserInfoRow\"><label>Topics:</label>" + data.User.Forum.Topics + "</div></div>"
+                    "<div class=\"UserInfoRow\"><label>Reputation:</label>" + forum.Reputation + "</div>",
+                    "<div class=\"UserInfoRow\"><label>Posts:</label>" + forum.Replies + "</div>",
+                    "<div class=\"UserInfoRow\"><label>Topics:</label>" + forum.Topics + "</div></div>"
                 ].join(""));
                 informationForm.html(form);
             });
@@ -351,28 +364,31 @@ var TPTFixerUpper = function() {
         jQuery(".Mine.Owner").addClass("Administrator");
         jQuery(".Mine.Manager").addClass("Moderator");
         jQuery(".Moderator").each(function() {
-            var a = jQuery(this).find(".Meta .Author a").text();
+            var that = jQuery(this);
+            var a = that.find(".Meta .Author a").text();
             if (a == "jacob1" || a == "cracker64" || a == "jacksonmj" || a == "AntB" || a == "Xenocide" || a == "savask" || a == "triclops200") {
-                jQuery(this).removeClass("Moderator").addClass("Developer");
-                jQuery(this).find(".UserTitle").text("Developer");
+                that.removeClass("Moderator").addClass("Developer");
+                that.find(".UserTitle").text("Developer");
             } else if (a == "Simon") {
-                jQuery(this).removeClass("Moderator").addClass("Administrator");
-                jQuery(this).find(".UserTitle").text("Administrator");
+                that.removeClass("Moderator").addClass("Administrator");
+                that.find(".UserTitle").text("Administrator");
             }
         });
 
         // Replace the embedded savegames with a version that uses the same format as the forums
         // Wait for all page content (embedded saves) to load
         jQuery(".fSaveGame").each(function() {
-            jQuery(this).find(".fSaveRating").remove();
-            jQuery(this).find(".fSaveGameThumb").contents().unwrap();
-            jQuery(this).find(".fAuthor").addClass("author").removeClass("fAuthor");
-            jQuery(this).find(".fComments").addClass("comments").removeClass("fComments");
-            jQuery(this).find(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
+            var that = jQuery(this);
+            that.find(".fSaveRating").remove();
+            that.find(".fSaveGameThumb").contents().unwrap();
+            that.find(".fAuthor").addClass("author").removeClass("fAuthor");
+            that.find(".fComments").addClass("comments").removeClass("fComments");
+            that.find(".fSaveDetails").addClass("caption").removeClass("fSaveDetails");
 
             var overlay = jQuery("<div class=\"overlay\"></div>");
-            var title = jQuery(this).find(".fTitle").attr("title").replace(/[,.\s]+/g, "_");
-            var href = jQuery(this).find(".fTitle a").attr("href");
+            var titleEl = jQuery(this).find(".fTitle");
+            var title = titleEl.attr("title").replace(/[,.\s]+/g, "_");
+            var href = titleEl.find("a").attr("href");
             var pthref = href.substring(21, 28);
 
             overlay.append("<a class=\"btn btn-primary\" href=\"" + href + "\">View</a>");
@@ -380,13 +396,13 @@ var TPTFixerUpper = function() {
             overlay.css({"opacity": 0});
             overlay.appendTo(this);
 
-            var title2 = jQuery(this).find(".fTitle").attr("title");
-            var text = jQuery(this).find(".fTitle a").text();
-            jQuery(this).find(".fTitle").replaceWith("<h5 title=\"" + title2 + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
+            var title2 = titleEl.attr("title");
+            var text = titleEl.find(".fTitle a").text();
+            titleEl.replaceWith("<h5 title=\"" + title2 + "\"><a href=\"" + href + "\">" + text + "</a></h5>");
 
-            jQuery(this).find(".SaveDownloadDo").remove();
-            jQuery(this).addClass("savegame").removeClass("fSaveGame");
-            jQuery(this).find("a img").attr("width", "153").attr("height", "96");
+            that.find(".SaveDownloadDo").remove();
+            that.addClass("savegame").removeClass("fSaveGame");
+            that.find("a img").attr("width", "153").attr("height", "96");
         });
         jQuery(".savegame").on("mouseover", function() {
             jQuery(this).find(".overlay").animate({opacity: 1, top: "3px"}, 150);
@@ -470,7 +486,7 @@ var TPTFixerUpper = function() {
     } else if (currentURL == "/Groups/Page/Register.html") {
         replacePageHeader();
         // Reduce the group registration page to the basics that are needed
-        jQuery("h1:eq(2)").remove();
+        jQuery("h1").eq(2).remove();
         jQuery("textarea").hide();
         jQuery(".OtherF label").remove();
         jQuery("input[name=\"Submit\"]").attr("value", "Submit Registration");
