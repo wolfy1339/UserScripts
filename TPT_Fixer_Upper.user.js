@@ -22,7 +22,7 @@ function addCss(cssString) {
     if (!jQuery("style").length) {
         jQuery("<style type=\"text/css\"></style>").append(cssString).appendTo("head");
     } else {
-        jQuery("style").eq(0)   .append(cssString);
+        jQuery("style").eq(0).append(cssString);
     }
 }
 
@@ -141,12 +141,6 @@ var TPTFixerUpper = function() {
             "    font-size: 10px;",
             "}"
         ].join("\n"));
-    } else if (currentURL == "/Discussions/Thread/View.html") {
-        addCss([".Message pre {",
-            "   padding: 8.5px;",
-            "   display: block;",
-            "}"
-        ].join("\n"));
     } else if (currentURL == "/Profile/Password.html") {
         // Stylize submit input
         jQuery(".Subpage input[type=\"submit\"]").addClass("btn btn-primary");
@@ -211,7 +205,7 @@ var TPTFixerUpper = function() {
         var btns = jQuery(".btn-mini.btn-danger");
         btns.text("").append('<i class="icon icon-white icon-remove"></i>');
         btns.each(function() {
-            var that = $(this);
+            var that = jQuery(this);
             var user = that.parent().parent().find(".MemberName").text();
             that.attr("title", "Remove " + user);
         });
@@ -314,7 +308,7 @@ var TPTFixerUpper = function() {
 
         // Fix the permalink on each post
         jQuery(".Permalink a").each(function() {
-            var that = jQuer(this);
+            var that = jQuery(this);
             var href = that.attr("href").replace("Message=", "Message-");
             that.attr("href", href);
         });
