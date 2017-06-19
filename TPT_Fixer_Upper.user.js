@@ -9,7 +9,7 @@
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.21
+// @version     2.22
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
