@@ -9,7 +9,7 @@
 // @license     MIT License
 // @downloadURL https://openuserjs.org/src/scripts/wolfy1339/TPT_Fixer_Upper.user.js
 // @updateURL   https://openuserjs.org/meta/wolfy1339/TPT_Fixer_Upper.meta.js
-// @version     2.22
+// @version     2.23
 // @grant       none
 // @match       *://powdertoy.co.uk/*
 // @run-at      document-idle
@@ -29,10 +29,10 @@ function addCss(cssString) {
 function replacePageHeader() {
     // Helper function to replace the old page headers with breadcrumbs as used everywhere else.
     var container = jQuery("<div class=\"container\"></div>");
-    var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb;
+    var currentThreadName, currentGroupID, currentGroupName, currentUserName, breadcrumb, header;
 
     if (currentURL.indexOf("/Admin/") !== -1 || currentURL == "/Groups/Page/Resign.html" || currentURL == "/Groups/Page/Register.html") {
-        var header = jQuery(".Pageheader").find("a");
+        header = jQuery(".Pageheader").find("a");
         currentGroupName = header.text();
         currentGroupID = header.attr("href").substring(29);
         if (currentURL.indexOf("/Admin/") !== -1) {
@@ -43,7 +43,7 @@ function replacePageHeader() {
             currentGroupName = jQuery(".Pageheader a").eq(1).text();
             currentGroupID = tptenhance.groups.currentGroupId();
         } else {
-            var header = jQuery(".Pageheader a").eq(2)
+            header = jQuery(".Pageheader a").eq(2)
             currentGroupName = header.text();
             currentGroupID = header.attr("href").split("Group=")[1].split("&")[0];
         }
