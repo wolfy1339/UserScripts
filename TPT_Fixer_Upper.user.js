@@ -43,7 +43,7 @@ function replacePageHeader() {
             currentGroupName = jQuery(".Pageheader a").eq(1).text();
             currentGroupID = tptenhance.groups.currentGroupId();
         } else {
-            header = jQuery(".Pageheader a").eq(2)
+            header = jQuery(".Pageheader a").eq(2);
             currentGroupName = header.text();
             currentGroupID = header.attr("href").split("Group=")[1].split("&")[0];
         }
@@ -203,7 +203,7 @@ var TPTFixerUpper = function() {
         jQuery(".MemberColumn").css({"width": "417.5px"});
         jQuery(".MemberName").css({"width": "120px"});
         var btns = jQuery(".btn-mini.btn-danger");
-        btns.text("").append('<i class="icon icon-white icon-remove"></i>');
+        btns.text("").append("<i class=\"icon icon-white icon-remove\"></i>");
         btns.each(function() {
             var that = jQuery(this);
             var user = that.parent().parent().find(".MemberName").text();
